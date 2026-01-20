@@ -148,6 +148,24 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const importProducts = async (clientId, productsArray) => {
+        try {
+            const res = await api.post(`/clients/${clientId}/products/bulk-import`, productsArray);
+
+            // Refetch clients to update product list completely or append locally if simpler
+            // For bulk, better to re-fetch to ensure consistency
+            const clientsRes = await api.get('/clients');
+            setClients(clientsRes.data);
+            const allProducts = clientsRes.data.flatMap(c => c.products || []).map(p => ({ ...p, isActive: true }));
+            setProducts(allProducts);
+
+            return res.data;
+        } catch (error) {
+            console.error("Error importing products:", error);
+            throw error;
+        }
+    };
+
     const updateProduct = (productId, updatedData) => {
         setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updatedData } : p));
     };
@@ -167,6 +185,7 @@ export const DataProvider = ({ children }) => {
             getProductsByClientId,
             loadProducts, // Restored
             addProduct,
+            importProducts, // Added
             updateProduct,
             toggleProductStatus,
             isLoaded

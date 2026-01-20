@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, Download } from 'lucide-react';
+import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, Download, Upload, Copy, Check } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
@@ -12,7 +12,7 @@ import ImageUploader from '@/components/ui/ImageUploader/ImageUploader';
 export default function AdminClientDetail() {
     const params = useParams();
     const router = useRouter();
-    const { getClientBySlug, updateClient, toggleClientStatus, getProductsByClientId, toggleProductStatus, isLoaded } = useData();
+    const { getClientBySlug, updateClient, toggleClientStatus, getProductsByClientId, toggleProductStatus, isLoaded, importProducts } = useData();
     const { addToast } = useToast();
 
     const [client, setClient] = useState(null);
@@ -23,6 +23,63 @@ export default function AdminClientDetail() {
     const [description, setDescription] = useState("");
     const [coverImages, setCoverImages] = useState([]); // Array for Uploader, but we use first one
     const [saving, setSaving] = useState(false);
+
+    // Import Modal State
+    const [importModalOpen, setImportModalOpen] = useState(false);
+    const [importStep, setImportStep] = useState(1); // 1: Prompt, 2: JSON
+    const [importJson, setImportJson] = useState("");
+    const [importing, setImporting] = useState(false);
+    const [copySuccess, setCopySuccess] = useState(false);
+
+    const PROMPT_TEXT = `Atue como um Especialista em Dados. Tenho uma lista de produtos em texto/excel e preciso que você a converta para um JSON estrito, compatível com meu sistema.
+Regras Obrigatórias:
+A saída deve ser APENAS um Array de objetos JSON.
+Se não tiver informação para um campo, deixe o array vazio [] ou string vazia "".
+Para imagens, busque uma URL pública de alta qualidade (ex: Unsplash ou similar) ou deixe vazio se não encontrar.
+Estrutura do Objeto (Schema):
+[
+  {
+    "name": "Nome do Produto (Ex: Mel Puro)",
+    "category": "Categoria (Ex: Adoçantes)",
+    "description": "Descrição comercial atrativa de 2 linhas.",
+    "image": "URL_da_imagem.jpg",
+    "nutrition": [
+      { "label": "Calorias", "value": "64 kcal" },
+      { "label": "Carboidratos", "value": "17g" }
+    ],
+    "benefits": ["Benefício 1", "Benefício 2"],
+    "tags": ["Combina com Iogurte", "Sem Glúten"],
+    "helpsWith": ["Energia", "Imunidade"]
+  }
+]
+Converta os dados abaixo seguindo estritamente essa estrutura:`;
+
+    const handleCopyPrompt = () => {
+        navigator.clipboard.writeText(PROMPT_TEXT);
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+    };
+
+    const handleImport = async () => {
+        try {
+            const parsed = JSON.parse(importJson);
+            if (!Array.isArray(parsed)) {
+                addToast("O JSON deve ser uma lista (Array) de produtos.", "error");
+                return;
+            }
+            setImporting(true);
+            await importProducts(client.id, parsed);
+            addToast(`${parsed.length} produtos importados com sucesso!`, "success");
+            setImportModalOpen(false);
+            setImportJson("");
+            setImportStep(1);
+        } catch (error) {
+            addToast("Erro ao importar. Verifique o JSON.", "error");
+            console.error(error);
+        } finally {
+            setImporting(false);
+        }
+    };
 
     useEffect(() => {
         if (isLoaded && params?.clientSlug) {
@@ -172,6 +229,9 @@ export default function AdminClientDetail() {
                             <Button variant="secondary" icon={Download} onClick={handleExportProducts}>
                                 Exportar Excel
                             </Button>
+                            <Button variant="secondary" icon={Upload} onClick={() => setImportModalOpen(true)}>
+                                Importar JSON
+                            </Button>
                             <Button icon={Plus} onClick={() => router.push(`/admin/clients/${params.clientSlug}/products/new`)}>
                                 Novo Produto
                             </Button>
@@ -240,6 +300,64 @@ export default function AdminClientDetail() {
             )}
 
             {/* Modal */}
+            {importModalOpen && (
+                <div className={styles.modalOverlay} onClick={() => setImportModalOpen(false)}>
+                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+                        <h2>Importação em Massa</h2>
+
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0' }}>
+                            <button
+                                onClick={() => setImportStep(1)}
+                                style={{ padding: '0.5rem', borderBottom: importStep === 1 ? '2px solid #2563eb' : 'none', fontWeight: importStep === 1 ? 'bold' : 'normal' }}
+                            >
+                                1. Instruções (Prompt)
+                            </button>
+                            <button
+                                onClick={() => setImportStep(2)}
+                                style={{ padding: '0.5rem', borderBottom: importStep === 2 ? '2px solid #2563eb' : 'none', fontWeight: importStep === 2 ? 'bold' : 'normal' }}
+                            >
+                                2. Colar JSON
+                            </button>
+                        </div>
+
+                        {importStep === 1 ? (
+                            <div>
+                                <p style={{ marginBottom: '1rem', color: '#64748b' }}>
+                                    Copie o prompt abaixo e envie para uma IA (ChatGPT, Claude, Manus) junto com sua lista de produtos.
+                                </p>
+                                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '0.85rem', maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                                    {PROMPT_TEXT}
+                                </div>
+                                <Button onClick={handleCopyPrompt} icon={copySuccess ? Check : Copy} variant="secondary" fullWidth>
+                                    {copySuccess ? "Copiado!" : "Copiar Prompt"}
+                                </Button>
+                                <div style={{ marginTop: '1rem', textAlign: 'right' }}>
+                                    <Button onClick={() => setImportStep(2)}>Próximo Passo &rarr;</Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <p style={{ marginBottom: '1rem', color: '#64748b' }}>
+                                    Cole o JSON gerado pela IA aqui.
+                                </p>
+                                <textarea
+                                    rows={10}
+                                    value={importJson}
+                                    onChange={(e) => setImportJson(e.target.value)}
+                                    placeholder='Cole aqui: [{"name": "Produto 1"...}]'
+                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontFamily: 'monospace', fontSize: '0.85rem' }}
+                                />
+                                <div className={styles.modalActions}>
+                                    <Button variant="secondary" onClick={() => setImportModalOpen(false)}>Cancelar</Button>
+                                    <Button onClick={handleImport} disabled={importing || !importJson}>
+                                        {importing ? "Importando..." : "Validar e Importar"}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
         </div>
     );
