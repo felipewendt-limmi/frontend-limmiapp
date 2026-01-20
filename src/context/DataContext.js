@@ -22,7 +22,7 @@ export const DataProvider = ({ children }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     const api = axios.create({
-        baseURL: 'https://sistema-api.znmwnf.easypanel.host'
+        baseURL: 'https://sistema-api.znmwnf.easypanel.host/api'
     });
 
     api.interceptors.request.use((config) => {

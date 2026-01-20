@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     const router = useRouter();
 
     const api = axios.create({
-        baseURL: 'https://sistema-api.znmwnf.easypanel.host'
+        baseURL: 'https://sistema-api.znmwnf.easypanel.host/api'
     });
 
     useEffect(() => {
