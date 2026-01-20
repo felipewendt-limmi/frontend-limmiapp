@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink } from 'lucide-react';
+import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
