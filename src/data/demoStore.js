@@ -3,7 +3,7 @@ export const DemoStoreData = {
     name: 'Empório Natural ®',
     slug: 'demo-store',
     description: 'Experimente a revolução do granel digital. Produtos selecionados, rastreáveis e com informação completa.',
-    coverImage: 'https://images.unsplash.com/photo-1608686207856-001b95cf60ca?q=80&w=2574&auto=format&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2574&auto=format&fit=crop', // A nice grocery/market vibe
     isActive: true,
     themeColor: '#16a34a',
     products: [
@@ -14,10 +14,9 @@ export const DemoStoreData = {
             description: 'Mix crocante de aveia, castanhas nobres (caju e pará), sementes de abóbora e girassol, adoçada levemente com mel silvestre. Sem conservantes.',
             price: 'R$ 4,50',
             unit: '100g',
-            image: 'https://images.unsplash.com/photo-1517093725432-a9a7c52cb8b1?q=80&w=2670&auto=format&fit=crop',
+            image: 'https://img.freepik.com/fotos-gratis/pan-de-vista-superior-com-granola-deliciosa_23-2148543631.jpg', // Granola
             images: [
-                'https://images.unsplash.com/photo-1517093725432-a9a7c52cb8b1?q=80&w=2670&auto=format&fit=crop',
-                'https://images.unsplash.com/photo-1506543730-31688f288251?q=80&w=2670&auto=format&fit=crop'
+                'https://img.freepik.com/fotos-gratis/pan-de-vista-superior-com-granola-deliciosa_23-2148543631.jpg'
             ],
             benefits: ['Rico em Fibras', 'Sem Açúcar Refinado', 'Energia Duradoura'],
             tips: [
@@ -42,9 +41,9 @@ export const DemoStoreData = {
             description: 'Castanhas de caju selecionadas tipo W1 (exportação), torradas lentamente para manter a crocância e sabor, com leve toque de sal marinho.',
             price: 'R$ 12,90',
             unit: '100g',
-            image: 'https://images.unsplash.com/photo-1536591375315-1988d6960991?q=80&w=2670&auto=format&fit=crop',
+            image: 'https://www.mariachocolate.com.br/static/21111/sku/confeitaria-castanha-de-caju-em-banda-com-sal-250g-norte-minas--p-1715961850845.png', // Cashews
             images: [
-                'https://images.unsplash.com/photo-1536591375315-1988d6960991?q=80&w=2670&auto=format&fit=crop'
+                'https://www.mariachocolate.com.br/static/21111/sku/confeitaria-castanha-de-caju-em-banda-com-sal-250g-norte-minas--p-1715961850845.png'
             ],
             benefits: ['Gorduras Boas', 'Magnésio', 'Controle de Colesterol'],
             tips: [
@@ -69,10 +68,9 @@ export const DemoStoreData = {
             description: 'Superalimento andino completo. Grãos de quinoa branca orgânica, fonte de proteína vegetal completa e livre de glúten.',
             price: 'R$ 6,90',
             unit: '100g',
-            image: 'https://images.unsplash.com/photo-1620551842247-497793d5f306?q=80&w=2670&auto=format&fit=crop',
+            image: 'https://images.tcdn.com.br/img/img_prod/1002447/quinoa_em_graos_branca_1_kg_1347_1_d912f99e42a3e5604c1a1ba2ec3241fd.jpg', // Quinoa
             images: [
-                'https://images.unsplash.com/photo-1620551842247-497793d5f306?q=80&w=2670&auto=format&fit=crop',
-                'https://images.unsplash.com/photo-1588610567083-d9d300095fca?q=80&w=2574&auto=format&fit=crop'
+                'https://images.tcdn.com.br/img/img_prod/1002447/quinoa_em_graos_branca_1_kg_1347_1_d912f99e42a3e5604c1a1ba2ec3241fd.jpg'
             ],
             benefits: ['Proteína Completa', 'Sem Glúten', 'Baixo Índice Glicêmico'],
             tips: [
@@ -97,9 +95,9 @@ export const DemoStoreData = {
             description: 'Damascos importados da Turquia, secos naturalmente. Textura macia, sabor doce intenso e cor laranja vibrante. Sem adição de açúcar.',
             price: 'R$ 8,50',
             unit: '100g',
-            image: 'https://images.unsplash.com/photo-1601380962386-35ed5f6d7085?q=80&w=2670&auto=format&fit=crop',
+            image: 'https://media.istockphoto.com/id/542330328/pt/foto/organic-raw-dry-apricots.jpg?s=612x612&w=0&k=20&c=37unxMhKkFe9YMMDAxbN-5inm6n3oL4xRh-rXt4fMMU=', // Apricots
             images: [
-                'https://images.unsplash.com/photo-1601380962386-35ed5f6d7085?q=80&w=2670&auto=format&fit=crop'
+                'https://media.istockphoto.com/id/542330328/pt/foto/organic-raw-dry-apricots.jpg?s=612x612&w=0&k=20&c=37unxMhKkFe9YMMDAxbN-5inm6n3oL4xRh-rXt4fMMU='
             ],
             benefits: ['Antioxidantes', 'Saúde Ocular', 'Potássio'],
             tips: [

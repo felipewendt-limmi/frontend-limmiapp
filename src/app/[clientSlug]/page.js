@@ -41,8 +41,8 @@ export default function StoreHome() {
                     backgroundImage: client.coverImage ? `url(${client.coverImage})` : 'none',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    // Dim the background if image exists, or use solid color if not
-                    backgroundColor: client.coverImage ? 'rgba(0,0,0,0.5)' : '#ffffff',
+                    // Stronger overlay for readability
+                    backgroundColor: client.coverImage ? 'rgba(0,0,0,0.6)' : '#ffffff',
                     backgroundBlendMode: 'overlay',
                     color: client.coverImage ? '#ffffff' : '#0f172a',
                     padding: '6rem 2rem',
@@ -53,22 +53,28 @@ export default function StoreHome() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '300px'
+                    minHeight: '350px',
+                    boxShadow: '0 20px 40px -10px rgba(0,0,0,0.2)'
                 }}>
                     <h1 className={styles.title} style={{
-                        fontSize: '3rem',
+                        fontSize: '3.5rem',
                         fontWeight: '800',
                         marginBottom: '1rem',
-                        textShadow: client.coverImage ? '0 2px 4px rgba(0,0,0,0.3)' : 'none'
+                        textShadow: client.coverImage ? '0 4px 20px rgba(0,0,0,0.5)' : 'none',
+                        letterSpacing: '-0.02em',
+                        color: client.coverImage ? '#ffffff' : undefined, // Force white if image exists
                     }}>
                         {client.name}
                     </h1>
                     <p className={styles.description} style={{
-                        fontSize: '1.2rem',
+                        fontSize: '1.25rem',
                         maxWidth: '600px',
                         margin: '0 auto',
-                        opacity: 0.9,
-                        lineHeight: 1.6
+                        opacity: 0.95,
+                        lineHeight: 1.6,
+                        fontWeight: '500',
+                        textShadow: client.coverImage ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
+                        color: client.coverImage ? '#e2e8f0' : undefined, // Force light gray/white if image exists
                     }}>
                         {client.description || "Bem-vindo à nossa loja virtual."}
                     </p>
