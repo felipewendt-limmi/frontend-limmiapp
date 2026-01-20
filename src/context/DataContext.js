@@ -16,6 +16,9 @@ export const useData = () => {
     return context;
 };
 
+// Simple global cache for categories to avoid refetching too often
+let cachedCategories = [];
+
 export const DataProvider = ({ children }) => {
     const [clients, setClients] = useState([]);
     const [products, setProducts] = useState([]);
@@ -166,6 +169,29 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    // Global Search & Categories
+    const searchGlobalProducts = async (query) => {
+        try {
+            const res = await api.get(`/products/global-search?query=${encodeURIComponent(query)}`);
+            return res.data;
+        } catch (error) {
+            console.error("Error searching global products:", error);
+            return [];
+        }
+    };
+
+    const getCategories = async () => {
+        if (cachedCategories.length > 0) return cachedCategories;
+        try {
+            const res = await api.get('/products/categories');
+            cachedCategories = res.data;
+            return res.data;
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            return [];
+        }
+    };
+
     const updateProduct = (productId, updatedData) => {
         setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updatedData } : p));
     };
@@ -186,6 +212,8 @@ export const DataProvider = ({ children }) => {
             loadProducts, // Restored
             addProduct,
             importProducts, // Added
+            searchGlobalProducts, // Feature: Global Catalog
+            getCategories, // Feature: Smart Categories
             updateProduct,
             toggleProductStatus,
             isLoaded
