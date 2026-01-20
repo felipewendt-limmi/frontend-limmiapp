@@ -24,6 +24,11 @@ export default function LoginPage() {
             addToast("Login realizado com sucesso!", "success");
             router.push('/admin/clients');
         } catch (error) {
+            console.error("LOGIN ERROR DETECTED:", error);
+            if (error.response) {
+                console.error("Response Status:", error.response.status);
+                console.error("Response Data:", error.response.data);
+            }
             addToast("Email ou senha inválidos.", "error");
         } finally {
             setLoading(false);
