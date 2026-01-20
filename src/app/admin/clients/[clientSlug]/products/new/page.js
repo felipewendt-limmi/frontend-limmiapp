@@ -205,8 +205,8 @@ export default function NewProductPage() {
 
                         <div className={styles.row}>
                             <div className={styles.formGroup}>
-                                <label>Preço *</label>
-                                <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="R$ 0,00" required />
+                                <label>Preço (Interno) *</label>
+                                <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" required />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>Unidade</label>
@@ -230,8 +230,18 @@ export default function NewProductPage() {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label>Galeria de Imagens</label>
-                            <ImageUploader images={images} onChange={setImages} />
+                            <label>Imagem (URL Pública)</label>
+                            <input
+                                type="text"
+                                value={images[0] || ""}
+                                onChange={(e) => setImages([e.target.value])}
+                                placeholder="https://images.unsplash.com/..."
+                            />
+                            {images[0] && (
+                                <div style={{ marginTop: '10px', width: '100%', height: '200px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                                    <img src={images[0]} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                </div>
+                            )}
                         </div>
                     </div>
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 import CanvasBackground from '@/components/layout/CanvasBackground/CanvasBackground';
 import Button from '@/components/ui/Button/Button';
@@ -72,7 +72,7 @@ export default function ProductDetail() {
     if (!loading && !product) {
         return (
             <>
-                <Header />
+                {/* <Header /> */}
                 <div className={styles.emptyStateContainer}>
                     <EmptyState title="Produto não encontrado" />
                 </div>
@@ -91,11 +91,17 @@ export default function ProductDetail() {
                         <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
                             {/* Main Image */}
                             <div style={{ position: 'relative', flex: 1, borderRadius: '16px', overflow: 'hidden', minHeight: '300px' }}>
-                                <Image
+                                <img
                                     src={selectedImage}
                                     alt={product.name}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                    }}
                                 />
                             </div>
 
@@ -117,11 +123,10 @@ export default function ProductDetail() {
                                                 flexShrink: 0
                                             }}
                                         >
-                                            <Image
+                                            <img
                                                 src={img}
                                                 alt={`View ${idx}`}
-                                                fill
-                                                style={{ objectFit: 'cover' }}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                             />
                                         </div>
                                     ))}
@@ -147,9 +152,11 @@ export default function ProductDetail() {
 
                             <h1 className={styles.title}>{product.name}</h1>
 
+                            {/* Price Hidden for Base LIMMI
                             <div className={styles.price}>
                                 {product.price} <span className={styles.unit}>/ {product.unit}</span>
                             </div>
+                            */}
 
                             <p className={styles.description}>{product.description}</p>
 

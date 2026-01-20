@@ -192,6 +192,16 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const getDashboardStats = async () => {
+        try {
+            const res = await api.get('/stats/dashboard');
+            return res.data;
+        } catch (error) {
+            console.error("Error fetching dashboard stats:", error);
+            throw error;
+        }
+    };
+
     const updateProduct = (productId, updatedData) => {
         setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updatedData } : p));
     };
@@ -209,11 +219,12 @@ export const DataProvider = ({ children }) => {
             toggleClientStatus,
             getClientBySlug,
             getProductsByClientId,
-            loadProducts, // Restored
+            loadProducts,
             addProduct,
-            importProducts, // Added
-            searchGlobalProducts, // Feature: Global Catalog
-            getCategories, // Feature: Smart Categories
+            importProducts,
+            searchGlobalProducts,
+            getCategories,
+            getDashboardStats, // Added
             updateProduct,
             toggleProductStatus,
             isLoaded

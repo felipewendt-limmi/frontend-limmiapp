@@ -39,10 +39,11 @@ Para imagens, busque uma URL pública de alta qualidade (ex: Unsplash ou similar
 Estrutura do Objeto (Schema):
 [
   {
-    "name": "Nome do Produto (Ex: Mel Puro)",
+    "name": "Nome do Produto",
     "category": "Categoria (Ex: Adoçantes)",
+    "price": 10.90,
     "description": "Descrição comercial atrativa de 2 linhas.",
-    "image": "URL_da_imagem.jpg",
+    "image": "https://images.unsplash.com/photo-example.jpg",
     "nutrition": [
       { "label": "Calorias", "value": "64 kcal" },
       { "label": "Carboidratos", "value": "17g" }
