@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import * as XLSX from 'xlsx';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
 import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, Download, Upload, Copy, Check } from 'lucide-react';
@@ -185,32 +186,30 @@ IMPORTANTE:
     const handleExportProducts = () => {
         if (!products.length) return;
 
-        // CSV Header
-        const headers = ["Nome do Produto", "URL do Produto"];
+        // Prepare data for Excel
+        const data = products.map(product => ({
+            "Nome do Produto": product.name,
+            "URL do Produto": `${window.location.origin}/${client.slug}/${product.slug}`,
+            "Preço": product.price || "Consulte"
+        }));
 
-        // CSV Rows
-        const rows = products.map(product => {
-            const url = `${window.location.origin}/${client.slug}/${product.slug}`;
-            // Escape quotes and wrap in quotes to handle commas in names
-            const safeName = `"${product.name.replace(/"/g, '""')}"`;
-            return [safeName, url].join(',');
-        });
+        // Create Worksheet
+        const ws = XLSX.utils.json_to_sheet(data);
 
-        // Combine with BOM for Excel UTF-8 compatibility
-        const csvContent = "\uFEFF" + [headers.join(','), ...rows].join('\n');
+        // Adjust Column Widths (Optional but good)
+        const wscols = [
+            { wch: 40 }, // Name
+            { wch: 60 }, // URL
+            { wch: 15 }  // Price
+        ];
+        ws['!cols'] = wscols;
 
-        // Create Blob and trigger download
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
+        // Create Workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Produtos");
 
-        link.setAttribute('href', url);
-        link.setAttribute('download', `${client.slug}_produtos.csv`);
-        link.style.visibility = 'hidden';
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Generate Excel File
+        XLSX.writeFile(wb, `${client.slug}_produtos.xlsx`);
     };
 
     useEffect(() => {

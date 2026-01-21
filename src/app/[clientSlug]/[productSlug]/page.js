@@ -74,7 +74,8 @@ export default function ProductDetail() {
                 if (found?.category) {
                     try {
                         const categories = await getClientCategories(clientFound.id);
-                        const cat = categories.find(c => c.name === found.category);
+                        // Robust comparison
+                        const cat = categories.find(c => c.name.toLowerCase().trim() === found.category.toLowerCase().trim());
                         if (cat) setCategoryEmoji(cat.emoji);
                     } catch (err) { console.error(err); }
                 }
@@ -111,7 +112,7 @@ export default function ProductDetail() {
                 ) : (
                     <div className={styles.headerContent}>
                         <div className={styles.storeIcon}>
-                            {categoryEmoji || '🌱'}
+                            {categoryEmoji || '📦'}
                         </div>
                         <h1 className={styles.storeName}>LIMMI Granel</h1>
                         <p className={styles.storeSubtitle}>Informações de Produtos a Granel</p>
@@ -127,7 +128,7 @@ export default function ProductDetail() {
                     <div className={styles.card}>
                         <div className={styles.productHeader}>
                             <div className={styles.productEmoji}>
-                                {product.emoji || categoryEmoji || '📦'}
+                                {categoryEmoji || product.emoji || '📦'}
                             </div>
                             <div style={{ flex: 1 }}>
                                 <h2 className={styles.productName}>{product.name}</h2>
