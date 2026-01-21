@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Trash2, ArrowLeft, Heart } from 'lucide-react';
 import styles from './page.module.css';
@@ -9,6 +9,8 @@ export default function FavoritesPage() {
     const params = useParams();
     const [favorites, setFavorites] = useState([]);
     const [mounted, setMounted] = useState(false);
+
+    const router = useRouter();
 
     useEffect(() => {
         setMounted(true);
@@ -38,9 +40,9 @@ export default function FavoritesPage() {
 
     return (
         <main className={styles.container}>
-            <Link href={`/${params.clientSlug}`} className={styles.backLink}>
-                <ArrowLeft size={18} /> Voltar para Loja
-            </Link>
+            <button onClick={() => router.back()} className={styles.backLink} style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}>
+                <ArrowLeft size={18} /> Voltar
+            </button>
 
             <header className={styles.header}>
                 <h1 className={styles.title}>Meus Favoritos</h1>
