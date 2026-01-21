@@ -123,7 +123,7 @@ IMPORTANTE:
             </header>
 
             <div className={styles.grid}>
-                {clients.map(client => (
+                {clients.filter(c => c.slug !== 'global-catalog').map(client => (
                     <div key={client.id} className={styles.card}>
                         <div className={styles.cardHeader}>
                             <div className={styles.iconWrapper}>
