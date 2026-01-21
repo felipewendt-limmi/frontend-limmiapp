@@ -111,13 +111,28 @@ export default function ProductDetail() {
                     <div className={styles.headerLoading} />
                 ) : (
                     <div className={styles.headerContent}>
+                        {/* System Logo - Left */}
+                        <div className={styles.logoWrapper}>
+                            <img src="/logo.jpg" alt="LIMMI" className={styles.systemLogo} />
+                        </div>
+
+                        {/* Category Emoji - Center */}
                         <div className={styles.storeIcon}>
                             {categoryEmoji || '📦'}
                         </div>
-                        <h1 className={styles.storeName}>LIMMI Granel</h1>
-                        <p className={styles.storeSubtitle}>Informações de Produtos a Granel</p>
+
+                        {/* Store Logo - Right */}
+                        <div className={styles.logoWrapper}>
+                            {client?.logo ? (
+                                <img src={client.logo} alt={client.name} className={styles.storeLogo} />
+                            ) : (
+                                <div className={styles.storeLogoPlaceholder} />
+                            )}
+                        </div>
                     </div>
                 )}
+                <h1 className={styles.storeName}>{client?.name || 'LIMMI Granel'}</h1>
+                <p className={styles.storeSubtitle}>Informações de Produtos a Granel</p>
             </header>
 
             {/* Floating White Card */}

@@ -23,6 +23,7 @@ export default function AdminClientDetail() {
     const [activeTab, setActiveTab] = useState('products'); // 'products' or 'settings'
     const [description, setDescription] = useState("");
     const [coverImages, setCoverImages] = useState([]); // Array for Uploader, but we use first one
+    const [storeLogo, setStoreLogo] = useState(""); // Store logo URL
     const [saving, setSaving] = useState(false);
 
     // Import Modal State
@@ -161,6 +162,7 @@ IMPORTANTE:
             if (found) {
                 setDescription(found.description || "");
                 setCoverImages(found.coverImage ? [found.coverImage] : []);
+                setStoreLogo(found.logo || "");
             }
         }
     }, [isLoaded, params, getClientBySlug]);
@@ -171,7 +173,8 @@ IMPORTANTE:
         try {
             await updateClient(client.id, {
                 description,
-                coverImage: coverImages[0] || "" // Sending the first image as the cover
+                coverImage: coverImages[0] || "",
+                logo: storeLogo
             });
             addToast("Configurações salvas com sucesso!", "success");
         } catch (error) {
@@ -462,6 +465,23 @@ IMPORTANTE:
                             placeholder="Conte um pouco sobre sua loja..."
                             style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}
                         />
+                    </div>
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' }}>Logo da Loja (URL)</label>
+                        <input
+                            type="text"
+                            value={storeLogo}
+                            onChange={(e) => setStoreLogo(e.target.value)}
+                            placeholder="https://... (aparece no canto direito do produto)"
+                            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', marginBottom: '0.5rem' }}
+                        />
+                        {storeLogo && (
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '2px solid #e2e8f0', background: '#f8fafc' }}>
+                                <img src={storeLogo} alt="Preview Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.target.style.display = 'none'} />
+                            </div>
+                        )}
+                        <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Esta logo aparece no topo da página do produto, ao lado do emoji da categoria.</p>
                     </div>
 
                     <div style={{ marginBottom: '1.5rem' }}>
