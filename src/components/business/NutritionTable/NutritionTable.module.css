@@ -4,7 +4,7 @@
 
 .header {
     display: none;
-    /* Hide internal header as we use external one */
+    /* Hide internal header */
 }
 
 .row {
@@ -19,14 +19,47 @@
     border-bottom: none;
 }
 
-/* Removed .row:nth-child(even) as per "style rows as simple items" */
-
 .label {
-    font-weight: 500;
     color: #64748b;
 }
 
 .value {
     font-weight: 600;
-    font-feature-settings: "tnum";
+    color: #334155;
+}
+
+.calculationRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.calcLabel {
+    font-weight: 600;
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+.calcInputGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calcInput {
+    width: 70px;
+    padding: 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.calcUnit {
+    font-size: 0.9rem;
+    color: #64748b;
 }
