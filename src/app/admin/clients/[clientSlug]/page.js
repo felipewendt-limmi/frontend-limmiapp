@@ -241,9 +241,11 @@ IMPORTANTE:
                         <span style={{ fontFamily: 'monospace', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>
                             /{client.slug}
                         </span>
-                        <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
-                            <ExternalLink size={16} />
-                        </a>
+                        {client.slug !== 'global-catalog' && (
+                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
+                                <ExternalLink size={16} />
+                            </a>
+                        )}
                         <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive}`}>
                             {client.isActive ? "Loja Ativa" : "Loja Inativa"}
                         </span>
@@ -251,13 +253,15 @@ IMPORTANTE:
                 </div>
 
                 <div className={styles.headerActions}>
-                    <Button
-                        variant={client.isActive ? "secondary" : "primary"}
-                        icon={Power}
-                        onClick={handleToggleStatus}
-                    >
-                        {client.isActive ? "Desativar Loja" : "Ativar Loja"}
-                    </Button>
+                    {client.slug !== 'global-catalog' && (
+                        <Button
+                            variant={client.isActive ? "secondary" : "primary"}
+                            icon={Power}
+                            onClick={handleToggleStatus}
+                        >
+                            {client.isActive ? "Desativar Loja" : "Ativar Loja"}
+                        </Button>
+                    )}
                 </div>
             </header>
 
@@ -335,20 +339,22 @@ IMPORTANTE:
                                         </div>
                                     </button>
 
-                                    <button
-                                        onClick={() => { setNewProductOptionModalOpen(false); setGlobalCatalogOpen(true); }}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '12px', background: 'white', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
-                                        onMouseEnter={e => e.currentTarget.style.borderColor = '#2563eb'}
-                                        onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                                    >
-                                        <div style={{ background: '#f5f3ff', padding: '10px', borderRadius: '50%' }}>
-                                            <Copy size={24} color="#7c3aed" />
-                                        </div>
-                                        <div>
-                                            <strong style={{ display: 'block', fontSize: '1rem', marginBottom: '4px' }}>Selecionar da Base Global</strong>
-                                            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Buscar e clonar de uma lista existente.</span>
-                                        </div>
-                                    </button>
+                                    {client.slug !== 'global-catalog' && (
+                                        <button
+                                            onClick={() => { setNewProductOptionModalOpen(false); setGlobalCatalogOpen(true); }}
+                                            style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '12px', background: 'white', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.borderColor = '#2563eb'}
+                                            onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
+                                        >
+                                            <div style={{ background: '#f5f3ff', padding: '10px', borderRadius: '50%' }}>
+                                                <Copy size={24} color="#7c3aed" />
+                                            </div>
+                                            <div>
+                                                <strong style={{ display: 'block', fontSize: '1rem', marginBottom: '4px' }}>Selecionar da Base Global</strong>
+                                                <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Buscar e clonar de uma lista existente.</span>
+                                            </div>
+                                        </button>
+                                    )}
                                 </div>
 
                                 <div style={{ marginTop: '2rem' }}>
