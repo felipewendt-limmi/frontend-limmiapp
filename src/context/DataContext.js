@@ -229,6 +229,37 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    // --- Category Management ---
+    const getClientCategories = async (clientId) => {
+        try {
+            const res = await api.get(`/clients/${clientId}/categories`);
+            return res.data;
+        } catch (error) {
+            console.error("Error fetching client categories:", error);
+            throw error;
+        }
+    };
+
+    const updateCategory = async (id, data) => {
+        try {
+            const res = await api.put(`/categories/${id}`, data);
+            return res.data;
+        } catch (error) {
+            console.error("Error updating category:", error);
+            throw error;
+        }
+    };
+
+    const syncCategories = async (clientId) => {
+        try {
+            const res = await api.post(`/clients/${clientId}/categories/sync`);
+            return res.data;
+        } catch (error) {
+            console.error("Error syncing categories:", error);
+            throw error;
+        }
+    };
+
     return (
         <DataContext.Provider value={{
             clients,
@@ -247,6 +278,9 @@ export const DataProvider = ({ children }) => {
             getDashboardStats,
             updateProduct,
             toggleProductStatus,
+            getClientCategories, // New
+            updateCategory,      // New
+            syncCategories,      // New
             isLoaded
         }}>
             {children}

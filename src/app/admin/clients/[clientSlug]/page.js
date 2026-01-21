@@ -112,7 +112,8 @@ Estrutura do Objeto (Schema):
     "category": "Categoria (Ex: Adoçantes)",
     "price": 10.90,
     "description": "Descrição comercial atrativa de 2 linhas.",
-    "image": "https://images.unsplash.com/photo-example.jpg",
+    "emoji": "🥜",
+    "image": "",
     "nutrition": [
       { "label": "Calorias", "value": "64 kcal" },
       { "label": "Carboidratos", "value": "17g" }
@@ -377,6 +378,14 @@ Converta os dados abaixo seguindo estritamente essa estrutura:`;
                                     <div className={styles.productActions}>
                                         <button
                                             className={styles.iconButton}
+                                            onClick={() => router.push(`/admin/clients/${client.slug}/products/${product.id}`)}
+                                            title="Editar Produto"
+                                            style={{ marginRight: '8px' }}
+                                        >
+                                            <Edit2 size={18} color="#64748b" />
+                                        </button>
+                                        <button
+                                            className={styles.iconButton}
                                             onClick={() => toggleProductStatus(product.id)}
                                             title={product.isActive ? "Desativar" : "Ativar"}
                                         >
@@ -420,6 +429,22 @@ Converta os dados abaixo seguindo estritamente essa estrutura:`;
                             </div>
                         )}
                         <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Cole o link direto da imagem que deseja usar como capa da loja.</p>
+                    </div>
+
+                    <div style={{ marginBottom: '2rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: '#1e293b' }}>Personalização Avançada</h3>
+                        <Button
+                            variant="secondary"
+                            onClick={() => router.push(`/admin/clients/${client.slug}/categories`)}
+                            fullWidth
+                            style={{ justifyContent: 'space-between' }}
+                        >
+                            <span>Gerenciar Emojis das Categorias</span>
+                            <span style={{ fontSize: '1.2rem' }}>🏷️</span>
+                        </Button>
+                        <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>
+                            Defina os emojis que aparecerão no cabeçalho dos produtos de cada categoria.
+                        </p>
                     </div>
 
                     <Button onClick={handleSaveSettings} disabled={saving} icon={Save}>

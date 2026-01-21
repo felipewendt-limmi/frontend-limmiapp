@@ -10,14 +10,15 @@ import TagInput from '@/components/ui/Form/TagInput';
 import RepeaterField from '@/components/ui/Form/RepeaterField';
 import ImageUploader from '@/components/ui/ImageUploader/ImageUploader';
 import CreatableSelect from '@/components/ui/CreatableSelect/CreatableSelect';
-import styles from './page.module.css';
+import styles from '../new/page.module.css'; // Reuse styles from New Product
 
-export default function NewProductPage() {
+export default function EditProductPage() {
     const params = useParams();
     const router = useRouter();
-    const { getClientBySlug, addProduct, isLoaded, getCategories } = useData();
+    const { getClientBySlug, updateProduct, isLoaded, getCategories } = useData();
     const { addToast } = useToast();
     const [client, setClient] = useState(null);
+    const [originalProduct, setOriginalProduct] = useState(null);
 
     // Form State
     const [name, setName] = useState("");
@@ -40,21 +41,45 @@ export default function NewProductPage() {
     const [categoryOptions, setCategoryOptions] = useState([]);
 
     useEffect(() => {
-        // Load Categories
         getCategories().then(setCategoryOptions);
     }, [getCategories]);
 
     useEffect(() => {
-        if (isLoaded && params?.clientSlug) {
-            const found = getClientBySlug(params.clientSlug);
-            setClient(found);
+        if (isLoaded && params?.clientSlug && params?.productId) {
+            const foundClient = getClientBySlug(params.clientSlug);
+            setClient(foundClient);
+
+            if (foundClient) {
+                const product = foundClient.products?.find(p => p.id === params.productId);
+                if (product) {
+                    setOriginalProduct(product);
+                    // Fill Form
+                    setName(product.name || "");
+                    setSlug(product.slug || "");
+                    setPrice(product.price || "");
+                    setUnit(product.unit || "un");
+                    setCategory(product.category || "");
+                    setEmoji(product.emoji || "");
+                    setDescription(product.description || "");
+                    setNutrition(product.nutrition || []);
+                    setBenefits(product.benefits || []);
+                    setTags(product.tags || []);
+                    setTips(product.tips || []);
+                    setHelpsWith(product.helpsWith || []);
+                    setImages(product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []));
+                } else {
+                    addToast("Produto não encontrado.", "error");
+                    router.push(`/admin/clients/${params.clientSlug}`);
+                }
+            }
         }
-    }, [isLoaded, params, getClientBySlug]);
+    }, [isLoaded, params, getClientBySlug, router, addToast]);
 
     const handleNameChange = (e) => {
-        const val = e.target.value;
-        setName(val);
-        setSlug(val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+        setName(e.target.value);
+        // Only auto-update slug if it matches the simplified name (fresh entry behavior), 
+        // but for edit, we usually keep the existing slug unless manually changed to avoid breaking SEO links.
+        // So we won't auto-update slug here.
     };
 
     const handleSubmit = async (e) => {
@@ -65,8 +90,7 @@ export default function NewProductPage() {
             return;
         }
 
-        const newProduct = {
-            clientId: client.id,
+        const updatedData = {
             name,
             slug,
             price,
@@ -81,21 +105,20 @@ export default function NewProductPage() {
             helpsWith,
             images,
             image: images.length > 0 ? images[0] : "",
-            isActive: true
         };
 
         try {
-            await addProduct(client.id, newProduct);
-            addToast("Produto criado com sucesso!", "success");
+            await updateProduct(originalProduct.id, updatedData);
+            addToast("Produto atualizado com sucesso!", "success");
             router.push(`/admin/clients/${params.clientSlug}`);
         } catch (error) {
-            console.error("Error creating product:", error);
-            addToast(`Erro: ${error.response?.data?.error || "Falha ao criar"}`, "error");
+            console.error("Error updating product:", error);
+            addToast(`Erro: ${error.response?.data?.error || "Falha ao atualizar"}`, "error");
         }
     };
 
     if (!isLoaded) return <div>Carregando...</div>;
-    if (!client) return <div>Cliente não encontrado.</div>;
+    if (!client || !originalProduct) return <div>Carregando produto...</div>;
 
     return (
         <div className={styles.container}>
@@ -103,7 +126,7 @@ export default function NewProductPage() {
                 <Link href={`/admin/clients/${params.clientSlug}`} className={styles.backLink}>
                     <ArrowLeft size={16} /> Voltar
                 </Link>
-                <h1 className={styles.title}>Novo Produto</h1>
+                <h1 className={styles.title}>Editar Produto</h1>
             </div>
 
             <form onSubmit={handleSubmit} className={styles.formGrid}>
@@ -225,7 +248,7 @@ export default function NewProductPage() {
 
             <div className={styles.footerActions}>
                 <Button onClick={handleSubmit} icon={Save} style={{ width: '200px' }}>
-                    Salvar Produto
+                    Salvar Alterações
                 </Button>
             </div>
         </div>
