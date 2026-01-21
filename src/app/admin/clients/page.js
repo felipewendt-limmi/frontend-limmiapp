@@ -111,7 +111,7 @@ IMPORTANTE:
                     <h1 className={styles.title}>Gestão de Clientes</h1>
                     <p style={{ color: '#64748b' }}>Gerencie as lojas cadastradas na plataforma.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className={styles.headerActions}>
                     <Button variant="secondary" onClick={() => setIsBulkModalOpen(true)}>
                         Importar Clientes (JSON)
                     </Button>
