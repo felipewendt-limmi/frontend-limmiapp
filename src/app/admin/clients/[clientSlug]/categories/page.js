@@ -1,38 +1,41 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
-import { useToast } from '@/components/ui/Toast/ToastProvider';
-import { RefreshCw, Save } from 'lucide-react';
 import Button from '@/components/ui/Button/Button';
+import { ArrowLeft, Save, RefreshCw, Smartphone } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast/ToastProvider';
+import styles from './page.module.css';
 
-export default function CategoriesPage() {
+export default function CategoryManagement() {
     const params = useParams();
-    const { getClientCategories, updateCategory, syncCategories } = useData();
+    const router = useRouter();
+    const { getClientBySlug, getClientCategories, updateCategory, syncCategories, isLoaded } = useData();
     const { addToast } = useToast();
+
+    const [client, setClient] = useState(null);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
-    const [saving, setSaving] = useState(null); // ID of category being saved
 
     useEffect(() => {
-        loadCategories();
-    }, [params.clientSlug]); // Assuming we can get clientId from context or need to look it up
+        if (isLoaded && params?.clientSlug) {
+            const found = getClientBySlug(params.clientSlug);
+            setClient(found);
+            if (found) {
+                fetchCategories(found.id);
+            }
+        }
+    }, [isLoaded, params, getClientBySlug]);
 
-    // Wait... params.clientSlug is a SLUG. We need the ID.
-    // The layout usually provides the Client context or we fetch it.
-    // Let's use useData to find the client.
-    const { getClientBySlug } = useData();
-    const client = getClientBySlug(params.clientSlug);
-
-    const loadCategories = async () => {
-        if (!client) return;
-        setLoading(true);
+    const fetchCategories = async (clientId) => {
         try {
-            const data = await getClientCategories(client.id);
+            setLoading(true);
+            const data = await getClientCategories(clientId);
             setCategories(data);
         } catch (error) {
-            addToast('Erro ao carregar categorias', 'error');
+            console.error(error);
+            addToast("Erro ao carregar categorias.", "error");
         } finally {
             setLoading(false);
         }
@@ -43,109 +46,98 @@ export default function CategoriesPage() {
         setSyncing(true);
         try {
             const res = await syncCategories(client.id);
-            addToast(`Sincronização completa! ${res.created} novas categorias.`, 'success');
-            loadCategories();
+            addToast(`Sincronização concluída! ${res.created} categorias criadas.`, "success");
+            fetchCategories(client.id);
         } catch (error) {
-            addToast('Erro ao sincronizar', 'error');
+            addToast("Erro ao sincronizar categorias.", "error");
         } finally {
             setSyncing(false);
         }
     };
 
-    const handleEmojiChange = (id, newEmoji) => {
-        setCategories(prev => prev.map(c => c.id === id ? { ...c, emoji: newEmoji } : c));
+    const handleEmojiChange = (id, emoji) => {
+        setCategories(prev => prev.map(c => c.id === id ? { ...c, emoji } : c));
     };
 
     const handleSave = async (category) => {
-        setSaving(category.id);
         try {
             await updateCategory(category.id, { emoji: category.emoji });
-            addToast('Categoria atualizada!', 'success');
+            addToast("Emoji atualizado!", "success");
         } catch (error) {
-            addToast('Erro ao salvar', 'error');
-        } finally {
-            setSaving(null);
+            addToast("Erro ao salvar emoji.", "error");
         }
     };
 
-    // If client is not loaded yet
-    if (!client) return <div style={{ padding: '2rem' }}>Carregando cliente...</div>;
+    if (!isLoaded || !client) return <div className={styles.loading}>Carregando...</div>;
 
     return (
-        <div style={{ padding: '2rem', maxWidth: '800px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <div>
-                    <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1e293b' }}>Categorias & Emojis</h1>
-                    <p style={{ color: '#64748b' }}>Defina os ícones que aparecerão no topo da loja.</p>
-                </div>
-                <Button variant="secondary" onClick={handleSync} disabled={syncing} icon={RefreshCw}>
-                    {syncing ? 'Sincronizando...' : 'Sincronizar dos Produtos'}
-                </Button>
+        <div className={styles.container}>
+            <div className={styles.topBar}>
+                <Link href={`/admin/clients/${client.slug}`} className={styles.backLink}>
+                    <ArrowLeft size={16} /> Voltar para Loja
+                </Link>
             </div>
 
-            {loading ? (
-                <p>Carregando...</p>
-            ) : categories.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '3rem', background: '#f8fafc', borderRadius: '12px' }}>
-                    <p>Nenhuma categoria encontrada. Clique em Sincronizar para buscar dos produtos cadastrados.</p>
+            <header className={styles.header}>
+                <div>
+                    <h1 className={styles.title}>Categorias: {client.name}</h1>
+                    <p className={styles.subtitle}>Gerencie os emojis e a ordem das categorias.</p>
                 </div>
-            ) : (
-                <div style={{ display: 'grid', gap: '1rem' }}>
-                    {categories.map(cat => (
-                        <div key={cat.id} style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            background: 'white',
-                            padding: '1rem',
-                            borderRadius: '8px',
-                            border: '1px solid #e2e8f0',
-                            justifyContent: 'space-between'
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <div style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    background: '#f1f5f9',
-                                    borderRadius: '8px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '1.5rem'
-                                }}>
-                                    {cat.emoji || '❓'}
-                                </div>
-                                <span style={{ fontWeight: '600', fontSize: '1.1rem' }}>{cat.name}</span>
-                            </div>
+                <Button onClick={handleSync} disabled={syncing} variant="secondary" icon={RefreshCw}>
+                    {syncing ? "Sincronizando..." : "Sincronizar com Produtos"}
+                </Button>
+            </header>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className={styles.grid}>
+                {categories.map(cat => (
+                    <div key={cat.id} className={styles.card}>
+                        <div className={styles.cardHeader}>
+                            <h3 className={styles.catName}>{cat.name}</h3>
+                            <span className={styles.badge}>{cat.productsCount || 0} produtos</span>
+                        </div>
+
+                        <div className={styles.inputGroup}>
+                            <label>Emoji</label>
+                            <div className={styles.inputWrapper}>
                                 <input
                                     type="text"
                                     value={cat.emoji || ''}
-                                    onChange={(e) => handleEmojiChange(cat.id, e.target.value)}
-                                    placeholder="Emoji"
-                                    maxLength={2}
-                                    style={{
-                                        width: '60px',
-                                        padding: '0.5rem',
-                                        textAlign: 'center',
-                                        fontSize: '1.2rem',
-                                        borderRadius: '6px',
-                                        border: '1px solid #cbd5e1'
-                                    }}
+                                    onChange={e => handleEmojiChange(cat.id, e.target.value)}
+                                    placeholder="Ex: 🍎"
+                                    className={styles.input}
                                 />
                                 <Button
                                     size="sm"
                                     onClick={() => handleSave(cat)}
-                                    disabled={saving === cat.id}
                                     icon={Save}
                                 >
-                                    {saving === cat.id ? '...' : 'Salvar'}
+                                    Salvar
                                 </Button>
                             </div>
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ))}
+
+                {categories.length === 0 && !loading && (
+                    <div className={styles.empty}>
+                        Nenhuma categoria encontrada. Clique em "Sincronizar" para buscar dos produtos cadastrados.
+                    </div>
+                )}
+            </div>
         </div>
+    );
+}
+
+// Helper Link component since next/link is constrained in imports sometimes
+function Link({ href, children, className }) {
+    const router = useRouter();
+    return (
+        <a
+            href={href}
+            onClick={(e) => { e.preventDefault(); router.push(href); }}
+            className={className}
+        >
+            {children}
+        </a>
     );
 }

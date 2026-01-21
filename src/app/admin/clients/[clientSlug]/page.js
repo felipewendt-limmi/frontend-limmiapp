@@ -280,23 +280,44 @@ IMPORTANTE:
                 >
                     Produtos
                 </button>
-                <button
-                    onClick={() => setActiveTab('settings')}
-                    style={{
-                        padding: '1rem',
-                        borderBottom: activeTab === 'settings' ? '2px solid #2563eb' : 'none',
-                        color: activeTab === 'settings' ? '#2563eb' : '#64748b',
-                        fontWeight: '600',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px'
-                    }}
-                >
-                    <Settings size={18} /> Configurações da Loja
-                </button>
+
+                {client.slug !== 'global-catalog' ? (
+                    <button
+                        onClick={() => setActiveTab('settings')}
+                        style={{
+                            padding: '1rem',
+                            borderBottom: activeTab === 'settings' ? '2px solid #2563eb' : 'none',
+                            color: activeTab === 'settings' ? '#2563eb' : '#64748b',
+                            fontWeight: '600',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
+                    >
+                        <Settings size={18} /> Configurações da Loja
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => router.push(`/admin/clients/${client.slug}/categories`)}
+                        style={{
+                            padding: '1rem',
+                            borderBottom: 'none',
+                            color: '#64748b',
+                            fontWeight: '600',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
+                    >
+                        <span style={{ fontSize: '1.2rem' }}>🏷️</span> Gerenciar Categorias &rarr;
+                    </button>
+                )}
             </div>
 
             {activeTab === 'products' ? (
