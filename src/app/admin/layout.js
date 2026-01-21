@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, LogOut, Store } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, Store, Globe } from 'lucide-react';
 import styles from './layout.module.css';
 import { clsx } from 'clsx';
 
@@ -53,9 +53,9 @@ export default function AdminLayout({ children }) {
                         </Link>
                     </div>
 
-                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div className={styles.divider}>
                         <Link href="/admin/clients/global-catalog" className={clsx(styles.navItem, isActive('/admin/clients/global-catalog') && styles.active)}>
-                            <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>🌍</span> Produtos do Sistema
+                            <Globe size={20} /> Produtos do Sistema
                         </Link>
                     </div>
                 </nav>
