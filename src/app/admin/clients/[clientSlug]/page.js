@@ -218,7 +218,18 @@ IMPORTANTE:
         }
     }, [client, getProductsByClientId]); // Sync local state with context products
 
-    if (!isLoaded || !client) return <div className={styles.loading}>Carregando...</div>;
+    if (!isLoaded) return <div className={styles.loading}>Carregando dados...</div>;
+    if (!client) return (
+        <div className={styles.container}>
+            <div className={styles.loading}>
+                <h2>Loja não encontrada</h2>
+                <p>Não foi possível localizar o cliente "{params.clientSlug}".</p>
+                <Link href="/admin/clients">
+                    <Button variant="secondary" icon={ArrowLeft}>Voltar</Button>
+                </Link>
+            </div>
+        </div>
+    );
 
     const handleToggleStatus = () => {
         toggleClientStatus(client.id);
@@ -323,15 +334,16 @@ IMPORTANTE:
                 <section className={styles.section}>
                     <div className={styles.sectionHeader}>
                         <h2>Produtos ({products.length})</h2>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {/* Wrapped in flexWrap for mobile safety */}
                             <Button variant="secondary" icon={Download} onClick={handleExportProducts}>
-                                Exportar Excel
+                                Exportar
                             </Button>
                             <Button variant="secondary" icon={Upload} onClick={() => setImportModalOpen(true)}>
-                                Importar JSON
+                                Importar
                             </Button>
                             <Button icon={Plus} onClick={() => setNewProductOptionModalOpen(true)}>
-                                Novo Produto
+                                Novo
                             </Button>
                         </div>
                     </div>
@@ -424,7 +436,18 @@ IMPORTANTE:
                         </div>
                     ) : (
                         <div className={styles.emptyState}>
-                            <p>Nenhum produto cadastrado nesta loja.</p>
+                            <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
+                                <div style={{ display: 'inline-flex', padding: '1.5rem', background: '#f1f5f9', borderRadius: '50%', marginBottom: '1rem' }}>
+                                    <Package size={48} color="#94a3b8" />
+                                </div>
+                                <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '0.5rem' }}>Nenhum produto encontrado</h3>
+                                <p style={{ maxWidth: '300px', margin: '0 auto 1.5rem auto' }}>
+                                    Esta loja ainda não possui produtos. Comece adicionando ou importando itens.
+                                </p>
+                                <Button icon={Plus} onClick={() => setNewProductOptionModalOpen(true)}>
+                                    Adicionar Primeiro Produto
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </section>

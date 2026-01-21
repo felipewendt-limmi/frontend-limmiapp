@@ -55,7 +55,7 @@ export default function AdminLayout({ children }) {
 
                     <div className={styles.divider}>
                         <Link href="/admin/clients/global-catalog" className={clsx(styles.navItem, isActive('/admin/clients/global-catalog') && styles.active)}>
-                            <Globe size={20} /> Produtos do Sistema
+                            <Globe size={20} /> Produtos/Categorias Globais
                         </Link>
                     </div>
                 </nav>
