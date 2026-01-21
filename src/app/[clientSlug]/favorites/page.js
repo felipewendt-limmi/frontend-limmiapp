@@ -51,10 +51,7 @@ export default function FavoritesPage() {
                 <div className={styles.emptyState}>
                     <Heart size={64} className={styles.emptyIcon} />
                     <h3>Você ainda não tem favoritos</h3>
-                    <p>Explore a loja e clique no coração para salvar produtos aqui.</p>
-                    <Link href={`/${params.clientSlug}`} className={styles.backHomeButton}>
-                        Explorar Produtos
-                    </Link>
+                    <p className={styles.emptyText}>Você ainda não marcou nenhum produto como favorito.</p>
                 </div>
             ) : (
                 <div className={styles.grid}>
