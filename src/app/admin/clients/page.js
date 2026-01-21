@@ -40,7 +40,6 @@ Estrutura Obrigatória (Schema JSON):
         "name": "Nome do Produto",
         "category": "Granel",
         "price": 29.90,
-        "image": "https://images.unsplash.com/photo-example",
         "description": "Descrição detalhada e atrativa do produto...",
         "benefits": ["Benefício 1", "Benefício 2", "Benefício 3"],
         "helpsWith": ["Ansiedade", "Imunidade"],

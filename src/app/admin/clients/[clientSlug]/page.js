@@ -104,7 +104,6 @@ export default function AdminClientDetail() {
 Regras Obrigatórias:
 A saída deve ser APENAS um Array de objetos JSON.
 Se não tiver informação para um campo, deixe o array vazio [] ou string vazia "".
-Para imagens, busque uma URL pública de alta qualidade (ex: Unsplash ou similar) ou deixe vazio se não encontrar.
 Estrutura do Objeto (Schema):
 [
   {
@@ -112,8 +111,6 @@ Estrutura do Objeto (Schema):
     "category": "Categoria (Ex: Adoçantes)",
     "price": 10.90,
     "description": "Descrição comercial atrativa de 2 linhas.",
-    "emoji": "🥜",
-    "image": "",
     "nutrition": [
       { "label": "Calorias", "value": "64 kcal" },
       { "label": "Carboidratos", "value": "17g" }
