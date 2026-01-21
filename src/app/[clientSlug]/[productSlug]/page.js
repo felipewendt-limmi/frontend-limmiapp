@@ -131,7 +131,7 @@ export default function ProductDetail() {
                         </div>
                     </div>
                 )}
-                <h1 className={styles.storeName}>{client?.name || 'LIMMI Granel'}</h1>
+                <h1 className={styles.storeName}>LIMMI Granel</h1>
                 <p className={styles.storeSubtitle}>Informações de Produtos a Granel</p>
             </header>
 
