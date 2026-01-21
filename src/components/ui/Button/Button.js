@@ -9,6 +9,7 @@ export default function Button({
     className,
     isLoading,
     icon: Icon,
+    fullWidth,
     ...props
 }) {
     return (
