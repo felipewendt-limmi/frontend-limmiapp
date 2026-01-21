@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { ArrowLeft, Save, RefreshCw, Smartphone } from 'lucide-react';
+import { ArrowLeft, Save, Smartphone } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 import styles from './page.module.css';
 
@@ -16,7 +16,6 @@ export default function CategoryManagement() {
     const [client, setClient] = useState(null);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
         if (isLoaded && params?.clientSlug) {
@@ -38,20 +37,6 @@ export default function CategoryManagement() {
             addToast("Erro ao carregar categorias.", "error");
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleSync = async () => {
-        if (!client) return;
-        setSyncing(true);
-        try {
-            const res = await syncCategories(client.id);
-            addToast(`Sincronização concluída! ${res.created} categorias criadas.`, "success");
-            fetchCategories(client.id);
-        } catch (error) {
-            addToast("Erro ao sincronizar categorias.", "error");
-        } finally {
-            setSyncing(false);
         }
     };
 
@@ -83,9 +68,6 @@ export default function CategoryManagement() {
                     <h1 className={styles.title}>Categorias: {client.name}</h1>
                     <p className={styles.subtitle}>Gerencie os emojis e a ordem das categorias.</p>
                 </div>
-                <Button onClick={handleSync} disabled={syncing} variant="secondary" icon={RefreshCw}>
-                    {syncing ? "Sincronizando..." : "Sincronizar com Produtos"}
-                </Button>
             </header>
 
             <div className={styles.grid}>
@@ -120,7 +102,7 @@ export default function CategoryManagement() {
 
                 {categories.length === 0 && !loading && (
                     <div className={styles.empty}>
-                        Nenhuma categoria encontrada. Clique em "Sincronizar" para buscar dos produtos cadastrados.
+                        Nenhuma categoria encontrada. As categorias são criadas automaticamente ao importar produtos.
                     </div>
                 )}
             </div>
