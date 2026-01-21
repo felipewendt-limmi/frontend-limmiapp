@@ -10,7 +10,7 @@ import TagInput from '@/components/ui/Form/TagInput';
 import RepeaterField from '@/components/ui/Form/RepeaterField';
 import ImageUploader from '@/components/ui/ImageUploader/ImageUploader';
 import CreatableSelect from '@/components/ui/CreatableSelect/CreatableSelect'; // Feature: Smart Categories
-import { Search } from 'lucide-react'; // Feature: Global Search
+import { Search } from 'lucide-react'; // Feature: Global Search (Removed)
 import styles from './page.module.css';
 
 export default function NewProductPage() {
@@ -36,62 +36,13 @@ export default function NewProductPage() {
     const [helpsWith, setHelpsWith] = useState([]);
     const [images, setImages] = useState([]);
 
-    // Global Search State
-    const [globalQuery, setGlobalQuery] = useState("");
-    const [globalResults, setGlobalResults] = useState([]);
-    const [showGlobalResults, setShowGlobalResults] = useState(false);
-
     // Categories State
     const [categoryOptions, setCategoryOptions] = useState([]);
-
-    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-    const autoFocus = searchParams?.get('autoFocusSearch');
 
     useEffect(() => {
         // Load Categories
         getCategories().then(setCategoryOptions);
-
-        // Auto focus search if requested
-        if (autoFocus && typeof document !== 'undefined') {
-            const input = document.getElementById('global-search-input');
-            if (input) input.focus();
-        }
-    }, [getCategories, autoFocus]);
-
-    const handleGlobalSearch = async (e) => {
-        const val = e.target.value;
-        setGlobalQuery(val);
-        if (val.length > 2) {
-            const results = await searchGlobalProducts(val);
-            setGlobalResults(results);
-            setShowGlobalResults(true);
-        } else {
-            setGlobalResults([]);
-            setShowGlobalResults(false);
-        }
-    };
-
-    const handleSelectGlobalProduct = (product) => {
-        setName(product.name);
-        // Auto-generate slug from name if empty, or use existing? 
-        // Better generate new slug to avoid conflicts if needed, or let user edit.
-        setSlug(product.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
-        setPrice(product.price);
-        setCategory(product.category);
-        setDescription(product.description || "");
-        setNutrition(product.nutrition || []);
-        setBenefits(product.benefits || []);
-        setTags(product.tags || []);
-        setHelpsWith(product.helpsWith || []);
-        // Handle Image: If url string
-        if (product.image && typeof product.image === 'string') {
-            setImages([product.image]);
-        }
-
-        setShowGlobalResults(false);
-        setGlobalQuery("");
-        addToast("Dados importados! Revise e salve.", "success");
-    };
+    }, [getCategories]);
 
     useEffect(() => {
         if (isLoaded && params?.clientSlug) {
@@ -155,46 +106,6 @@ export default function NewProductPage() {
                     <ArrowLeft size={16} /> Voltar
                 </Link>
                 <h1 className={styles.title}>Novo Produto</h1>
-            </div>
-
-            <div style={{ marginBottom: '2rem', position: 'relative' }}>
-                <div style={{ display: 'flex', alignItems: 'center', background: 'white', padding: '1rem', borderRadius: '12px', border: '2px dashed #cbd5e1' }}>
-                    <Search size={20} color="#64748b" style={{ marginRight: '1rem' }} />
-                    <input
-                        id="global-search-input"
-                        type="text"
-                        placeholder="🔍 Pesquisar no Catálogo Global para clonar (Digite 'Mel'...)"
-                        value={globalQuery}
-                        onChange={handleGlobalSearch}
-                        style={{ flex: 1, border: 'none', outline: 'none', fontSize: '1rem' }}
-                    />
-                </div>
-                {showGlobalResults && globalResults.length > 0 && (
-                    <div style={{
-                        position: 'absolute', top: '100%', left: 0, right: 0,
-                        background: 'white', zIndex: 50,
-                        borderRadius: '0 0 12px 12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                        maxHeight: '300px', overflowY: 'auto'
-                    }}>
-                        {globalResults.map((p, idx) => (
-                            <div
-                                key={idx}
-                                onClick={() => handleSelectGlobalProduct(p)}
-                                style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1rem' }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
-                            >
-                                <div style={{ width: '40px', height: '40px', borderRadius: '4px', background: '#eee', overflow: 'hidden' }}>
-                                    {p.image && <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                                </div>
-                                <div>
-                                    <div style={{ fontWeight: 'bold', color: '#334155' }}>{p.name}</div>
-                                    <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{p.category} • {p.price}</div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
 
             <form onSubmit={handleSubmit} className={styles.formGrid}>
