@@ -52,7 +52,6 @@ Estrutura Obrigatória (Schema JSON):
     ]
   }
 ]
-Gere 3 lojas, cada uma com 5 produtos variados.
 IMPORTANTE:
 - "tags" deve ser usado para sugerir combinações (ex: "Combina bem com Iogurte").
 - "benefits" são os benefícios principais.

@@ -120,6 +120,30 @@
     }
 }
 
+/* Mobile Specific Styles (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+    }
+
+    .sidebarOpen {
+        transform: translateX(0);
+    }
+
+    .mobileHeader {
+        display: flex;
+    }
+
+    .main {
+        margin-left: 0;
+        padding-top: 4rem;
+        /* Space for mobile header */
+        padding: 1rem;
+        padding-top: 5rem;
+    }
+}
+
 /* Desktop Styles */
 @media (min-width: 1024px) {
     .container {

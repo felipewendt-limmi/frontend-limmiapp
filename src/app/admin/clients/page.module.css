@@ -152,3 +152,33 @@
     gap: 1rem;
     margin-top: 2rem;
 }
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .header>div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Target the button container specifically if needed, likely the second div in header */
+    .header>div:last-child {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .header>div:last-child>button {
+        width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
