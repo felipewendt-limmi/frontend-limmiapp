@@ -222,17 +222,51 @@ IMPORTANTE:
     }, [client, getProductsByClientId]); // Sync local state with context products
 
     if (!isLoaded) return <div className={styles.loading}>Carregando dados...</div>;
-    if (!client) return (
-        <div className={styles.container}>
-            <div className={styles.loading}>
-                <h2>Loja não encontrada</h2>
-                <p>Não foi possível localizar o cliente "{params.clientSlug}".</p>
-                <Link href="/admin/clients">
-                    <Button variant="secondary" icon={ArrowLeft}>Voltar</Button>
-                </Link>
+    if (!client) {
+        // Special handling for Global Catalog
+        if (params.clientSlug === 'global-catalog') {
+            return (
+                <div className={styles.container}>
+                    <div className={styles.topBar}>
+                        <Link href="/admin/clients" className={styles.backLink}>
+                            <ArrowLeft size={16} /> Voltar para Clientes
+                        </Link>
+                    </div>
+                    <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'white', borderRadius: '16px', maxWidth: '500px', margin: '2rem auto' }}>
+                        <div style={{ display: 'inline-flex', padding: '1.5rem', background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)', borderRadius: '50%', marginBottom: '1.5rem' }}>
+                            <Package size={48} color="white" />
+                        </div>
+                        <h2 style={{ fontSize: '1.5rem', color: '#1e293b', marginBottom: '0.75rem' }}>Catálogo Global Vazio</h2>
+                        <p style={{ color: '#64748b', marginBottom: '1.5rem', maxWidth: '350px', margin: '0 auto 1.5rem' }}>
+                            O catálogo global ainda não possui produtos cadastrados.
+                            Importe ou crie produtos para começar a montar sua base.
+                        </p>
+                        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <Button variant="secondary" icon={Upload} onClick={() => setImportModalOpen(true)}>
+                                Importar JSON
+                            </Button>
+                            <Button icon={Plus} onClick={() => router.push('/admin/clients/global-catalog/products/new')}>
+                                Criar Produto
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className={styles.container}>
+                <div className={styles.loading}>
+                    <h2>Loja não encontrada</h2>
+                    <p>Não foi possível localizar o cliente "{params.clientSlug}".</p>
+                    <Link href="/admin/clients">
+                        <Button variant="secondary" icon={ArrowLeft}>Voltar</Button>
+                    </Link>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+
 
     const handleToggleStatus = () => {
         toggleClientStatus(client.id);
