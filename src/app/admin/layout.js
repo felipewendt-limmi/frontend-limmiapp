@@ -52,12 +52,18 @@ export default function AdminLayout({ children }) {
                             <Store size={20} /> Ver Site
                         </Link>
                     </div>
+
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                        <Link href="/admin/clients/global-catalog" className={clsx(styles.navItem, isActive('/admin/clients/global-catalog') && styles.active)}>
+                            <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>🌍</span> Produtos do Sistema
+                        </Link>
+                    </div>
                 </nav>
             </aside>
 
             <main className={styles.main}>
                 {children}
             </main>
-        </div>
+        </div >
     );
 }

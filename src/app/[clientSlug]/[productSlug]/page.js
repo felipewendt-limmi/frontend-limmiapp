@@ -11,6 +11,27 @@ export default function ProductDetail() {
     const [product, setProduct] = useState(null);
     const [client, setClient] = useState(null);
     const [categoryEmoji, setCategoryEmoji] = useState(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted || !isLoaded || !params?.clientSlug || !params?.productSlug) return;
+
+        const loadData = async () => {
+            // ... logic ...
+            const clientFound = getClientBySlug(params.clientSlug);
+            // ...
+        }
+        // ...
+    }, [mounted, isLoaded, params, getClientBySlug, getClientCategories]);
+
+    // Prevent hydration mismatch or server render issues
+    if (!mounted) return null;
+
+    // ...
 
     // ...
 
