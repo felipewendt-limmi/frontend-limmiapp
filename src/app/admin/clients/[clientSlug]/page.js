@@ -123,7 +123,11 @@ Estrutura do Objeto (Schema):
     "helpsWith": ["Energia", "Imunidade"]
   }
 ]
-Converta os dados abaixo seguindo estritamente essa estrutura:`;
+Converta os dados abaixo seguindo estritamente essa estrutura.
+IMPORTANTE:
+- "tags" deve ser usado para sugerir combinações (ex: "Combina bem com Iogurte").
+- "benefits" são os benefícios principais.
+- "helpsWith" é para o que o produto ajuda (ex: "Pode ajudar com imunidade").`;
 
     const handleCopyPrompt = () => {
         navigator.clipboard.writeText(PROMPT_TEXT);

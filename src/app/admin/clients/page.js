@@ -41,14 +41,23 @@ Estrutura Obrigatória (Schema JSON):
         "category": "Granel",
         "price": 29.90,
         "image": "https://images.unsplash.com/photo-example",
+        "description": "Descrição detalhada e atrativa do produto...",
+        "benefits": ["Benefício 1", "Benefício 2", "Benefício 3"],
+        "helpsWith": ["Ansiedade", "Imunidade"],
+        "tags": ["Iogurte", "Salada de Frutas"],
         "nutrition": [
-             { "label": "Proteína", "value": "10g" }
+             { "label": "Proteína", "value": "10g" },
+             { "label": "Carboidratos", "value": "20g" }
         ]
       }
     ]
   }
 ]
-Gere 3 lojas, cada uma com 5 produtos variados:`;
+Gere 3 lojas, cada uma com 5 produtos variados.
+IMPORTANTE:
+- "tags" deve ser usado para sugerir combinações (ex: "Combina bem com Iogurte").
+- "benefits" são os benefícios principais.
+- "helpsWith" é para o que o produto ajuda (ex: "Pode ajudar com imunidade").`;
 
     const handleCopyPrompt = () => {
         navigator.clipboard.writeText(PROMPT_TEXT);
