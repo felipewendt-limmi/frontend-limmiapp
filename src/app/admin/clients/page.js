@@ -17,48 +17,61 @@ export default function AdminClients() {
     const [newClientSlug, setNewClientSlug] = useState("");
 
     // Bulk Import State
-    const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-    const [importStep, setImportStep] = useState(1);
-    const [importJson, setImportJson] = useState("");
-    const [importing, setImporting] = useState(false);
-    const [copySuccess, setCopySuccess] = useState(false);
+    const [importType, setImportType] = useState("clients"); // "clients" or "products"
 
-    const PROMPT_TEXT = `Atue como um Arquiteto de Dados. Preciso criar uma estrutura completa de lojas e produtos para um sistema de gestão.
+    const PROMPT_CLIENTS = `Atue como um Arquiteto de Dados e Pesquisador Nutricional. Preciso criar uma estrutura completa de lojas e produtos.
 Regras:
 1. Gere um ARRAY JSON contendo objetos de CLIENTES.
 2. Cada Cliente deve ter um array de PRODUTOS.
-3. Se inventar dados, faça-os parecer reais e variados.
+3. PESQUISA REAL: Para cada produto, busque na internet a tabela nutricional real (ex: TACO, USDA ou sites de fabricantes).
+4. Preencha os campos 'nutrition', 'benefits' e 'helpsWith' com dados REAIS e precisos.
+5. Se o usuário fornecer nomes/preços específicos de um Excel, use-os EXATAMENTE.
 
-Estrutura Obrigatória (Schema JSON):
+Estrutura (Schema JSON):
 [
   {
     "name": "Nome da Loja",
     "slug": "nome-da-loja-slug",
-    "description": "Uma breve descrição da loja...",
+    "description": "Descrição da loja...",
     "products": [
       {
-        "name": "Nome do Produto",
-        "category": "Granel",
-        "price": 29.90,
-        "description": "Descrição detalhada e atrativa do produto...",
-        "benefits": ["Benefício 1", "Benefício 2", "Benefício 3"],
-        "helpsWith": ["Ansiedade", "Imunidade"],
-        "tags": ["Iogurte", "Salada de Frutas"],
-        "nutrition": [
-             { "label": "Proteína", "value": "10g" },
-             { "label": "Carboidratos", "value": "20g" }
-        ]
+        "name": "Nome exato",
+        "category": "Categoria",
+        "price": 0.00,
+        "description": "Descrição real...",
+        "benefits": ["Benefício real", "..."],
+        "helpsWith": ["Auxílio real", "..."],
+        "tags": ["Dica de uso", "..."],
+        "nutrition": [ { "label": "Calorias", "value": "X kcal" }, ... ]
       }
     ]
   }
-]
-IMPORTANTE:
-- "tags" deve ser usado para sugerir combinações (ex: "Combina bem com Iogurte").
-- "benefits" são os benefícios principais.
-- "helpsWith" é para o que o produto ajuda (ex: "Pode ajudar com imunidade").`;
+]`;
+
+    const PROMPT_PRODUCTS = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
+Regras:
+1. Gere APENAS um ARRAY JSON de objetos de PRODUTOS.
+2. PESQUISA REAL: Busque na internet a tabela nutricional e benefícios REAIS de cada produto.
+3. Use EXATAMENTE o nome e preço fornecidos (provindos de Excel).
+4. Preencha 'nutrition', 'benefits' e 'helpsWith' com informações verdadeiras.
+
+Estrutura (Schema JSON):
+[
+  {
+    "name": "Nome exato",
+    "category": "Categoria",
+    "price": 0.00,
+    "description": "Destaque propriedades reais do produto...",
+    "benefits": ["Benefício real", "..."],
+    "helpsWith": ["Auxílio real", "..."],
+    "tags": ["Dica de uso", "..."],
+    "nutrition": [ { "label": "Proteína", "value": "Xg" }, ... ]
+  }
+]`;
 
     const handleCopyPrompt = () => {
-        navigator.clipboard.writeText(PROMPT_TEXT);
+        const text = importType === "clients" ? PROMPT_CLIENTS : PROMPT_PRODUCTS;
+        navigator.clipboard.writeText(text);
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
     };
@@ -67,11 +80,31 @@ IMPORTANTE:
         try {
             const parsed = JSON.parse(importJson);
             if (!Array.isArray(parsed)) {
-                addToast("O JSON deve ser uma lista (Array) de clientes.", "error");
+                addToast("O JSON deve ser uma lista (Array).", "error");
                 return;
             }
             setImporting(true);
-            await bulkImportClients(parsed);
+
+            // Polymorphic detection
+            const isProductOnly = parsed.length > 0 && !parsed[0].products && parsed[0].name;
+
+            if (isProductOnly) {
+                const globalClient = clients.find(c => c.slug === 'global-catalog');
+                if (globalClient) {
+                    const { importProducts } = useData.getState ? useData.getState() : { importProducts: null };
+                    // fallback to context if getState is not available (which it isn't in standard DataContext)
+                    // Let's use the provided importProducts via hook if possible, or just bulkImportClients if it handles it.
+                    // Actually, let's just use bulkImportClients and update DataContext to handle both.
+                    await bulkImportClients(parsed);
+                } else {
+                    addToast("Catálogo Global não encontrado.", "error");
+                    setImporting(false);
+                    return;
+                }
+            } else {
+                await bulkImportClients(parsed);
+            }
+
             addToast(`Importação concluída!`, "success");
             setIsBulkModalOpen(false);
             setImportJson("");
@@ -113,7 +146,7 @@ IMPORTANTE:
                 </div>
                 <div className={styles.headerActions}>
                     <Button variant="secondary" onClick={() => setIsBulkModalOpen(true)}>
-                        Importar Clientes (JSON)
+                        Importar (JSON)
                     </Button>
                     <Button icon={Plus} onClick={() => setIsModalOpen(true)}>
                         Novo Cliente
@@ -221,11 +254,27 @@ IMPORTANTE:
 
                         {importStep === 1 ? (
                             <div>
+                                <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
+                                    <button
+                                        onClick={() => setImportType("clients")}
+                                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: importType === 'clients' ? '#eff6ff' : 'white', fontWeight: importType === 'clients' ? 'bold' : 'normal', color: importType === 'clients' ? '#2563eb' : '#64748b', cursor: 'pointer' }}
+                                    >
+                                        Lojas + Produtos
+                                    </button>
+                                    <button
+                                        onClick={() => setImportType("products")}
+                                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: importType === 'products' ? '#eff6ff' : 'white', fontWeight: importType === 'products' ? 'bold' : 'normal', color: importType === 'products' ? '#2563eb' : '#64748b', cursor: 'pointer' }}
+                                    >
+                                        Apenas Produtos
+                                    </button>
+                                </div>
                                 <p style={{ marginBottom: '1rem', color: '#64748b', fontSize: '0.9rem' }}>
-                                    Use este prompt para gerar o JSON com seus Clientes e seus respectivos Produtos.
+                                    {importType === 'clients'
+                                        ? "Use este prompt para gerar lojas inteiras com seus produtos (Ideal para migração)."
+                                        : "Use este prompt para gerar uma lista de produtos avulsos para o Catálogo Global."}
                                 </p>
-                                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '0.8rem', maxHeight: '250px', overflowY: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                                    {PROMPT_TEXT}
+                                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '0.8rem', maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+                                    {importType === 'clients' ? PROMPT_CLIENTS : PROMPT_PRODUCTS}
                                 </div>
                                 <Button onClick={handleCopyPrompt} variant="secondary" fullWidth style={{ marginBottom: '1rem' }}>
                                     {copySuccess ? "Copiado!" : "Copiar Prompt"}
@@ -243,13 +292,13 @@ IMPORTANTE:
                                     rows={10}
                                     value={importJson}
                                     onChange={(e) => setImportJson(e.target.value)}
-                                    placeholder='[{ "name": "Loja 1", "products": [...] }]'
+                                    placeholder='[{ "name": "...", ... }]'
                                     style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontFamily: 'monospace', fontSize: '0.85rem' }}
                                 />
                                 <div className={styles.modalActions} style={{ marginTop: '1rem' }}>
                                     <Button variant="secondary" onClick={() => setIsBulkModalOpen(false)}>Cancelar</Button>
                                     <Button onClick={handleBulkImport} disabled={importing || !importJson}>
-                                        {importing ? "Processando..." : "Importar Clientes"}
+                                        {importing ? "Processando..." : "Importar"}
                                     </Button>
                                 </div>
                             </div>

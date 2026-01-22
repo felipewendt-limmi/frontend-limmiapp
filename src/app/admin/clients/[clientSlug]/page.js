@@ -352,6 +352,9 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                                         )}
                                     </div>
                                     <div className={styles.productActions}>
+                                        <button className={styles.iconButton} title="Ver Página Pública" onClick={() => window.open(`/${client.slug}/${product.slug}`, '_blank')}>
+                                            <ExternalLink size={18} color="#2563eb" />
+                                        </button>
                                         <button className={styles.iconButton} onClick={() => router.push(`/admin/clients/${client.slug}/products/${product.id}`)}><Edit2 size={18} color="#64748b" /></button>
                                         <button className={styles.iconButton} onClick={() => toggleProductStatus(product.id)}>
                                             <Power size={18} color={product.isActive ? "#16a34a" : "#dc2626"} />

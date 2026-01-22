@@ -216,6 +216,19 @@ export const DataProvider = ({ children }) => {
     const bulkImportClients = async (clientsData) => {
         try {
             cachedCategories = []; // Reset category cache
+
+            // Polymorphic check: If items Don't have 'products' but look like products, 
+            // it might be a product-only import meant for the global catalog.
+            const isProductOnly = clientsData.length > 0 && !clientsData[0].products && clientsData[0].name;
+
+            if (isProductOnly) {
+                const globalClient = clients.find(c => c.slug === 'global-catalog');
+                if (globalClient) {
+                    return await importProducts(globalClient.id, clientsData);
+                }
+                throw new Error("Catálogo Global não encontrado para importação de produtos.");
+            }
+
             const res = await api.post('/clients/bulk-import', clientsData);
 
             // Refresh clients completely to show new data
