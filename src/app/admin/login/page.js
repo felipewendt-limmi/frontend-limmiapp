@@ -81,8 +81,8 @@ export default function LoginPage() {
                                 required
                             />
                         </div>
-                        <Button type="submit" disabled={loading} style={{ width: '100%' }}>
-                            {loading ? "Entrando..." : "Entrar"}
+                        <Button type="submit" isLoading={loading} style={{ width: '100%' }}>
+                            Entrar
                         </Button>
                     </form>
                 ) : (
@@ -102,8 +102,8 @@ export default function LoginPage() {
                                 required
                             />
                         </div>
-                        <Button type="submit" disabled={loading} style={{ width: '100%' }}>
-                            {loading ? "Verificando..." : "Validar Código"}
+                        <Button type="submit" isLoading={loading} style={{ width: '100%' }}>
+                            Validar Código
                         </Button>
                         <button
                             type="button"
