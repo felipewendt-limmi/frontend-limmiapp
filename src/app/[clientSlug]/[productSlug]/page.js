@@ -158,9 +158,11 @@ export default function ProductDetail() {
                                 onClick={toggleFavorite}
                                 style={{ background: isFavorite ? '#fff' : 'white', borderColor: isFavorite ? '#ef4444' : '#e2e8f0' }}
                             >
-                                <div
-                                    className={styles.heartIcon}
-                                    style={{ backgroundColor: isFavorite ? '#ef4444' : '#cbd5e1' }}
+                                <Heart
+                                    size={24}
+                                    fill={isFavorite ? "#ef4444" : "none"}
+                                    color={isFavorite ? "#ef4444" : "#cbd5e1"}
+                                    strokeWidth={isFavorite ? 0 : 2}
                                 />
                             </button>
                         </div>

@@ -2,12 +2,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { LayoutDashboard, Users, LogOut, Store, Globe } from 'lucide-react';
 import styles from './layout.module.css';
 import { clsx } from 'clsx';
 
 export default function AdminLayout({ children }) {
     const pathname = usePathname();
+    const { logout } = useAuth();
 
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const isActive = (path) => pathname === path;
@@ -58,6 +60,14 @@ export default function AdminLayout({ children }) {
                             <Globe size={20} /> Produtos/Categorias Globais
                         </Link>
                     </div>
+
+                    <button
+                        onClick={logout}
+                        className={styles.navItem}
+                        style={{ marginTop: '1rem', width: '100%', border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626' }}
+                    >
+                        <LogOut size={20} /> Sair do Sistema
+                    </button>
                 </nav>
             </aside>
 
