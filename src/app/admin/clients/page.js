@@ -17,6 +17,11 @@ export default function AdminClients() {
     const [newClientSlug, setNewClientSlug] = useState("");
 
     // Bulk Import State
+    const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+    const [importStep, setImportStep] = useState(1);
+    const [importJson, setImportJson] = useState("");
+    const [importing, setImporting] = useState(false);
+    const [copySuccess, setCopySuccess] = useState(false);
     const [importType, setImportType] = useState("clients"); // "clients" or "products"
 
     const PROMPT_CLIENTS = `Atue como um Arquiteto de Dados e Pesquisador Nutricional. Preciso criar uma estrutura completa de lojas e produtos.
