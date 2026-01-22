@@ -66,6 +66,41 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const getSessions = async () => {
+        const token = Cookies.get('token');
+        return await api.get('/settings/sessions', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    };
+
+    const renameSession = async (sessionId, name) => {
+        const token = Cookies.get('token');
+        return await api.post('/settings/sessions/rename', { sessionId, name }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    };
+
+    const disconnectSession = async (sessionId) => {
+        const token = Cookies.get('token');
+        return await api.post('/settings/sessions/disconnect', { sessionId }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    };
+
+    const requestAccountUpdate = async () => {
+        const token = Cookies.get('token');
+        return await api.post('/settings/account/request-update', {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    };
+
+    const verifyAccountUpdate = async (data) => {
+        const token = Cookies.get('token');
+        return await api.post('/settings/account/verify-update', data, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    };
+
     const logout = () => {
         Cookies.remove('token');
         Cookies.remove('user');
@@ -74,7 +109,19 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, verifyCode, logout, loading, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{
+            user,
+            login,
+            verifyCode,
+            logout,
+            loading,
+            isAuthenticated: !!user,
+            getSessions,
+            renameSession,
+            disconnectSession,
+            requestAccountUpdate,
+            verifyAccountUpdate
+        }}>
             {children}
         </AuthContext.Provider>
     );
