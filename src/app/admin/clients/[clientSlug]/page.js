@@ -284,7 +284,7 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
             </header>
 
             {/* TABS NAVIGATION */}
-            <div className={styles.tabs} style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid #e2e8f0' }}>
+            <div className={styles.tabs}>
                 <button onClick={() => setActiveTab('products')} className={activeTab === 'products' ? styles.tabActive : styles.tab}>
                     <Package size={18} /> Produtos
                 </button>
@@ -343,14 +343,10 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
             {/* TAB: REPORTS */}
             {activeTab === 'reports' && (
                 <section className={styles.section}>
-                    <h2 style={{ marginBottom: '1.5rem' }}>Analytics da Loja</h2>
+                    <h2 style={{ marginBottom: '1.5rem' }}>Analytics de Produtos</h2>
 
                     {/* Summary Cards */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                        <div className={styles.statCard}>
-                            <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Visitas na Loja</div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>{client.views || 0}</div>
-                        </div>
                         <div className={styles.statCard}>
                             <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Visualizações de Produtos</div>
                             <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2563eb' }}>{totalViews}</div>
