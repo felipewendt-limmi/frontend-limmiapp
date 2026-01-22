@@ -41,6 +41,19 @@ export default function AdminLayout({ children }) {
                     LIMMI Admin
                 </div>
                 <nav className={styles.nav}>
+                    <Link
+                        href="/admin/dashboard"
+                        className={clsx(styles.navItem, isActive('/admin/dashboard') && styles.active)}
+                    >
+                        <LayoutDashboard size={20} /> Dashboard
+                    </Link>
+
+                    <Link
+                        href="/admin/clients/global-catalog"
+                        className={clsx(styles.navItem, isActive('/admin/clients/global-catalog') && styles.active)}
+                    >
+                        <Globe size={20} /> Produtos/Categorias Globais
+                    </Link>
 
                     <Link
                         href="/admin/clients"
@@ -52,12 +65,6 @@ export default function AdminLayout({ children }) {
                     <div style={{ marginTop: 'auto' }}>
                         <Link href="/" className={styles.navItem}>
                             <Store size={20} /> Ver Site
-                        </Link>
-                    </div>
-
-                    <div className={styles.divider}>
-                        <Link href="/admin/clients/global-catalog" className={clsx(styles.navItem, isActive('/admin/clients/global-catalog') && styles.active)}>
-                            <Globe size={20} /> Produtos/Categorias Globais
                         </Link>
                     </div>
 
