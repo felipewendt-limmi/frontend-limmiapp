@@ -451,6 +451,32 @@ IMPORTANTE:
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Category Column - Added as requested */}
+                                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                                        {product.category && (
+                                            <Link href="/admin/clients/global-catalog/categories">
+                                                <span
+                                                    style={{
+                                                        background: '#eff6ff',
+                                                        color: '#2563eb',
+                                                        padding: '4px 12px',
+                                                        borderRadius: '16px',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: '600',
+                                                        border: '1px solid #dbeafe',
+                                                        cursor: 'pointer',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '6px'
+                                                    }}
+                                                    title="Gerenciar Categorias Globais"
+                                                >
+                                                    {product.category}
+                                                </span>
+                                            </Link>
+                                        )}
+                                    </div>
                                     <div className={styles.productActions}>
                                         <button
                                             className={styles.iconButton}
