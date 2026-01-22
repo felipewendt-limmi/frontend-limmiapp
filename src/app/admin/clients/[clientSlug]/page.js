@@ -166,30 +166,31 @@ export default function AdminClientDetail() {
     // ... (Keep existing prompt logic) ...
     const PROMPT_TEXT = `Atue como um Especialista em Dados... (Prompt text truncated for brevity logic same as before)`;
     // Re-using simplified prompt text variable or keep full string? I'll keep full string for safety.
-    const FULL_PROMPT_TEXT = `Atue como um Especialista em Dados. Tenho uma lista de produtos em texto/excel e preciso que você a converta para um JSON estrito, compatível com meu sistema.
-Regras Obrigatórias:
-A saída deve ser APENAS um Array de objetos JSON.
-Se não tiver informação para um campo, deixe o array vazio [] ou string vazia "".
-Estrutura do Objeto (Schema):
+    const FULL_PROMPT_TEXT = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
+Regras:
+1. Gere APENAS um ARRAY JSON de objetos de PRODUTOS.
+2. PESQUISA REAL: Busque na internet a tabela nutricional e benefícios REAIS de cada produto.
+3. Use EXATAMENTE o nome e preço fornecidos (provindos de Excel).
+4. Preencha 'nutrition', 'benefits' e 'helpsWith' com informações verdadeiras.
+
+Estrutura (Schema JSON):
 [
   {
-    "name": "Nome do Produto",
-    "category": "Categoria (Ex: Adoçantes)",
-    "price": 10.90,
-    "description": "Descrição comercial atrativa de 2 linhas.",
-    "nutrition": [
-      { "label": "Calorias", "value": "64 kcal" },
-      { "label": "Carboidratos", "value": "17g" }
-    ],
-    "benefits": ["Benefício 1", "Benefício 2"],
-    "tags": ["Combina com Iogurte", "Sem Glúten"],
-    "helpsWith": ["Energia", "Imunidade"]
+    "name": "Nome exato",
+    "category": "Categoria",
+    "price": 0.00,
+    "description": "Destaque propriedades reais do produto...",
+    "benefits": ["Benefício real", "..."],
+    "helpsWith": ["Auxílio real", "..."],
+    "tags": ["Dica de uso", "..."],
+    "nutrition": [ { "label": "Proteína", "value": "Xg" }, ... ]
   }
 ]
 Converta os dados abaixo seguindo estritamente essa estrutura.`;
 
     const handleCopyPrompt = () => {
-        navigator.clipboard.writeText(FULL_PROMPT_TEXT);
+        const text = FULL_PROMPT_TEXT;
+        navigator.clipboard.writeText(text);
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
     };

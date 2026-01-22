@@ -186,3 +186,127 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Modal Enhancements */
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeBtn:hover {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.importSteps {
+    display: flex;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 1.5rem;
+}
+
+.importStepAlt {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.importStepActiveAlt {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+}
+
+.promptStep,
+.jsonStep {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.promptBoxAlt {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.promptBoxAlt pre {
+    margin: 0;
+    color: #1e293b;
+    font-family: 'Monaco', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.copyBtnAlt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.copyBtnAlt:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.copyBtnAlt:active {
+    transform: translateY(0);
+}
+
+.jsonTextarea {
+    width: 100%;
+    height: 300px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    resize: none;
+    outline: none;
+}
+
+.jsonTextarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

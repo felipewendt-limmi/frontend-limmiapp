@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { Plus, Store, MoreVertical, ExternalLink } from 'lucide-react';
+import { Plus, Store, MoreVertical, ExternalLink, X, ArrowRight, Check, Upload, Copy } from 'lucide-react';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 
@@ -235,75 +235,72 @@ Estrutura (Schema JSON):
             {/* Bulk Import Modal */}
             {isBulkModalOpen && (
                 <div className={styles.modalOverlay} onClick={() => setIsBulkModalOpen(false)}>
-                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
-                        {/* Header with Steps */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h2 style={{ margin: 0 }}>Importação em Massa</h2>
-                            <button onClick={() => setIsBulkModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '650px' }}>
+                        <div className={styles.modalHeader}>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Importação em Massa</h2>
+                            <button className={styles.closeBtn} onClick={() => setIsBulkModalOpen(false)}><X size={20} /></button>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0' }}>
-                            <button
-                                onClick={() => setImportStep(1)}
-                                style={{ padding: '0.5rem', borderBottom: importStep === 1 ? '2px solid #2563eb' : 'none', fontWeight: importStep === 1 ? 'bold' : 'normal', flex: 1 }}
-                            >
-                                1. Instruções (Prompt)
-                            </button>
-                            <button
-                                onClick={() => setImportStep(2)}
-                                style={{ padding: '0.5rem', borderBottom: importStep === 2 ? '2px solid #2563eb' : 'none', fontWeight: importStep === 2 ? 'bold' : 'normal', flex: 1 }}
-                            >
-                                2. Colar JSON
-                            </button>
+                        <div className={styles.importSteps}>
+                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
                         </div>
 
                         {importStep === 1 ? (
-                            <div>
+                            <div className={styles.promptStep}>
                                 <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
                                     <button
                                         onClick={() => setImportType("clients")}
-                                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: importType === 'clients' ? '#eff6ff' : 'white', fontWeight: importType === 'clients' ? 'bold' : 'normal', color: importType === 'clients' ? '#2563eb' : '#64748b', cursor: 'pointer' }}
+                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: importType === 'clients' ? '2px solid #2563eb' : '1px solid #e2e8f0', background: 'white', color: importType === 'clients' ? '#2563eb' : '#cbd5e1', fontWeight: 600, cursor: 'pointer' }}
                                     >
                                         Lojas + Produtos
                                     </button>
                                     <button
                                         onClick={() => setImportType("products")}
-                                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: importType === 'products' ? '#eff6ff' : 'white', fontWeight: importType === 'products' ? 'bold' : 'normal', color: importType === 'products' ? '#2563eb' : '#64748b', cursor: 'pointer' }}
+                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: importType === 'products' ? '2px solid #2563eb' : '1px solid #e2e8f0', background: 'white', color: importType === 'products' ? '#2563eb' : '#cbd5e1', fontWeight: 600, cursor: 'pointer' }}
                                     >
                                         Apenas Produtos
                                     </button>
                                 </div>
-                                <p style={{ marginBottom: '1rem', color: '#64748b', fontSize: '0.9rem' }}>
+                                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                                     {importType === 'clients'
                                         ? "Use este prompt para gerar lojas inteiras com seus produtos (Ideal para migração)."
                                         : "Use este prompt para gerar uma lista de produtos avulsos para o Catálogo Global."}
                                 </p>
-                                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '0.8rem', maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                                    {importType === 'clients' ? PROMPT_CLIENTS : PROMPT_PRODUCTS}
+                                <div className={styles.promptBoxAlt}>
+                                    <pre>{importType === "clients" ? PROMPT_CLIENTS : PROMPT_PRODUCTS}</pre>
                                 </div>
-                                <Button onClick={handleCopyPrompt} variant="secondary" fullWidth style={{ marginBottom: '1rem' }}>
-                                    {copySuccess ? "Copiado!" : "Copiar Prompt"}
-                                </Button>
-                                <div style={{ textAlign: 'right' }}>
-                                    <Button onClick={() => setImportStep(2)}>Ir para Importação &rarr;</Button>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                                    <button
+                                        className={styles.copyBtnAlt}
+                                        onClick={handleCopyPrompt}
+                                        style={{ background: '#22c55e', color: 'white' }}
+                                    >
+                                        {copySuccess ? <><Check size={18} /> Copiado!</> : "Copiar Prompt"}
+                                    </button>
+                                    <Button onClick={() => setImportStep(2)} icon={ArrowRight}>
+                                        Ir para Importação
+                                    </Button>
                                 </div>
                             </div>
                         ) : (
-                            <div>
-                                <p style={{ marginBottom: '1rem', color: '#64748b' }}>
-                                    Cole o JSON gerado abaixo.
-                                </p>
+                            <div className={styles.jsonStep}>
                                 <textarea
-                                    rows={10}
+                                    className={styles.jsonTextarea}
+                                    placeholder='[{ "name": "...", "products": [...], ... }]'
                                     value={importJson}
                                     onChange={(e) => setImportJson(e.target.value)}
-                                    placeholder='[{ "name": "...", ... }]'
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontFamily: 'monospace', fontSize: '0.85rem' }}
+                                    autoFocus
                                 />
-                                <div className={styles.modalActions} style={{ marginTop: '1rem' }}>
-                                    <Button variant="secondary" onClick={() => setIsBulkModalOpen(false)}>Cancelar</Button>
-                                    <Button onClick={handleBulkImport} disabled={importing || !importJson}>
-                                        {importing ? "Processando..." : "Importar"}
+                                <div className={styles.modalActions}>
+                                    <Button variant="secondary" onClick={() => setImportStep(1)}>Voltar</Button>
+                                    <Button
+                                        onClick={handleBulkImport}
+                                        isLoading={importing}
+                                        disabled={!importJson.trim()}
+                                        icon={Upload}
+                                    >
+                                        {importing ? "Processando..." : "Importar Agora"}
                                     </Button>
                                 </div>
                             </div>

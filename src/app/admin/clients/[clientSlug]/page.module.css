@@ -350,6 +350,18 @@
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Modal Enhancements */
 .modalHeader {
     display: flex;
@@ -366,6 +378,9 @@
     padding: 4px;
     border-radius: 6px;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .closeBtn:hover {
@@ -379,20 +394,21 @@
     margin-bottom: 1.5rem;
 }
 
-.importStep {
+.importStepAlt {
     flex: 1;
-    padding: 0.75rem;
+    padding: 1rem;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: #94a3b8;
-    border-bottom: 2px solid transparent;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.importStepActive {
+.importStepActiveAlt {
     color: #2563eb;
     border-bottom-color: #2563eb;
-    background: #eff6ff;
 }
 
 .promptStep,
@@ -400,51 +416,44 @@
     animation: fadeIn 0.3s ease-out;
 }
 
-.promptBox {
-    background: #1e293b;
+.promptBoxAlt {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 1.25rem;
-    position: relative;
+    padding: 1.5rem;
+    max-height: 280px;
+    overflow-y: auto;
     margin-bottom: 1rem;
 }
 
-.promptBox pre {
+.promptBoxAlt pre {
     margin: 0;
-    color: #e2e8f0;
-    font-family: inherit;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    color: #1e293b;
+    font-family: 'Monaco', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
     white-space: pre-wrap;
 }
 
-.copyBtn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
+.copyBtnAlt {
     display: flex;
     align-items: center;
-    gap: 6px;
-    transition: all 0.2s;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
 }
 
-.copyBtn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
+.copyBtnAlt:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
 }
 
-.stepHint {
-    color: #64748b;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+.copyBtnAlt:active {
+    transform: translateY(0);
 }
 
 .jsonTextarea {
@@ -463,16 +472,4 @@
 .jsonTextarea:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
