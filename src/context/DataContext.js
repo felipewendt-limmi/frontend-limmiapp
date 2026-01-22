@@ -262,6 +262,60 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    // Analytics
+    const trackInteraction = async (productId, type) => {
+        try {
+            // type: 'view' | 'favorite' | 'nutrition'
+            await api.post(`/products/products/${productId}/interaction`, { type });
+        } catch (error) {
+            console.error("Tracking error:", error);
+        }
+    };
+
+    const trackClientVisit = async (clientId) => {
+        try {
+            await api.post(`/clients/${clientId}/visit`);
+        } catch (error) {
+            console.error("Tracking client visit error:", error);
+        }
+    };
+
+    // Files
+    const uploadFile = async (clientId, file) => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('clientId', clientId);
+
+            const response = await api.post('/files/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Upload error:", error);
+            throw error;
+        }
+    };
+
+    const getClientFiles = async (clientId) => {
+        try {
+            const response = await api.get(`/files/clients/${clientId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Get Files error:", error);
+            return [];
+        }
+    };
+
+    const deleteFile = async (fileId) => {
+        try {
+            await api.delete(`/files/${fileId}`);
+        } catch (error) {
+            console.error("Delete File error:", error);
+            throw error;
+        }
+    };
+
     return (
         <DataContext.Provider value={{
             clients,
@@ -283,7 +337,12 @@ export const DataProvider = ({ children }) => {
             getClientCategories, // New
             updateCategory,      // New
             syncCategories,      // New
-            isLoaded
+            isLoaded,
+            trackInteraction,
+            trackClientVisit,
+            uploadFile,
+            getClientFiles,
+            deleteFile
         }}>
             {children}
         </DataContext.Provider>

@@ -9,15 +9,20 @@ import { useParams } from 'next/navigation';
 
 export default function StoreHome() {
     const params = useParams();
-    const { getClientBySlug, isLoaded } = useData();
+    const { getClientBySlug, isLoaded, trackClientVisit } = useData();
     const [client, setClient] = useState(null);
 
     useEffect(() => {
         if (isLoaded && params?.clientSlug) {
             const foundClient = getClientBySlug(params.clientSlug);
             setClient(foundClient);
+
+            // Track Visit
+            if (foundClient) {
+                trackClientVisit(foundClient.id); // Optimized call
+            }
         }
-    }, [isLoaded, params, getClientBySlug]);
+    }, [isLoaded, params, getClientBySlug, trackClientVisit]);
 
     if (!isLoaded) return null; // Or a loading spinner
 

@@ -1,13 +1,22 @@
 import React from 'react';
 import styles from './NutritionTable.module.css';
 
-export default function NutritionTable({ data }) {
+export default function NutritionTable({ data, onInteraction }) {
     // Handle both new array format and legacy object format
     const items = Array.isArray(data) ? data : (data?.items || []);
 
     if (items.length === 0) return null;
 
     const [baseAmount, setBaseAmount] = React.useState(100);
+    const hasInteracted = React.useRef(false);
+
+    const handleInputChange = (e) => {
+        setBaseAmount(Number(e.target.value));
+        if (!hasInteracted.current && onInteraction) {
+            onInteraction();
+            hasInteracted.current = true;
+        }
+    };
 
     const calculateValue = (val) => {
         if (!val) return "-";
@@ -37,7 +46,7 @@ export default function NutritionTable({ data }) {
                     <input
                         type="number"
                         value={baseAmount}
-                        onChange={(e) => setBaseAmount(Number(e.target.value))}
+                        onChange={handleInputChange}
                         className={styles.calcInput}
                     />
                     <span className={styles.calcUnit}>gramas</span>

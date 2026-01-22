@@ -15,7 +15,7 @@ import styles from './page.module.css';
 
 export default function ProductDetail() {
     const params = useParams();
-    const { getClientBySlug, isLoaded, getClientCategories } = useData();
+    const { getClientBySlug, isLoaded, getClientCategories, trackInteraction } = useData();
 
     // 1. All useState hooks at the top
     const [loading, setLoading] = useState(true);
@@ -52,6 +52,7 @@ export default function ProductDetail() {
                     price: product.price
                 }];
                 setIsFavorite(true);
+                trackInteraction(product.id, 'favorite'); // Track Favorite
             }
             localStorage.setItem(favoritesKey, JSON.stringify(newFavorites));
         } catch (e) {
@@ -70,6 +71,10 @@ export default function ProductDetail() {
                 setClient(clientFound);
                 const found = clientFound.products.find(p => p.slug === params.productSlug && p.isActive);
                 setProduct(found);
+
+                if (found) {
+                    trackInteraction(found.id, 'view'); // Track View
+                }
 
                 if (found?.category) {
                     try {
@@ -170,7 +175,10 @@ export default function ProductDetail() {
                                 <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>💧</span>
                                 Informações Nutricionais (por 100g)
                             </div>
-                            <NutritionTable data={product.nutrition} />
+                            <NutritionTable
+                                data={product.nutrition}
+                                onInteraction={() => trackInteraction(product.id, 'nutrition')}
+                            />
                         </div>
 
                         {product.benefits && product.benefits.length > 0 && (
