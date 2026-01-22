@@ -290,16 +290,22 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                 <button onClick={() => setActiveTab('products')} className={activeTab === 'products' ? styles.tabActive : styles.tab}>
                     <Package size={18} /> Produtos
                 </button>
-                <button onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? styles.tabActive : styles.tab}>
-                    <BarChart2 size={18} /> Relatórios
-                </button>
-                <button onClick={() => setActiveTab('files')} className={activeTab === 'files' ? styles.tabActive : styles.tab}>
-                    <FileText size={18} /> Arquivos
-                </button>
-                {client.slug !== 'global-catalog' && (
-                    <button onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? styles.tabActive : styles.tab}>
-                        <Settings size={18} /> Configurações
+                {client.slug === 'global-catalog' ? (
+                    <button onClick={() => router.push(`/admin/clients/${client.slug}/categories`)} className={styles.tab}>
+                        🏷️ Categorias
                     </button>
+                ) : (
+                    <>
+                        <button onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? styles.tabActive : styles.tab}>
+                            <BarChart2 size={18} /> Relatórios
+                        </button>
+                        <button onClick={() => setActiveTab('files')} className={activeTab === 'files' ? styles.tabActive : styles.tab}>
+                            <FileText size={18} /> Arquivos
+                        </button>
+                        <button onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? styles.tabActive : styles.tab}>
+                            <Settings size={18} /> Configurações
+                        </button>
+                    </>
                 )}
             </div>
 
@@ -315,7 +321,7 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                         </div>
                     </div>
 
-                    {/* Product List Render... (Simplified for brevity, assuming standard list logic) */}
+                    {/* Product List Render */}
                     {products.length > 0 ? (
                         <div className={styles.productList}>
                             {products.map(product => (
@@ -328,6 +334,22 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                                                 <span className={styles.productSlug}>/{product.slug} • {product.price}</span>
                                             </div>
                                         </div>
+                                    </div>
+                                    {/* Category Column */}
+                                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                                        {product.category && (
+                                            <span style={{
+                                                background: '#eff6ff',
+                                                color: '#2563eb',
+                                                padding: '4px 12px',
+                                                borderRadius: '16px',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '600',
+                                                border: '1px solid #dbeafe'
+                                            }}>
+                                                {product.category}
+                                            </span>
+                                        )}
                                     </div>
                                     <div className={styles.productActions}>
                                         <button className={styles.iconButton} onClick={() => router.push(`/admin/clients/${client.slug}/products/${product.id}`)}><Edit2 size={18} color="#64748b" /></button>
