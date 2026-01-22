@@ -192,6 +192,7 @@ IMPORTANTE:
         // Prepare data for Excel
         const data = products.map(product => ({
             "Nome do Produto": product.name,
+            "Categoria": product.category || "",
             "URL do Produto": `${window.location.origin}/${client.slug}/${product.slug}`,
             "Preço": product.price || "Consulte"
         }));
@@ -202,6 +203,7 @@ IMPORTANTE:
         // Adjust Column Widths (Optional but good)
         const wscols = [
             { wch: 40 }, // Name
+            { wch: 25 }, // Category
             { wch: 60 }, // URL
             { wch: 15 }  // Price
         ];
