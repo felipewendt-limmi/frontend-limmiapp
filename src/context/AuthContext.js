@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         Cookies.remove('token');
         Cookies.remove('user');
         setUser(null);
-        router.push('/admin/login');
+        router.push('/login');
     };
 
     return (
