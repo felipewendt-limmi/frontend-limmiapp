@@ -513,38 +513,54 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                 <div className={styles.modalOverlay} onClick={() => setImportModalOpen(false)}>
                     <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '650px' }}>
                         <div className={styles.modalHeader}>
-                            <h2>Importação em Massa (JSON)</h2>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Importação em Massa</h2>
                             <button className={styles.closeBtn} onClick={() => setImportModalOpen(false)}><X size={20} /></button>
                         </div>
 
                         <div className={styles.importSteps}>
-                            <div className={`${styles.importStep} ${importStep === 1 ? styles.importStepActive : ''}`}>1. Copiar Prompt</div>
-                            <div className={`${styles.importStep} ${importStep === 2 ? styles.importStepActive : ''}`}>2. Colar JSON</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
                         </div>
 
                         {importStep === 1 ? (
                             <div className={styles.promptStep}>
-                                <div className={styles.promptBox}>
-                                    <pre>{FULL_PROMPT_TEXT.substring(0, 150)}...</pre>
+                                <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
                                     <button
-                                        className={styles.copyBtn}
-                                        onClick={handleCopyPrompt}
+                                        disabled
+                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white', color: '#cbd5e1', cursor: 'not-allowed', fontWeight: 600 }}
                                     >
-                                        {copySuccess ? <><Check size={16} /> Copiado!</> : <><Copy size={16} /> Copiar Prompt AI</>}
+                                        Lojas + Produtos
+                                    </button>
+                                    <button
+                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '2px solid #2563eb', background: 'white', fontWeight: 600, color: '#2563eb', cursor: 'pointer' }}
+                                    >
+                                        Apenas Produtos
                                     </button>
                                 </div>
-                                <p className={styles.stepHint}>
-                                    Copie o prompt acima, cole no ChatGPT junto com sua lista de produtos e depois cole o resultado no próximo passo.
+                                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                                    Use este prompt para gerar produtos avulsos para esta loja específica.
                                 </p>
-                                <Button style={{ width: '100%' }} onClick={() => setImportStep(2)} icon={ArrowRight}>
-                                    Já tenho o JSON
-                                </Button>
+                                <div className={styles.promptBoxAlt}>
+                                    <pre>{FULL_PROMPT_TEXT}</pre>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                                    <button
+                                        className={styles.copyBtnAlt}
+                                        onClick={handleCopyPrompt}
+                                        style={{ background: '#22c55e', color: 'white' }}
+                                    >
+                                        {copySuccess ? <><Check size={18} /> Copiado!</> : "Copiar Prompt"}
+                                    </button>
+                                    <Button onClick={() => setImportStep(2)} icon={ArrowRight}>
+                                        Ir para Importação
+                                    </Button>
+                                </div>
                             </div>
                         ) : (
                             <div className={styles.jsonStep}>
                                 <textarea
                                     className={styles.jsonTextarea}
-                                    placeholder="Cole aqui o Array JSON gerado pela IA..."
+                                    placeholder='[{ "name": "...", "category": "...", "price": 0.00, ... }]'
                                     value={importJson}
                                     onChange={(e) => setImportJson(e.target.value)}
                                     autoFocus
@@ -557,7 +573,7 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                                         disabled={!importJson.trim()}
                                         icon={Upload}
                                     >
-                                        Importar {importJson.trim() ? "Produtos" : ""}
+                                        {importing ? "Processando..." : "Importar Agora"}
                                     </Button>
                                 </div>
                             </div>
