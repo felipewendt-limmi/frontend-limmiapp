@@ -146,12 +146,25 @@ export default function AdminClientDetail() {
 
     const handleExportProducts = () => {
         if (!products.length) return;
-        const data = products.map(product => ({
-            "Nome do Produto": product.name,
-            "Categoria": product.category || "",
-            "URL do Produto": `${window.location.origin}/${client.slug}/${product.slug}`,
-            "Preço": product.price || "Consulte"
-        }));
+
+        // Specific logic for Global Catalog: only Name and Category
+        const isGlobal = client.slug === 'global-catalog';
+
+        const data = products.map(product => {
+            if (isGlobal) {
+                return {
+                    "Nome do Produto": product.name,
+                    "Categoria": product.category || ""
+                };
+            }
+            return {
+                "Nome do Produto": product.name,
+                "Categoria": product.category || "",
+                "URL do Produto": `${window.location.origin}/${client.slug}/${product.slug}`,
+                "Preço": product.price || "Consulte"
+            };
+        });
+
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Produtos");
