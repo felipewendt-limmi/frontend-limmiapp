@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import * as XLSX from 'xlsx';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, Download, Upload, Copy, Check, BarChart2, FileText, Trash2, Eye, Paperclip } from 'lucide-react';
+import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, Download, Upload, Copy, Check, BarChart2, FileText, Trash2, Eye, Paperclip, X, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
@@ -510,10 +510,57 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
             {/* Keeping the Import Modal logic... */}
             {importModalOpen && (
                 <div className={styles.modalOverlay} onClick={() => setImportModalOpen(false)}>
-                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
-                        <h2>Importação em Massa</h2>
-                        <textarea value={importJson} onChange={e => setImportJson(e.target.value)} placeholder="Cole o JSON aqui" style={{ width: '100%', height: '200px' }} />
-                        <Button onClick={handleImport} disabled={importing}>Importar</Button>
+                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '650px' }}>
+                        <div className={styles.modalHeader}>
+                            <h2>Importação em Massa (JSON)</h2>
+                            <button className={styles.closeBtn} onClick={() => setImportModalOpen(false)}><X size={20} /></button>
+                        </div>
+
+                        <div className={styles.importSteps}>
+                            <div className={`${styles.importStep} ${importStep === 1 ? styles.importStepActive : ''}`}>1. Copiar Prompt</div>
+                            <div className={`${styles.importStep} ${importStep === 2 ? styles.importStepActive : ''}`}>2. Colar JSON</div>
+                        </div>
+
+                        {importStep === 1 ? (
+                            <div className={styles.promptStep}>
+                                <div className={styles.promptBox}>
+                                    <pre>{FULL_PROMPT_TEXT.substring(0, 150)}...</pre>
+                                    <button
+                                        className={styles.copyBtn}
+                                        onClick={handleCopyPrompt}
+                                    >
+                                        {copySuccess ? <><Check size={16} /> Copiado!</> : <><Copy size={16} /> Copiar Prompt AI</>}
+                                    </button>
+                                </div>
+                                <p className={styles.stepHint}>
+                                    Copie o prompt acima, cole no ChatGPT junto com sua lista de produtos e depois cole o resultado no próximo passo.
+                                </p>
+                                <Button style={{ width: '100%' }} onClick={() => setImportStep(2)} icon={ArrowRight}>
+                                    Já tenho o JSON
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className={styles.jsonStep}>
+                                <textarea
+                                    className={styles.jsonTextarea}
+                                    placeholder="Cole aqui o Array JSON gerado pela IA..."
+                                    value={importJson}
+                                    onChange={(e) => setImportJson(e.target.value)}
+                                    autoFocus
+                                />
+                                <div className={styles.modalActions}>
+                                    <Button variant="secondary" onClick={() => setImportStep(1)}>Voltar</Button>
+                                    <Button
+                                        onClick={handleImport}
+                                        isLoading={importing}
+                                        disabled={!importJson.trim()}
+                                        icon={Upload}
+                                    >
+                                        Importar {importJson.trim() ? "Produtos" : ""}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
