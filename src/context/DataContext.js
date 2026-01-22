@@ -316,6 +316,16 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const getProductInteractions = async (productId) => {
+        try {
+            const response = await api.get(`/products/products/${productId}/interactions`);
+            return response.data;
+        } catch (error) {
+            console.error("Get Interactions error:", error);
+            return [];
+        }
+    };
+
     return (
         <DataContext.Provider value={{
             clients,
@@ -342,7 +352,8 @@ export const DataProvider = ({ children }) => {
             trackClientVisit,
             uploadFile,
             getClientFiles,
-            deleteFile
+            deleteFile,
+            getProductInteractions // New
         }}>
             {children}
         </DataContext.Provider>

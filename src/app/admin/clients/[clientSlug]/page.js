@@ -8,6 +8,7 @@ import { Plus, ArrowLeft, Power, Package, Edit2, ExternalLink, Settings, Save, D
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
+import InteractionLogModal from '@/components/business/InteractionLogModal/InteractionLogModal';
 
 export default function AdminClientDetail() {
     const params = useParams();
@@ -22,6 +23,7 @@ export default function AdminClientDetail() {
 
     const [client, setClient] = useState(null);
     const [products, setProducts] = useState([]);
+    const [selectedProductForLogs, setSelectedProductForLogs] = useState(null);
 
     // Tabs
     const [activeTab, setActiveTab] = useState('products'); // 'products', 'reports', 'files', 'settings'
@@ -374,8 +376,16 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                             </thead>
                             <tbody>
                                 {[...products].sort((a, b) => (b.views || 0) - (a.views || 0)).map(product => (
-                                    <tr key={product.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ padding: '1rem', fontWeight: '500', color: '#334155' }}>{product.name}</td>
+                                    <tr
+                                        key={product.id}
+                                        style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer' }}
+                                        onClick={() => setSelectedProductForLogs(product)}
+                                        className={styles.reportRow}
+                                    >
+                                        <td style={{ padding: '1rem', fontWeight: '500', color: '#334155' }}>
+                                            {product.name}
+                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal' }}>Clique para ver detalhes</div>
+                                        </td>
                                         <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.views || 0}</td>
                                         <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.favoritesCount || 0}</td>
                                         <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.nutritionInteractions || 0}</td>
@@ -498,6 +508,15 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                         <Button onClick={handleBulkClone}>Clonar Selecionados</Button>
                     </div>
                 </div>
+            )}
+
+            {/* Logs Modal */}
+            {selectedProductForLogs && (
+                <InteractionLogModal
+                    productId={selectedProductForLogs.id}
+                    productName={selectedProductForLogs.name}
+                    onClose={() => setSelectedProductForLogs(null)}
+                />
             )}
 
         </div>
