@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }) => {
 
             // Standard login fallback (if 2FA disabled somehow)
             const { token, user } = res.data;
-            Cookies.set('token', token, { expires: 1 });
-            Cookies.set('user', JSON.stringify(user), { expires: 1 });
+            Cookies.set('token', token, { expires: 365 });
+            Cookies.set('user', JSON.stringify(user), { expires: 365 });
             setUser(user);
             router.push('/admin/dashboard');
             return { success: true };
@@ -55,8 +55,8 @@ export const AuthProvider = ({ children }) => {
             const res = await api.post('/auth/verify-2fa', { tempToken, code });
             const { token, user } = res.data;
 
-            Cookies.set('token', token, { expires: 1 });
-            Cookies.set('user', JSON.stringify(user), { expires: 1 });
+            Cookies.set('token', token, { expires: 365 });
+            Cookies.set('user', JSON.stringify(user), { expires: 365 });
             setUser(user);
             router.push('/admin/dashboard');
             return true;
