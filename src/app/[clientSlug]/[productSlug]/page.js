@@ -87,7 +87,7 @@ export default function ProductDetail() {
             setLoading(false);
         };
         loadData();
-    }, [mounted, isLoaded, params, getClientBySlug, getClientCategories]);
+    }, [mounted, isLoaded, params, getClientBySlug, getGlobalCategories]);
 
     // Load Favorites Effect
     useEffect(() => {

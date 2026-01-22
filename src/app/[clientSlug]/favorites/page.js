@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Trash2, ArrowLeft, Heart } from 'lucide-react';
+import { useData } from '@/context/DataContext';
 import styles from './page.module.css';
 
 export default function FavoritesPage() {
