@@ -31,16 +31,37 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const res = await api.post('/auth/login', { email, password });
+
+            // If 2FA is required, return the temp token and flag
+            if (res.data.requires2FA) {
+                return res.data;
+            }
+
+            // Standard login fallback (if 2FA disabled somehow)
+            const { token, user } = res.data;
+            Cookies.set('token', token, { expires: 1 });
+            Cookies.set('user', JSON.stringify(user), { expires: 1 });
+            setUser(user);
+            router.push('/admin/dashboard');
+            return { success: true };
+        } catch (error) {
+            console.error("Login failed", error);
+            throw error;
+        }
+    };
+
+    const verifyCode = async (tempToken, code) => {
+        try {
+            const res = await api.post('/auth/verify-2fa', { tempToken, code });
             const { token, user } = res.data;
 
-            Cookies.set('token', token, { expires: 1 }); // 1 day
+            Cookies.set('token', token, { expires: 1 });
             Cookies.set('user', JSON.stringify(user), { expires: 1 });
-
             setUser(user);
             router.push('/admin/dashboard');
             return true;
         } catch (error) {
-            console.error("Login failed", error);
+            console.error("2FA Verification failed", error);
             throw error;
         }
     };
@@ -53,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, verifyCode, logout, loading, isAuthenticated: !!user }}>
             {children}
         </AuthContext.Provider>
     );
