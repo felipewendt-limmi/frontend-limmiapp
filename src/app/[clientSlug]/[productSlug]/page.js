@@ -15,7 +15,7 @@ import styles from './page.module.css';
 
 export default function ProductDetail() {
     const params = useParams();
-    const { getClientBySlug, isLoaded, getClientCategories, trackInteraction } = useData();
+    const { getClientBySlug, isLoaded, getGlobalCategories, trackInteraction } = useData();
 
     // 1. All useState hooks at the top
     const [loading, setLoading] = useState(true);
@@ -78,8 +78,7 @@ export default function ProductDetail() {
 
                 if (found?.category) {
                     try {
-                        const categories = await getClientCategories(clientFound.id);
-                        // Robust comparison
+                        const categories = await getGlobalCategories();
                         const cat = categories.find(c => c.name.toLowerCase().trim() === found.category.toLowerCase().trim());
                         if (cat) setCategoryEmoji(cat.emoji);
                     } catch (err) { console.error(err); }

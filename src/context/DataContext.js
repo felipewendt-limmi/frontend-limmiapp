@@ -242,6 +242,12 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const getGlobalCategories = async () => {
+        const globalClient = clients.find(c => c.slug === 'global-catalog');
+        if (!globalClient) return [];
+        return await getClientCategories(globalClient.id);
+    };
+
     const updateCategory = async (id, data) => {
         try {
             const res = await api.put(`/categories/${id}`, data);
@@ -345,6 +351,7 @@ export const DataProvider = ({ children }) => {
             updateProduct,
             toggleProductStatus,
             getClientCategories, // New
+            getGlobalCategories, // New
             updateCategory,      // New
             syncCategories,      // New
             isLoaded,

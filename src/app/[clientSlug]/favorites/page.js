@@ -7,7 +7,9 @@ import styles from './page.module.css';
 
 export default function FavoritesPage() {
     const params = useParams();
+    const { getGlobalCategories, isLoaded } = useData();
     const [favorites, setFavorites] = useState([]);
+    const [globalCategories, setGlobalCategories] = useState([]);
     const [mounted, setMounted] = useState(false);
 
     const router = useRouter();
@@ -25,8 +27,24 @@ export default function FavoritesPage() {
         }
     }, [params]);
 
+    // Fetch Global Categories to ensure emojis are up to date
+    useEffect(() => {
+        if (isLoaded) {
+            const loadGlobal = async () => {
+                const c = await getGlobalCategories();
+                setGlobalCategories(c);
+            };
+            loadGlobal();
+        }
+    }, [isLoaded, getGlobalCategories]);
+
+    const getEmoji = (product) => {
+        const globalCat = globalCategories.find(c => c.name.toLowerCase().trim() === (product.category || '').toLowerCase().trim());
+        return globalCat?.emoji || product.emoji || '📦';
+    };
+
     const removeFavorite = (e, id) => {
-        e.preventDefault(); // Prevent navigation if clicking trash inside link
+        e.preventDefault();
         e.stopPropagation();
 
         const newFavorites = favorites.filter(p => p.id !== id);
@@ -67,9 +85,9 @@ export default function FavoritesPage() {
                                 className={styles.removeButton}
                                 onClick={(e) => removeFavorite(e, product.id)}
                             >
-                                <Trash2 size={14} />
+                                <Heart size={14} fill="#ef4444" color="#ef4444" />
                             </button>
-                            <div className={styles.emoji}>{product.emoji || '📦'}</div>
+                            <div className={styles.emoji}>{getEmoji(product)}</div>
                             <div className={styles.productName}>{product.name}</div>
                             <div className={styles.category}>{product.category}</div>
                         </Link>
