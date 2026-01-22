@@ -266,7 +266,7 @@ export const DataProvider = ({ children }) => {
     const trackInteraction = async (productId, type) => {
         try {
             // type: 'view' | 'favorite' | 'nutrition'
-            await api.post(`/products/products/${productId}/interaction`, { type });
+            await api.post(`/products/${productId}/interaction`, { type });
         } catch (error) {
             console.error("Tracking error:", error);
         }
@@ -318,7 +318,7 @@ export const DataProvider = ({ children }) => {
 
     const getProductInteractions = async (productId) => {
         try {
-            const response = await api.get(`/products/products/${productId}/interactions`);
+            const response = await api.get(`/products/${productId}/interactions`);
             return response.data;
         } catch (error) {
             console.error("Get Interactions error:", error);
