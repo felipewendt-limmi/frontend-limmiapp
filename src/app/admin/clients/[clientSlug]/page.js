@@ -176,27 +176,30 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    // ... (Keep existing prompt logic) ...
-    const PROMPT_TEXT = `Atue como um Especialista em Dados... (Prompt text truncated for brevity logic same as before)`;
-    // Re-using simplified prompt text variable or keep full string? I'll keep full string for safety.
     const FULL_PROMPT_TEXT = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
-Regras:
-1. Gere APENAS um ARRAY JSON de objetos de PRODUTOS.
-2. PESQUISA REAL: Busque na internet a tabela nutricional e benefícios REAIS de cada produto.
-3. Use EXATAMENTE o nome e preço fornecidos (provindos de Excel).
-4. Preencha 'nutrition', 'benefits' e 'helpsWith' com informações verdadeiras.
+Regras de Ouro (CRITICAL):
+1. PROIBIDO "N/A": Nunca retorne "N/A" ou valores vazios para nutrição. Se não encontrar dado exato, use MÉDIA ESTIMADA (ex: 350kcal para grãos).
+2. ENRIQUECIMENTO: Gere pelo menos 5 benefícios e 5 dicas de "ajuda com" (helpsWith) para cada produto.
+3. CATEGORIAS PADRÃO: Use APENAS: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
+4. NUTRIÇÃO: Tabela completa (Calorias, Proteína, Carboidratos, Gordura, Fibra).
 
 Estrutura (Schema JSON):
 [
   {
     "name": "Nome exato",
-    "category": "Categoria",
+    "category": "Uma das categorias padrão",
     "price": 0.00,
-    "description": "Destaque propriedades reais do produto...",
-    "benefits": ["Benefício real", "..."],
-    "helpsWith": ["Auxílio real", "..."],
-    "tags": ["Dica de uso", "..."],
-    "nutrition": [ { "label": "Proteína", "value": "Xg" }, ... ]
+    "description": "Propriedades nutricionais e dicas de preparo...",
+    "benefits": ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "Benefício 5"],
+    "helpsWith": ["Ajuda com 1", "Ajuda com 2", "Ajuda com 3", "Ajuda com 4", "Ajuda com 5"],
+    "tags": ["Dica 1", "Dica 2"],
+    "nutrition": [
+      { "label": "Calorias", "value": "X kcal" },
+      { "label": "Proteína", "value": "Xg" },
+      { "label": "Carboidratos", "value": "Xg" },
+      { "label": "Gordura", "value": "Xg" },
+      { "label": "Fibra", "value": "Xg" }
+    ]
   }
 ]
 Converta os dados abaixo seguindo estritamente essa estrutura.`;

@@ -25,12 +25,11 @@ export default function AdminClients() {
     const [importType, setImportType] = useState("clients"); // "clients" or "products"
 
     const PROMPT_CLIENTS = `Atue como um Arquiteto de Dados e Pesquisador Nutricional. Preciso criar uma estrutura completa de lojas e produtos.
-Regras:
-1. Gere um ARRAY JSON contendo objetos de CLIENTES.
-2. Cada Cliente deve ter um array de PRODUTOS.
-3. PESQUISA REAL: Para cada produto, busque na internet a tabela nutricional real (ex: TACO, USDA ou sites de fabricantes).
-4. Preencha os campos 'nutrition', 'benefits' e 'helpsWith' com dados REAIS e precisos.
-5. Se o usuário fornecer nomes/preços específicos de um Excel, use-os EXATAMENTE.
+Regras de Ouro (CRITICAL):
+1. PROIBIDO "N/A": Nunca retorne "N/A" ou valores vazios. Se não encontrar o dado exato, use uma MÉDIA ESTIMADA baseada em produtos similares.
+2. ENRIQUECIMENTO: Para cada produto, gere pelo menos 5 benefícios (benefits) e 5 indicações de ajuda (helpsWith).
+3. CATEGORIAS PADRÃO: Use APENAS: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
+4. PESQUISA REAL: Busque valores nutricionais reais (Calorias, Proteínas, Carboidratos, Gorduras, Fibras).
 
 Estrutura (Schema JSON):
 [
@@ -41,36 +40,48 @@ Estrutura (Schema JSON):
     "products": [
       {
         "name": "Nome exato",
-        "category": "Categoria",
+        "category": "Uma das categorias padrão",
         "price": 0.00,
-        "description": "Descrição real...",
-        "benefits": ["Benefício real", "..."],
-        "helpsWith": ["Auxílio real", "..."],
-        "tags": ["Dica de uso", "..."],
-        "nutrition": [ { "label": "Calorias", "value": "X kcal" }, ... ]
+        "description": "Descrição rica e vendedora...",
+        "benefits": ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "Benefício 5"],
+        "helpsWith": ["Ajuda com 1", "Ajuda com 2", "Ajuda com 3", "Ajuda com 4", "Ajuda com 5"],
+        "tags": ["Dica de uso", "Característica"],
+        "nutrition": [
+          { "label": "Calorias", "value": "X kcal" },
+          { "label": "Proteína", "value": "Xg" },
+          { "label": "Carboidratos", "value": "Xg" },
+          { "label": "Gordura", "value": "Xg" },
+          { "label": "Fibra", "value": "Xg" }
+        ]
       }
     ]
   }
 ]`;
 
     const PROMPT_PRODUCTS = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
-Regras:
-1. Gere APENAS um ARRAY JSON de objetos de PRODUTOS.
-2. PESQUISA REAL: Busque na internet a tabela nutricional e benefícios REAIS de cada produto.
-3. Use EXATAMENTE o nome e preço fornecidos (provindos de Excel).
-4. Preencha 'nutrition', 'benefits' e 'helpsWith' com informações verdadeiras.
+Regras de Ouro (CRITICAL):
+1. PROIBIDO "N/A": Nunca retorne "N/A" ou valores vazios. Se não encontrar o dado exato, use uma MÉDIA ESTIMADA.
+2. ENRIQUECIMENTO: Gere pelo menos 5 benefícios e 5 indicações de ajuda (helpsWith) por produto.
+3. CATEGORIAS PADRÃO: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
+4. NUTRIÇÃO: Tabela completa (Calorias, Proteína, Carbo, Gordura, Fibra).
 
 Estrutura (Schema JSON):
 [
   {
     "name": "Nome exato",
-    "category": "Categoria",
+    "category": "Uma das categorias padrão",
     "price": 0.00,
-    "description": "Destaque propriedades reais do produto...",
-    "benefits": ["Benefício real", "..."],
-    "helpsWith": ["Auxílio real", "..."],
-    "tags": ["Dica de uso", "..."],
-    "nutrition": [ { "label": "Proteína", "value": "Xg" }, ... ]
+    "description": "Propriedades e história do produto...",
+    "benefits": ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "Benefício 5"],
+    "helpsWith": ["Ajuda com 1", "Ajuda com 2", "Ajuda com 3", "Ajuda com 4", "Ajuda com 5"],
+    "tags": ["Dica 1", "Dica 2"],
+    "nutrition": [
+      { "label": "Calorias", "value": "X kcal" },
+      { "label": "Proteína", "value": "Xg" },
+      { "label": "Carboidratos", "value": "Xg" },
+      { "label": "Gordura", "value": "Xg" },
+      { "label": "Fibra", "value": "Xg" }
+    ]
   }
 ]`;
 
