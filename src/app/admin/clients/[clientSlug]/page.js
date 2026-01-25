@@ -17,7 +17,7 @@ export default function AdminClientDetail() {
         getClientBySlug, updateClient, toggleClientStatus,
         getProductsByClientId, toggleProductStatus, isLoaded,
         importProducts, searchGlobalProducts,
-        uploadFile, getClientFiles, deleteFile
+        uploadFile, getClientFiles, deleteFile, exportGlobalCatalog
     } = useData();
     const { addToast } = useToast();
 
@@ -257,6 +257,19 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
         }
     };
 
+    const handleExportGlobalBase = async () => {
+        try {
+            const data = await exportGlobalCatalog();
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Base Global");
+            XLSX.writeFile(wb, `base_global_limmi_${new Date().toISOString().split('T')[0]}.xlsx`);
+            addToast("Base Global exportada com sucesso!", "success");
+        } catch (error) {
+            addToast("Erro ao exportar base global.", "error");
+        }
+    };
+
     if (!isLoaded) return <div className={styles.loading}>Carregando dados...</div>;
     if (!client) return <div className={styles.loading}>Loja não encontrada</div>;
 
@@ -290,13 +303,21 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                 </div>
 
                 <div className={styles.headerActions}>
-                    {client.slug !== 'global-catalog' && (
+                    {client.slug !== 'global-catalog' ? (
                         <Button
                             variant={client.isActive ? "secondary" : "primary"}
                             icon={Power}
                             onClick={handleToggleStatus}
                         >
                             {client.isActive ? "Desativar Loja" : "Ativar Loja"}
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            icon={Download}
+                            onClick={handleExportGlobalBase}
+                        >
+                            Exportar Base (ID + Nome)
                         </Button>
                     )}
                 </div>

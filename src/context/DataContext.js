@@ -205,6 +205,16 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const exportGlobalCatalog = async () => {
+        try {
+            const res = await api.get('/products/global-export');
+            return res.data;
+        } catch (error) {
+            console.error("Error exporting global catalog:", error);
+            throw error;
+        }
+    };
+
     const updateProduct = (productId, updatedData) => {
         setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updatedData } : p));
     };
@@ -373,7 +383,8 @@ export const DataProvider = ({ children }) => {
             uploadFile,
             getClientFiles,
             deleteFile,
-            getProductInteractions // New
+            getProductInteractions,
+            exportGlobalCatalog
         }}>
             {children}
         </DataContext.Provider>
