@@ -176,6 +176,12 @@ export default function ProductDetail() {
                                 <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>💧</span>
                                 Informações Nutricionais (por 100g)
                             </div>
+                            <div className={styles.nutritionDisclaimer}>
+                                <span style={{ fontSize: '1.2rem' }}>📊</span>
+                                <div>
+                                    Valores nutricionais aproximados, baseados em referências públicas de nutrição. Podem variar conforme a origem, processamento e preparo do alimento.
+                                </div>
+                            </div>
                             <NutritionTable
                                 data={product.nutrition}
                                 onInteraction={() => trackInteraction(product.id, 'nutrition')}
