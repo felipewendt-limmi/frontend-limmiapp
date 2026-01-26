@@ -235,11 +235,6 @@
     font-size: 1rem;
 }
 
-.sectionIcon {
-    margin-right: 8px;
-    flex-shrink: 0;
-}
-
 .list {
     display: flex;
     flex-direction: column;
