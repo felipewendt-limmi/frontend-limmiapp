@@ -216,7 +216,9 @@ export default function ProductDetail() {
                                 <div className={styles.list}>
                                     {product.helpsWith.map((h, i) => (
                                         <div key={i} className={styles.listItem}>
-                                            <div className={styles.checkIcon}>✔</div>
+                                            <div className={styles.checkIcon}>
+                                                <Check size={14} />
+                                            </div>
                                             {h}
                                         </div>
                                     ))}
