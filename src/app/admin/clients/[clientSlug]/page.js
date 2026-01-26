@@ -317,7 +317,7 @@ Converta os dados abaixo seguindo estritamente essa estrutura.`;
                             icon={Download}
                             onClick={handleExportGlobalBase}
                         >
-                            Exportar Base (ID + Nome)
+                            Exportar Base (ID + Nome + Preço)
                         </Button>
                     )}
                 </div>
