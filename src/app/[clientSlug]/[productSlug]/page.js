@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import CanvasBackground from '@/components/layout/CanvasBackground/CanvasBackground';
 import Button from '@/components/ui/Button/Button';
-import { ArrowLeft, Check, Heart, Droplets, Leaf, ExternalLink, TriangleAlert } from 'lucide-react';
+import { ArrowLeft, Check, Heart, Droplets, Leaf, ExternalLink, TriangleAlert, Sparkles, Link as LinkIcon, BarChart3, Info } from 'lucide-react';
 import { clsx } from 'clsx';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
@@ -173,13 +173,13 @@ export default function ProductDetail() {
 
                         <div className={styles.nutritionSection}>
                             <div className={styles.sectionTitle}>
-                                <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>💧</span>
+                                <Droplets size={20} className={styles.sectionIcon} style={{ color: '#3b82f6' }} />
                                 Informações Nutricionais (por 100g)
                             </div>
                             <div className={styles.nutritionDisclaimer}>
-                                <span style={{ fontSize: '1.2rem' }}>📊</span>
+                                <BarChart3 size={18} style={{ flexShrink: 0 }} />
                                 <div>
-                                    Valores nutricionais aproximados, baseados em referências públicas de nutrição. Podem variar conforme a origem, processamento e preparo do alimento.
+                                    Valores nutricionais aproximados, baseados em referências públicas de nutrition. Podem variar conforme a origem, processamento e preparo do alimento.
                                 </div>
                             </div>
                             <NutritionTable
@@ -191,13 +191,15 @@ export default function ProductDetail() {
                         {product.benefits && product.benefits.length > 0 && (
                             <div className={styles.dynamicSection}>
                                 <div className={styles.sectionTitle}>
-                                    <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>🌿</span>
+                                    <Leaf size={20} className={styles.sectionIcon} style={{ color: '#16a34a' }} />
                                     Benefícios Principais
                                 </div>
                                 <div className={styles.list}>
                                     {product.benefits.map((b, i) => (
                                         <div key={i} className={styles.listItem}>
-                                            <div className={styles.checkIcon}>✔</div>
+                                            <div className={styles.checkIcon}>
+                                                <Check size={12} strokeWidth={3} />
+                                            </div>
                                             {b}
                                         </div>
                                     ))}
@@ -208,13 +210,15 @@ export default function ProductDetail() {
                         {product.helpsWith && product.helpsWith.length > 0 && (
                             <div className={styles.dynamicSection}>
                                 <div className={styles.sectionTitle}>
-                                    <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>✨</span>
+                                    <Sparkles size={20} className={styles.sectionIcon} style={{ color: '#f59e0b' }} />
                                     Pode Ajudar Com
                                 </div>
                                 <div className={styles.list}>
                                     {product.helpsWith.map((h, i) => (
                                         <div key={i} className={styles.listItem}>
-                                            <div className={styles.checkIcon}>✔</div>
+                                            <div className={styles.checkIcon}>
+                                                <Check size={12} strokeWidth={3} />
+                                            </div>
                                             {h}
                                         </div>
                                     ))}
@@ -226,7 +230,7 @@ export default function ProductDetail() {
                         {product.tags && product.tags.length > 0 && (
                             <div className={styles.dynamicSection}>
                                 <div className={styles.sectionTitle}>
-                                    <span style={{ marginRight: '8px', fontSize: '1.2rem' }}>🔗</span>
+                                    <LinkIcon size={20} className={styles.sectionIcon} style={{ color: '#6366f1' }} />
                                     Combina Bem Com
                                 </div>
                                 <div className={styles.tags}>
@@ -237,10 +241,9 @@ export default function ProductDetail() {
                             </div>
                         )}
 
-
                         {/* Educational Disclaimer */}
                         <div className={styles.disclaimerBox}>
-                            <span style={{ fontSize: '1.2rem' }}>ℹ️</span>
+                            <Info size={20} style={{ flexShrink: 0 }} />
                             <div>
                                 <strong>Informação Educacional:</strong> Este conteúdo é apenas informativo e não substitui orientação médica profissional. Consulte um médico ou nutricionista antes de usar como tratamento.
                             </div>
