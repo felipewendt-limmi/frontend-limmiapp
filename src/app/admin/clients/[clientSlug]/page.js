@@ -153,15 +153,15 @@ export default function AdminClientDetail() {
         const data = products.map(product => {
             if (isGlobal) {
                 return {
-                    "Nome do Produto": product.name,
+                    "Produto": product.name,
                     "Categoria": product.category || ""
                 };
             }
             return {
-                "Nome do Produto": product.name,
+                "Produto": product.name,
                 "Categoria": product.category || "",
-                "URL do Produto": `${window.location.origin}/${client.slug}/${product.slug}`,
-                "Preço": product.price || "Consulte"
+                "Preço": product.price || "Consulte",
+                "URL": `${window.location.origin.replace('admin.', '')}/${client.slug}/${product.slug}`
             };
         });
 
@@ -176,23 +176,33 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    const FULL_PROMPT_TEXT = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
-Regras de Ouro (CRITICAL):
-1. PROIBIDO "N/A": Nunca retorne "N/A" ou valores vazios para nutrição. Se não encontrar dado exato, use MÉDIA ESTIMADA (ex: 350kcal para grãos).
-2. ENRIQUECIMENTO: Gere pelo menos 5 benefícios e 5 dicas de "ajuda com" (helpsWith) para cada produto.
-3. CATEGORIAS PADRÃO: Use APENAS: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
-4. NUTRIÇÃO: Tabela completa (Calorias, Proteína, Carboidratos, Gordura, Fibra).
+    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados Nutricionais. Sua tarefa é cruzar dois arquivos Excel para gerar um JSON de importação perfeito para o sistema LIMMI.
+
+### 📥 ARQUIVOS DE ENTRADA:
+1. **REFERÊNCIA (Base Global):** Contém os produtos que JÁ existem no sistema (tem coluna "id" e "name").
+2. **LISTA DA LOJA:** Contém os produtos que queremos associar a este cliente (tem "name" e "price").
+
+### ⚙️ LÓGICA DE CRUZAMENTO:
+- **PROCURE** o nome do produto da "Lista da Loja" na "Base Global".
+- **SE ENCONTRAR (Vínculo):** Use exatamente o "id" da Base Global no campo "id". Use o preço da "Lista da Loja".
+- **SE NÃO ENCONTRAR (Novo):** Deixe o campo "id" VAZIO ou nulo. O sistema criará um novo registro global.
+
+### 📜 REGRAS DE OURO (CRITICAL):
+1. **PROIBIDO "N/A":** Nunca retorne "N/A" para nutrição. Pesquise e use a MÉDIA TÉCNICA (ex: TBCA/USDA).
+2. **ENRIQUECIMENTO:** Gere exatamente 5 benefícios e 5 dicas de "ajuda com" (helpsWith).
+3. **PREÇOS:** De extrema importância que o valor do produto da "Lista da Loja" seja preservado exatamente.
 
 Estrutura (Schema JSON):
 [
   {
+    "id": "UUID-DO-PRODUTO-SE-TIVER-NA-BASE",
     "name": "Nome exato",
-    "category": "Uma das categorias padrão",
+    "category": "Oleaginosas, Temperos, etc.",
     "price": 0.00,
-    "description": "Propriedades nutricionais e dicas de preparo...",
-    "benefits": ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "Benefício 5"],
-    "helpsWith": ["Ajuda com 1", "Ajuda com 2", "Ajuda com 3", "Ajuda com 4", "Ajuda com 5"],
-    "tags": ["Dica 1", "Dica 2"],
+    "description": "Texto rico e vendedora...",
+    "benefits": ["Benefício 1", "2", "3", "4", "5"],
+    "helpsWith": ["Ajuda com 1", "2", "3", "4", "5"],
+    "tags": ["Dica 1", "2"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
       { "label": "Proteína", "value": "Xg" },
@@ -202,7 +212,7 @@ Estrutura (Schema JSON):
     ]
   }
 ]
-Converta os dados abaixo seguindo estritamente essa estrutura.`;
+Converta os dados seguindo estritamente essa estrutura.`;
 
     const handleCopyPrompt = () => {
         const text = FULL_PROMPT_TEXT;

@@ -58,22 +58,22 @@ Estrutura (Schema JSON):
   }
 ]`;
 
-    const PROMPT_PRODUCTS = `Atue como um Especialista em Dados Nutricionais. Preciso transformar uma lista de produtos em um JSON estruturado.
+    const PROMPT_PRODUCTS = `Atue como um Engenheiro Mestre de Dados Nutricionais. Sua tarefa é transformar uma lista de produtos em texto bruto no catágo MASTER de produtos.
 Regras de Ouro (CRITICAL):
-1. PROIBIDO "N/A": Nunca retorne "N/A" ou valores vazios. Se não encontrar o dado exato, use uma MÉDIA ESTIMADA.
-2. ENRIQUECIMENTO: Gere pelo menos 5 benefícios e 5 indicações de ajuda (helpsWith) por produto.
-3. CATEGORIAS PADRÃO: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
-4. NUTRIÇÃO: Tabela completa (Calorias, Proteína, Carbo, Gordura, Fibra).
+1. PROIBIDO "N/A": Nunca retorne "N/A". Se o dado exato não for encontrado, você DEVE pesquisar e usar a MÉDIA TÉCNICA (ex: TBCA/TACO/USDA).
+2. ENRIQUECIMENTO MÁXIMO: Gere exatamente 5 benefícios reais e 5 dicas de "ajuda com" (helpsWith) por produto.
+3. CATEGORIAS PADRÃO: Use APENAS: Grãos e Cereais, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Adoçantes, Chás, Suplementos.
+4. VALORES PRECISOS: Se a lista contiver preços, use-os EXATAMENTE. Caso contrário, use 0.00.
 
 Estrutura (Schema JSON):
 [
   {
-    "name": "Nome exato",
+    "name": "Nome exato do produto",
     "category": "Uma das categorias padrão",
     "price": 0.00,
-    "description": "Propriedades e história do produto...",
-    "benefits": ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "Benefício 5"],
-    "helpsWith": ["Ajuda com 1", "Ajuda com 2", "Ajuda com 3", "Ajuda com 4", "Ajuda com 5"],
+    "description": "Explicação rica sobre as propriedades nutricionais e história...",
+    "benefits": ["Benefício 1", "2", "3", "4", "5"],
+    "helpsWith": ["Ajuda com 1", "2", "3", "4", "5"],
     "tags": ["Dica 1", "Dica 2"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
@@ -83,7 +83,8 @@ Estrutura (Schema JSON):
       { "label": "Fibra", "value": "Xg" }
     ]
   }
-]`;
+]
+Converta a lista de texto abaixo seguindo estritamente essa estrutura.`;
 
     const handleCopyPrompt = () => {
         const text = importType === "clients" ? PROMPT_CLIENTS : PROMPT_PRODUCTS;
