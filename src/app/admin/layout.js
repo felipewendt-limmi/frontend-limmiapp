@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { LayoutDashboard, Users, LogOut, Store, Globe, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, Store, Globe, Settings, FileText } from 'lucide-react';
 import styles from './layout.module.css';
 import { clsx } from 'clsx';
 
@@ -60,6 +60,13 @@ export default function AdminLayout({ children }) {
                         className={clsx(styles.navItem, isActive('/admin/clients') && styles.active)}
                     >
                         <Users size={20} /> Clientes
+                    </Link>
+
+                    <Link
+                        href="/admin/prompts"
+                        className={clsx(styles.navItem, isActive('/admin/prompts') && styles.active)}
+                    >
+                        <FileText size={20} /> Prompts
                     </Link>
 
                     <Link

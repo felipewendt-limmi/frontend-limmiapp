@@ -176,43 +176,54 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados Nutricionais. Sua tarefa é cruzar dois arquivos Excel para gerar um JSON de importação perfeito para o sistema LIMMI.
+    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados e Analista de Mercado. Sua tarefa é cruzar dois conjuntos de dados (Base Master e Lista da Loja) fornecidos via Excel para gerar o JSON de importação de um cliente no sistema LIMMI.
 
-### 📥 ARQUIVOS DE ENTRADA:
-1. **REFERÊNCIA (Base Global):** Contém os produtos que JÁ existem no sistema (tem coluna "id" e "name").
-2. **LISTA DA LOJA:** Contém os produtos que queremos associar a este cliente (tem "name" e "price").
+INSTRUÇÕES DE EXECUÇÃO:
 
-### ⚙️ LÓGICA DE CRUZAMENTO:
-- **PROCURE** o nome do produto da "Lista da Loja" na "Base Global".
-- **SE ENCONTRAR (Vínculo):** Use exatamente o "id" da Base Global no campo "id". Use o preço da "Lista da Loja".
-- **SE NÃO ENCONTRAR (Novo):** Deixe o campo "id" VAZIO ou nulo. O sistema criará um novo registro global.
+1. LEIA A BASE MASTER: Este arquivo contém os produtos já existentes com as colunas "id" (UUID), "name" e "category".
+2. LEIA A LISTA DA LOJA: Este arquivo contém os nomes dos produtos e os preços específicos praticados pelo cliente.
 
-### 📜 REGRAS DE OURO (CRITICAL):
-1. **PROIBIDO "N/A":** Nunca retorne "N/A" para nutrição. Pesquise e use a MÉDIA TÉCNICA (ex: TBCA/USDA).
-2. **ENRIQUECIMENTO:** Gere exatamente 5 benefícios e 5 dicas de "ajuda com" (helpsWith).
-3. **PREÇOS:** De extrema importância que o valor do produto da "Lista da Loja" seja preservado exatamente.
+LÓGICA DE CRUZAMENTO:
+* Antes de comparar, normalize os nomes dos produtos, removendo acentos, diferenças de maiúsculas/minúsculas, espaços extras e variações simples de plural/singular.
+* Se o nome do produto na Lista da Loja existir na Base Master, você DEVE:
+* Incluir o campo "id" com o UUID correspondente da Base Master.
+* Utilizar a "category" exatamente como definida na Base Master.
+* O campo "price" DEVE refletir exatamente o valor numérico presente na planilha da loja, sem qualquer alteração.
+* Se o nome NÃO existir na Base Master:
+* Gere o objeto SEM o campo "id".
+* Atribua uma "category" válida conforme o padrão do sistema.
+REGRAS RÍGIDAS DE QUALIDADE:
+1. PROIBIDO "N/A": Nunca retorne "N/A", null ou valores vazios. Se dados nutricionais estiverem ausentes, utilize MÉDIAS TÉCNICAS confiáveis (TBCA, TACO ou USDA) para o tipo de produto.
+2. PREÇO NÃO ESTIMADO: É terminantemente proibido estimar, recalcular ou ajustar preços. O valor deve ser exatamente o informado pelo cliente.
+3. ENRIQUECIMENTO COMPLETO: Todos os produtos devem conter: descrição; exatamente 5 benefícios; exatamente 5 helpsWith; tabela nutricional completa. Mesmo quando o produto já existir na Base Master.
+4. DESCRIÇÃO RICA: O campo "description" deve ser informativo e comercial, destacando: origem do alimento; uso culinário comum; propriedades nutricionais reais. O texto deve ser claro, educativo e atrativo.
+5. TAGS CULINÁRIAS: O campo "tags" deve conter exclusivamente nomes de ALIMENTOS REAIS que combinam com o produto (ex: arroz, frango, banana, iogurte). É proibido usar características, adjetivos, propriedades nutricionais ou termos técnicos como tags.
+6. CATEGORIAS VÁLIDAS: Caso o produto não exista na Base Master, a categoria atribuída DEVE ser uma das categorias padrão do sistema e semanticamente compatível com o produto, sendo proibido criar novas categorias.
+ORDEM DETERMINÍSTICA:
+Os campos do JSON devem seguir exatamente a ordem definida na estrutura abaixo, sem omissões ou reordenação.
+SAÍDA:
+Retorne APENAS um array JSON puro, pronto para ser processado pela API, sem comentários ou texto adicional.
 
-Estrutura (Schema JSON):
+ESTRUTURA JSON:
 [
   {
-    "id": "UUID-DO-PRODUTO-SE-TIVER-NA-BASE",
-    "name": "Nome exato",
-    "category": "Oleaginosas, Temperos, etc.",
-    "price": 0.00,
-    "description": "Texto rico e vendedora...",
-    "benefits": ["Benefício 1", "2", "3", "4", "5"],
-    "helpsWith": ["Ajuda com 1", "2", "3", "4", "5"],
-    "tags": ["Dica 1", "2"],
+    "id": "UUID-DO-ARQUIVO-BASE-SE-HOUVER",
+    "name": "Nome do Produto",
+    "price": 10.50,
+    "category": "Categoria válida",
+    "description": "Descrição rica e informativa...",
+    "benefits": ["...", "...", "...", "...", "..."],
+    "helpsWith": ["...", "...", "...", "...", "..."],
+    "tags": ["Alimento 1", "Alimento 2", "Alimento 3"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
-      { "label": "Proteína", "value": "Xg" },
-      { "label": "Carboidratos", "value": "Xg" },
-      { "label": "Gordura", "value": "Xg" },
-      { "label": "Fibra", "value": "Xg" }
+      { "label": "Proteína", "value": "X g" },
+      { "label": "Carboidratos", "value": "X g" },
+      { "label": "Gordura", "value": "X g" },
+      { "label": "Fibra", "value": "X g" }
     ]
   }
-]
-Converta os dados seguindo estritamente essa estrutura.`;
+]`;
 
     const handleCopyPrompt = () => {
         const text = FULL_PROMPT_TEXT;
