@@ -185,7 +185,7 @@ INSTRUÇÕES:
 1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
 2. PREÇOS SEPARADOS:
    - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Se houver um novo preço sugerido para o mercado global, informe aqui. Caso contrário, repita o preço da loja ou deixe o valor de mercado atual.
+   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
 3. REGRAS RÍGIDAS:
    - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
    - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.

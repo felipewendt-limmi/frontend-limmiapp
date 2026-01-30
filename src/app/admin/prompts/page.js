@@ -48,7 +48,7 @@ INSTRUÇÕES:
 1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
 2. PREÇOS SEPARADOS:
    - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Se houver um novo preço sugerido para o mercado global, informe aqui. Caso contrário, repita o preço da loja ou deixe o valor de mercado atual.
+   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
 3. REGRAS RÍGIDAS:
    - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
    - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
@@ -83,7 +83,43 @@ ESTRUTURA JSON:
 
         setPromptMaster(savedMaster || DEFAULT_MASTER);
         setPromptClient(savedClient || DEFAULT_CLIENT);
-        setPromptExtra(savedExtra || "");
+        setPromptExtra(savedExtra || `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
+
+Receberá uma lista de produtos.
+Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
+
+Critérios OBRIGATÓRIOS para MANTER o produto:
+- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto estável em temperatura ambiente.
+- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade (granel).
+
+Critérios OBRIGATÓRIOS para EXCLUIR:
+- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
+- Produtos frescos (frutas, verduras, legumes in natura).
+- Produtos refrigerados ou congelados.
+- Produtos prontos, assados, recheados ou de padaria.
+- Carnes, frios, laticínios, embutidos.
+- Bebidas líquidas.
+- Utensílios, embalagens, decoração, brindes, brinquedos.
+- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Serviços ou taxas.
+- Produtos infantis industrializados com marca fechada.
+- Massas frescas, pizzas, salgados, pratos prontos.
+
+Regras de saída:
+- Retorne APENAS a lista final dos produtos válidos.
+- Um produto por linha.
+- Não categorizar.
+- Não explicar.
+- Não justificar.
+- Não corrigir nomes.
+- Não adicionar produtos novos.
+- Não remover palavras do nome.
+- Apenas copiar exatamente o nome do produto aprovado.
+
+Lista de produtos:
+[COLAR A LISTA COMPLETA AQUI]`);
     }, []);
 
     const handleSaveMaster = () => {

@@ -31,7 +31,7 @@ INSTRUÇÕES:
 2. PRODUTOS: Cada loja possui um array "products". Use a Base Master como referência para UUIDs ("id").
 3. PREÇOS SEPARADOS:
    - "clientPrice": Preço final da loja.
-   - "marketPrice": Preço base global sugerido.
+   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
 4. QUALIDADE: Proibido "N/A". Se faltar info, use médias técnicas reais. Gere 5 benefícios e 5 dicas por produto.
 
 ESTRUTURA JSON:
