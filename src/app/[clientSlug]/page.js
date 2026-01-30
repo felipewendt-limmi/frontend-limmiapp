@@ -46,7 +46,6 @@ export default function StoreHome() {
                     backgroundImage: client.coverImage ? `url(${client.coverImage})` : 'none',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    // Stronger overlay for readability
                     backgroundColor: client.coverImage ? 'rgba(0,0,0,0.6)' : '#ffffff',
                     backgroundBlendMode: 'overlay',
                     color: client.coverImage ? '#ffffff' : '#0f172a',
@@ -67,7 +66,7 @@ export default function StoreHome() {
                         marginBottom: '1rem',
                         textShadow: client.coverImage ? '0 4px 20px rgba(0,0,0,0.5)' : 'none',
                         letterSpacing: '-0.02em',
-                        color: client.coverImage ? '#ffffff' : undefined, // Force white if image exists
+                        color: client.coverImage ? '#ffffff' : undefined,
                     }}>
                         {client.name}
                     </h1>
@@ -79,23 +78,42 @@ export default function StoreHome() {
                         lineHeight: 1.6,
                         fontWeight: '500',
                         textShadow: client.coverImage ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
-                        color: client.coverImage ? '#e2e8f0' : undefined, // Force light gray/white if image exists
+                        color: client.coverImage ? '#e2e8f0' : undefined,
                     }}>
                         {client.description || "Bem-vindo à nossa loja virtual."}
                     </p>
                 </section>
 
-                <h2 className={styles.sectionTitle}>Nossos Produtos</h2>
-
-                {activeProducts.length > 0 ? (
-                    <div className={styles.grid}>
-                        {activeProducts.map(product => (
-                            <ProductCard key={product.id} product={product} clientSlug={client.slug} />
-                        ))}
-                    </div>
-                ) : (
-                    <EmptyState title="Nenhum produto cadastrado" />
-                )}
+                <div style={{
+                    padding: '4rem 2rem',
+                    background: 'white',
+                    borderRadius: '20px',
+                    textAlign: 'center',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                    width: '100%',
+                    maxWidth: '800px'
+                }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🔒</div>
+                    <h2 style={{ fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '1rem' }}>Acesso Restrito</h2>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2rem' }}>
+                        Esta página de listagem é privada. Por favor, acesse os produtos através dos links diretos fornecidos pela loja.
+                    </p>
+                    <button
+                        onClick={() => window.location.href = 'https://limmi.app'}
+                        style={{
+                            background: '#2563eb',
+                            color: 'white',
+                            padding: '0.75rem 2rem',
+                            borderRadius: '12px',
+                            fontWeight: '600',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '1rem'
+                        }}
+                    >
+                        Voltar para LIMMI
+                    </button>
+                </div>
             </main>
         </>
     );

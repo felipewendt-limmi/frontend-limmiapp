@@ -10,6 +10,9 @@ import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 import InteractionLogModal from '@/components/business/InteractionLogModal/InteractionLogModal';
 
+import EmptyState from '@/components/ui/EmptyState/EmptyState';
+import { Database } from 'lucide-react';
+
 export default function AdminClientDetail() {
     const params = useParams();
     const router = useRouter();
@@ -176,45 +179,30 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados e Analista de Mercado. Sua tarefa é cruzar dois conjuntos de dados (Base Master e Lista da Loja) fornecidos via Excel para gerar o JSON de importação de um cliente no sistema LIMMI.
+    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
 
-INSTRUÇÕES DE EXECUÇÃO:
-
-1. LEIA A BASE MASTER: Este arquivo contém os produtos já existentes com as colunas "id" (UUID), "name" e "category".
-2. LEIA A LISTA DA LOJA: Este arquivo contém os nomes dos produtos e os preços específicos praticados pelo cliente.
-
-LÓGICA DE CRUZAMENTO:
-* Antes de comparar, normalize os nomes dos produtos, removendo acentos, diferenças de maiúsculas/minúsculas, espaços extras e variações simples de plural/singular.
-* Se o nome do produto na Lista da Loja existir na Base Master, você DEVE:
-* Incluir o campo "id" com o UUID correspondente da Base Master.
-* Utilizar a "category" exatamente como definida na Base Master.
-* O campo "price" DEVE refletir exatamente o valor numérico presente na planilha da loja, sem qualquer alteração.
-* Se o nome NÃO existir na Base Master:
-* Gere o objeto SEM o campo "id".
-* Atribua uma "category" válida conforme o padrão do sistema.
-REGRAS RÍGIDAS DE QUALIDADE:
-1. PROIBIDO "N/A": Nunca retorne "N/A", null ou valores vazios. Se dados nutricionais estiverem ausentes, utilize MÉDIAS TÉCNICAS confiáveis (TBCA, TACO ou USDA) para o tipo de produto.
-2. PREÇO NÃO ESTIMADO: É terminantemente proibido estimar, recalcular ou ajustar preços. O valor deve ser exatamente o informado pelo cliente.
-3. ENRIQUECIMENTO COMPLETO: Todos os produtos devem conter: descrição; exatamente 5 benefícios; exatamente 5 helpsWith; tabela nutricional completa. Mesmo quando o produto já existir na Base Master.
-4. DESCRIÇÃO RICA: O campo "description" deve ser informativo e comercial, destacando: origem do alimento; uso culinário comum; propriedades nutricionais reais. O texto deve ser claro, educativo e atrativo.
-5. TAGS CULINÁRIAS: O campo "tags" deve conter exclusivamente nomes de ALIMENTOS REAIS que combinam com o produto (ex: arroz, frango, banana, iogurte). É proibido usar características, adjetivos, propriedades nutricionais ou termos técnicos como tags.
-6. CATEGORIAS VÁLIDAS: Caso o produto não exista na Base Master, a categoria atribuída DEVE ser uma das categorias padrão do sistema e semanticamente compatível com o produto, sendo proibido criar novas categorias.
-ORDEM DETERMINÍSTICA:
-Os campos do JSON devem seguir exatamente a ordem definida na estrutura abaixo, sem omissões ou reordenação.
-SAÍDA:
-Retorne APENAS um array JSON puro, pronto para ser processado pela API, sem comentários ou texto adicional.
+INSTRUÇÕES:
+1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
+2. PREÇOS SEPARADOS:
+   - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
+   - "marketPrice": Se houver um novo preço sugerido para o mercado global, informe aqui. Caso contrário, repita o preço da loja ou deixe o valor de mercado atual.
+3. REGRAS RÍGIDAS:
+   - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
+   - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
+   - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
 
 ESTRUTURA JSON:
 [
   {
-    "id": "UUID-DO-ARQUIVO-BASE-SE-HOUVER",
+    "id": "UUID-DA-BASE-MASTER-SE-HOUVER",
     "name": "Nome do Produto",
-    "price": 10.50,
+    "clientPrice": 10.50,
+    "marketPrice": 12.00,
     "category": "Categoria válida",
-    "description": "Descrição rica e informativa...",
+    "description": "Descrição rica...",
     "benefits": ["...", "...", "...", "...", "..."],
     "helpsWith": ["...", "...", "...", "...", "..."],
-    "tags": ["Alimento 1", "Alimento 2", "Alimento 3"],
+    "tags": ["Alimento 1", "Alimento 2"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
       { "label": "Proteína", "value": "X g" },
@@ -292,7 +280,28 @@ ESTRUTURA JSON:
     };
 
     if (!isLoaded) return <div className={styles.loading}>Carregando dados...</div>;
-    if (!client) return <div className={styles.loading}>Loja não encontrada</div>;
+
+    if (!client) {
+        if (params.clientSlug === 'global-catalog') {
+            return (
+                <div className={styles.container}>
+                    <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
+                        <EmptyState
+                            title="Base Global não inicializada"
+                            description="A base global de produtos ainda não foi criada no sistema."
+                            icon={Database}
+                        />
+                        <div style={{ marginTop: '2rem' }}>
+                            <Button icon={ArrowLeft} variant="secondary" onClick={() => router.push('/admin/clients')}>
+                                Voltar para Clientes
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        return <div className={styles.loading}>Loja não encontrada</div>;
+    }
 
     // Analytics Aggregation
     const totalViews = products.reduce((acc, p) => acc + (p.views || 0), 0);
@@ -390,7 +399,7 @@ ESTRUTURA JSON:
                                         <div>
                                             <div className={styles.productName}>{product.name}</div>
                                             <div className={styles.productAlerts}>
-                                                <span className={styles.productSlug}>/{product.slug} • {product.price}</span>
+                                                <span className={styles.productSlug}>/{product.slug} • R$ {product.price?.toFixed(2) || "0.00"}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -422,7 +431,15 @@ ESTRUTURA JSON:
                                 </div>
                             ))}
                         </div>
-                    ) : <div className={styles.emptyState}>Nenhum produto.</div>}
+                    ) : (
+                        <div style={{ padding: '3rem' }}>
+                            <EmptyState
+                                title={client.slug === 'global-catalog' ? "Nenhum produto global" : "Nenhum produto nesta loja"}
+                                description={client.slug === 'global-catalog' ? "O catálogo global está vazio. Comece importando produtos." : "Esta loja ainda não possui produtos cadastrados."}
+                                icon={Package}
+                            />
+                        </div>
+                    )}
                 </section>
             )}
 
