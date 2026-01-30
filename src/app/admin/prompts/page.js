@@ -42,17 +42,18 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const DEFAULT_CLIENT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
+    const DEFAULT_CLIENT = `Atue como um Engenheiro de Dados e Especialista em Varejo. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação, aplicando critérios técnicos de seleção.
 
-INSTRUÇÕES:
-1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
-2. PREÇOS SEPARADOS:
-   - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
-3. REGRAS RÍGIDAS:
-   - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
-   - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
-   - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
+INSTRUÇÕES DE FILTRAGEM (RETAIL EXPERT):
+1. MANTRE: Apenas produtos secos, desidratados, em pó, grãos, sementes, oleaginosas, farinhas e temperos que façam sentido serem vendidos a granel (por peso).
+2. EXCLUIR: Produtos frescos (in natura), refrigerados, congelados, bebidas líquidas, itens por unidade (UND), padaria pronta ou produtos não alimentícios.
+
+LÓGICA DE CRUZAMENTO E PREÇOS:
+1. VÍNCULO: Se o produto já existe na Base Master, use o "id" (UUID) correspondente.
+2. PREÇOS:
+   - "clientPrice": Informe o preço exato presente na lista da loja. Se o produto NÃO tiver um preço informado na lista, deixe este campo nulo/vazio.
+   - "marketPrice": Obrigatório. Preço base de mercado (referência global) por 100g. Use valores reais médios.
+3. QUALIDADE: Proibido "N/A". Se faltar info, use médias técnicas. Gere Descrição Rica, 5 Benefícios e 5 Dicas.
 
 ESTRUTURA JSON:
 [

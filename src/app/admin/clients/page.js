@@ -22,17 +22,20 @@ export default function AdminClients() {
     const [importJson, setImportJson] = useState("");
     const [importing, setImporting] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
-    const [importType, setImportType] = useState("clients"); // "clients" or "products"
+    const [importType, setImportType] = useState("clients"); // "clients", "products", or "correction"
 
-    const PROMPT_CLIENTS = `Atue como um Engenheiro de Dados. Sua tarefa é transformar uma lista de lojas e seus produtos em um JSON de importação em massa.
+    const PROMPT_CLIENTS = `Atue como um Engenheiro de Dados e Especialista em Varejo. Sua tarefa é transformar uma lista de lojas e seus produtos em um JSON de importação em massa, aplicando critérios técnicos de seleção.
 
-INSTRUÇÕES:
-1. ESTRUTURA: Gere um array de objetos, onde cada objeto é uma LOJA.
-2. PRODUTOS: Cada loja possui um array "products". Use a Base Master como referência para UUIDs ("id").
-3. PREÇOS SEPARADOS:
-   - "clientPrice": Preço final da loja.
-   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
-4. QUALIDADE: Proibido "N/A". Se faltar info, use médias técnicas reais. Gere 5 benefícios e 5 dicas por produto.
+INSTRUÇÕES DE FILTRAGEM (RETAIL EXPERT):
+1. MANTER: Apenas produtos secos, desidratados, em pó, grãos, sementes, oleaginosas, farinhas e temperos que façam sentido serem vendidos a granel (por peso).
+2. EXCLUIR: Produtos frescos (in natura), refrigerados, congelados, bebidas líquidas, itens por unidade (UND), padaria pronta ou produtos não alimentícios.
+
+LÓGICA DE CRUZAMENTO E PREÇOS:
+1. VÍNCULO: Use a Base Master como referência para UUIDs ("id").
+2. PREÇOS:
+   - "clientPrice": Informe o preço exato presente na lista da loja. Se o produto NÃO tiver um preço informado na lista, deixe este campo nulo/vazio.
+   - "marketPrice": Obrigatório. Preço base de mercado (referência global) por 100g. Use valores reais médios.
+3. QUALIDADE: Proibido "N/A". Se faltar info, use médias técnicas reais. Gere 5 benefícios e 5 dicas por produto.
 
 ESTRUTURA JSON:
 [
@@ -77,8 +80,48 @@ ESTRUTURA JSON:
   }
 ]`;
 
+    const RETAIL_EXPERT_PROMPT = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
+
+Receberá uma lista de produtos.
+Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
+
+Critérios OBRIGATÓRIOS para MANTER o produto:
+    - Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto estável em temperatura ambiente.
+- Produto normalmente vendido por peso(100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade(granel).
+
+Critérios OBRIGATÓRIOS para EXCLUIR:
+    - Produtos vendidos por unidade(UND, bandeja, maço, espiga, metade).
+- Produtos frescos(frutas, verduras, legumes in natura).
+- Produtos refrigerados ou congelados.
+- Produtos prontos, assados, recheados ou de padaria.
+- Carnes, frios, laticínios, embutidos.
+- Bebidas líquidas.
+- Utensílios, embalagens, decoração, brindes, brinquedos.
+- Produtos não alimentícios(máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Serviços ou taxas.
+- Produtos infantis industrializados com marca fechada.
+- Massas frescas, pizzas, salgados, pratos prontos.
+
+Regras de saída:
+    - Retorne APENAS a lista final dos produtos válidos.
+- Um produto por linha.
+- Não categorizar.
+- Não explicar.
+- Não justificar.
+- Não corrigir nomes.
+- Não adicionar produtos novos.
+- Não remover palavras do nome.
+- Apenas copiar exatamente o nome do produto aprovado.
+
+Lista de produtos:
+    [COLAR A LISTA COMPLETA AQUI]`;
+
     const handleCopyPrompt = () => {
-        const text = importType === "clients" ? PROMPT_CLIENTS : PROMPT_PRODUCTS;
+        let text = PROMPT_CLIENTS;
+        if (importType === "products") text = PROMPT_PRODUCTS;
+        if (importType === "correction") text = RETAIL_EXPERT_PROMPT;
         navigator.clipboard.writeText(text);
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
@@ -170,7 +213,7 @@ ESTRUTURA JSON:
                                 <Store size={24} color="#1e40af" />
                             </div>
                             <div className={styles.menu}>
-                                <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive}`}>
+                                <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive} `}>
                                     {client.isActive ? "Ativo" : "Inativo"}
                                 </span>
                             </div>
@@ -181,13 +224,13 @@ ESTRUTURA JSON:
                             {(client.products || []).length} Produtos • {(client.orders || []).length} Pedidos
                         </p>
                         <div style={{ marginTop: '0.5rem' }}>
-                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
+                            <a href={`/ ${client.slug} `} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
                                 <ExternalLink size={14} /> Ver Loja
                             </a>
                         </div>
 
                         <div className={styles.cardActions}>
-                            <Link href={`/admin/clients/${client.slug}`} style={{ width: '100%' }}>
+                            <Link href={`/ admin / clients / ${client.slug} `} style={{ width: '100%' }}>
                                 <Button variant="ghost" style={{ width: '100%', border: '1px solid #e2e8f0' }}>
                                     Gerenciar Loja
                                 </Button>
@@ -245,33 +288,58 @@ ESTRUTURA JSON:
                         </div>
 
                         <div className={styles.importSteps}>
-                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
-                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''} `} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''} `} onClick={() => setImportStep(2)}>2. Colar JSON</div>
                         </div>
 
                         {importStep === 1 ? (
                             <div className={styles.promptStep}>
-                                <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
+                                <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
                                     <button
                                         onClick={() => setImportType("clients")}
-                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: importType === 'clients' ? '2px solid #2563eb' : '1px solid #e2e8f0', background: 'white', color: importType === 'clients' ? '#2563eb' : '#cbd5e1', fontWeight: 600, cursor: 'pointer' }}
+                                        style={{
+                                            flex: 1, padding: '10px', borderRadius: '8px',
+                                            border: importType === 'clients' ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                                            background: 'white', color: importType === 'clients' ? '#2563eb' : '#64748b',
+                                            fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem'
+                                        }}
                                     >
-                                        Lojas + Produtos
+                                        Lojas + Prod.
                                     </button>
                                     <button
                                         onClick={() => setImportType("products")}
-                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: importType === 'products' ? '2px solid #2563eb' : '1px solid #e2e8f0', background: 'white', color: importType === 'products' ? '#2563eb' : '#cbd5e1', fontWeight: 600, cursor: 'pointer' }}
+                                        style={{
+                                            flex: 1, padding: '10px', borderRadius: '8px',
+                                            border: importType === 'products' ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                                            background: 'white', color: importType === 'products' ? '#2563eb' : '#64748b',
+                                            fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem'
+                                        }}
                                     >
-                                        Apenas Produtos
+                                        Apenas Prod.
+                                    </button>
+                                    <button
+                                        onClick={() => setImportType("correction")}
+                                        style={{
+                                            flex: 1, padding: '10px', borderRadius: '8px',
+                                            border: importType === 'correction' ? '2px solid #e11d48' : '1px solid #e2e8f0',
+                                            background: 'white', color: importType === 'correction' ? '#e11d48' : '#64748b',
+                                            fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem'
+                                        }}
+                                    >
+                                        Correção Lista
                                     </button>
                                 </div>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                                    {importType === 'clients'
-                                        ? "Use este prompt para gerar lojas inteiras com seus produtos (Ideal para migração)."
-                                        : "Use este prompt para gerar uma lista de produtos avulsos para o Catálogo Global."}
+                                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                                    {importType === 'clients' && "Use este prompt para importar lojas inteiras com seus produtos."}
+                                    {importType === 'products' && "Use este prompt para importar produtos para o Catálogo Global."}
+                                    {importType === 'correction' && "Use este prompt para filtrar sua lista antes da importação."}
                                 </p>
                                 <div className={styles.promptBoxAlt}>
-                                    <pre>{importType === "clients" ? PROMPT_CLIENTS : PROMPT_PRODUCTS}</pre>
+                                    <pre>
+                                        {importType === "clients" && PROMPT_CLIENTS}
+                                        {importType === "products" && PROMPT_PRODUCTS}
+                                        {importType === "correction" && RETAIL_EXPERT_PROMPT}
+                                    </pre>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
                                     <button

@@ -46,6 +46,7 @@ export default function AdminClientDetail() {
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [newProductOptionModalOpen, setNewProductOptionModalOpen] = useState(false);
     const [importStep, setImportStep] = useState(1);
+    const [selectedPromptType, setSelectedPromptType] = useState('products'); // 'products' or 'correction'
     const [importJson, setImportJson] = useState("");
     const [importing, setImporting] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
@@ -179,17 +180,18 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
+    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados e Especialista em Varejo. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação, aplicando critérios técnicos de seleção.
 
-INSTRUÇÕES:
-1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
-2. PREÇOS SEPARADOS:
-   - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
-3. REGRAS RÍGIDAS:
-   - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
-   - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
-   - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
+INSTRUÇÕES DE FILTRAGEM (RETAIL EXPERT):
+1. MANTER: Apenas produtos secos, desidratados, em pó, grãos, sementes, oleaginosas, farinhas e temperos que façam sentido serem vendidos a granel (por peso).
+2. EXCLUIR: Produtos frescos (in natura), refrigerados, congelados, bebidas líquidas, itens por unidade (UND), padaria pronta ou produtos não alimentícios.
+
+LÓGICA DE CRUZAMENTO E PREÇOS:
+1. VÍNCULO: Se o produto já existe na Base Master, use o "id" (UUID) correspondente.
+2. PREÇOS:
+   - "clientPrice": Informe o preço exato presente na lista da loja. Se o produto NÃO tiver um preço informado na lista, deixe este campo nulo/vazio.
+   - "marketPrice": Obrigatório. Preço base de mercado (referência global) por 100g. Use valores reais médios.
+3. QUALIDADE: Proibido "N/A". Se faltar info, use médias técnicas reais. Gere Descrição Rica, 5 Benefícios e 5 Dicas.
 
 ESTRUTURA JSON:
 [
@@ -213,8 +215,46 @@ ESTRUTURA JSON:
   }
 ]`;
 
+    const RETAIL_EXPERT_PROMPT = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
+
+Receberá uma lista de produtos.
+Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
+
+Critérios OBRIGATÓRIOS para MANTER o produto:
+- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto estável em temperatura ambiente.
+- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade (granel).
+
+Critérios OBRIGATÓRIOS para EXCLUIR:
+- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
+- Produtos frescos (frutas, verduras, legumes in natura).
+- Produtos refrigerados ou congelados.
+- Produtos prontos, assados, recheados ou de padaria.
+- Carnes, frios, laticínios, embutidos.
+- Bebidas líquidas.
+- Utensílios, embalagens, decoração, brindes, brinquedos.
+- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Serviços ou taxas.
+- Produtos infantis industrializados com marca fechada.
+- Massas frescas, pizzas, salgados, pratos prontos.
+
+Regras de saída:
+- Retorne APENAS a lista final dos produtos válidos.
+- Um produto por linha.
+- Não categorizar.
+- Não explicar.
+- Não justificar.
+- Não corrigir nomes.
+- Não adicionar produtos novos.
+- Não remover palavras do nome.
+- Apenas copiar exatamente o nome do produto aprovado.
+
+Lista de produtos:
+[COLAR A LISTA COMPLETA AQUI]`;
+
     const handleCopyPrompt = () => {
-        const text = FULL_PROMPT_TEXT;
+        const text = selectedPromptType === 'correction' ? RETAIL_EXPERT_PROMPT : FULL_PROMPT_TEXT;
         navigator.clipboard.writeText(text);
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
@@ -322,11 +362,11 @@ ESTRUTURA JSON:
                     <div className={styles.subtitle}>
                         <span className={styles.badge}>/{client.slug}</span>
                         {client.slug !== 'global-catalog' && (
-                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
+                            <a href={`/ ${client.slug} `} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
                                 <ExternalLink size={16} />
                             </a>
                         )}
-                        <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive}`}>
+                        <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive} `}>
                             {client.isActive ? "Loja Ativa" : "Loja Inativa"}
                         </span>
                     </div>
@@ -359,9 +399,10 @@ ESTRUTURA JSON:
                     <Package size={18} /> Produtos
                 </button>
                 {client.slug === 'global-catalog' ? (
-                    <button onClick={() => router.push(`/admin/clients/${client.slug}/categories`)} className={styles.tab}>
+                    <button onClick={() => router.push(`/ admin / clients / ${client.slug}/categories`)
+                    } className={styles.tab} >
                         🏷️ Categorias
-                    </button>
+                    </button >
                 ) : (
                     <>
                         <button onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? styles.tabActive : styles.tab}>
@@ -375,314 +416,351 @@ ESTRUTURA JSON:
                         </button>
                     </>
                 )}
-            </div>
+            </div >
 
             {/* TAB: PRODUCTS */}
-            {activeTab === 'products' && (
-                <section className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2>Produtos ({products.length})</h2>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <Button variant="secondary" icon={Download} onClick={handleExportProducts}>Exportar</Button>
-                            <Button variant="secondary" icon={Upload} onClick={() => setImportModalOpen(true)}>Importar</Button>
-                            <Button icon={Plus} onClick={() => setNewProductOptionModalOpen(true)}>Novo</Button>
+            {
+                activeTab === 'products' && (
+                    <section className={styles.section}>
+                        <div className={styles.sectionHeader}>
+                            <h2>Produtos ({products.length})</h2>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                <Button variant="secondary" icon={Download} onClick={handleExportProducts}>Exportar</Button>
+                                <Button variant="secondary" icon={Upload} onClick={() => setImportModalOpen(true)}>Importar</Button>
+                                <Button icon={Plus} onClick={() => setNewProductOptionModalOpen(true)}>Novo</Button>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Product List Render */}
-                    {products.length > 0 ? (
-                        <div className={styles.productList}>
-                            {products.map(product => (
-                                <div key={product.id} className={`${styles.productRow} ${!product.isActive ? styles.productInactive : ''}`}>
-                                    <div className={styles.productInfo}>
-                                        <div className={styles.productIcon}><Package size={20} color="#64748b" /></div>
-                                        <div>
-                                            <div className={styles.productName}>{product.name}</div>
-                                            <div className={styles.productAlerts}>
-                                                <span className={styles.productSlug}>/{product.slug} • R$ {product.price?.toFixed(2) || "0.00"}</span>
+                        {/* Product List Render */}
+                        {products.length > 0 ? (
+                            <div className={styles.productList}>
+                                {products.map(product => (
+                                    <div key={product.id} className={`${styles.productRow} ${!product.isActive ? styles.productInactive : ''}`}>
+                                        <div className={styles.productInfo}>
+                                            <div className={styles.productIcon}><Package size={20} color="#64748b" /></div>
+                                            <div>
+                                                <div className={styles.productName}>{product.name}</div>
+                                                <div className={styles.productAlerts}>
+                                                    <span className={styles.productSlug}>/{product.slug} • R$ {product.price?.toFixed(2) || "0.00"}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        {/* Category Column */}
+                                        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                                            {product.category && (
+                                                <span style={{
+                                                    background: '#eff6ff',
+                                                    color: '#2563eb',
+                                                    padding: '4px 12px',
+                                                    borderRadius: '16px',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: '600',
+                                                    border: '1px solid #dbeafe'
+                                                }}>
+                                                    {product.category}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className={styles.productActions}>
+                                            <button className={styles.iconButton} title="Ver Página Pública" onClick={() => window.open(`/${client.slug}/${product.slug}`, '_blank')}>
+                                                <ExternalLink size={18} color="#2563eb" />
+                                            </button>
+                                            <button className={styles.iconButton} onClick={() => router.push(`/admin/clients/${client.slug}/products/${product.id}`)}><Edit2 size={18} color="#64748b" /></button>
+                                            <button className={styles.iconButton} onClick={() => toggleProductStatus(product.id)}>
+                                                <Power size={18} color={product.isActive ? "#16a34a" : "#dc2626"} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    {/* Category Column */}
-                                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                                        {product.category && (
-                                            <span style={{
-                                                background: '#eff6ff',
-                                                color: '#2563eb',
-                                                padding: '4px 12px',
-                                                borderRadius: '16px',
-                                                fontSize: '0.85rem',
-                                                fontWeight: '600',
-                                                border: '1px solid #dbeafe'
-                                            }}>
-                                                {product.category}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className={styles.productActions}>
-                                        <button className={styles.iconButton} title="Ver Página Pública" onClick={() => window.open(`/${client.slug}/${product.slug}`, '_blank')}>
-                                            <ExternalLink size={18} color="#2563eb" />
-                                        </button>
-                                        <button className={styles.iconButton} onClick={() => router.push(`/admin/clients/${client.slug}/products/${product.id}`)}><Edit2 size={18} color="#64748b" /></button>
-                                        <button className={styles.iconButton} onClick={() => toggleProductStatus(product.id)}>
-                                            <Power size={18} color={product.isActive ? "#16a34a" : "#dc2626"} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div style={{ padding: '3rem' }}>
-                            <EmptyState
-                                title={client.slug === 'global-catalog' ? "Nenhum produto global" : "Nenhum produto nesta loja"}
-                                description={client.slug === 'global-catalog' ? "O catálogo global está vazio. Comece importando produtos." : "Esta loja ainda não possui produtos cadastrados."}
-                                icon={Package}
-                            />
-                        </div>
-                    )}
-                </section>
-            )}
+                                ))}
+                            </div>
+                        ) : (
+                            <div style={{ padding: '3rem' }}>
+                                <EmptyState
+                                    title={client.slug === 'global-catalog' ? "Nenhum produto global" : "Nenhum produto nesta loja"}
+                                    description={client.slug === 'global-catalog' ? "O catálogo global está vazio. Comece importando produtos." : "Esta loja ainda não possui produtos cadastrados."}
+                                    icon={Package}
+                                />
+                            </div>
+                        )}
+                    </section>
+                )
+            }
 
             {/* TAB: REPORTS */}
-            {activeTab === 'reports' && (
-                <section className={styles.section}>
-                    <h2 style={{ marginBottom: '1.5rem' }}>Analytics de Produtos</h2>
+            {
+                activeTab === 'reports' && (
+                    <section className={styles.section}>
+                        <h2 style={{ marginBottom: '1.5rem' }}>Analytics de Produtos</h2>
 
-                    {/* Summary Cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                        <div className={styles.statCard}>
-                            <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Visualizações de Produtos</div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2563eb' }}>{totalViews}</div>
+                        {/* Summary Cards */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                            <div className={styles.statCard}>
+                                <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Visualizações de Produtos</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2563eb' }}>{totalViews}</div>
+                            </div>
+                            <div className={styles.statCard}>
+                                <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Produtos Favoritados</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef4444' }}>{totalFavorites}</div>
+                            </div>
+                            <div className={styles.statCard}>
+                                <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Interações Nutricionais</div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>{totalInteractions}</div>
+                            </div>
                         </div>
-                        <div className={styles.statCard}>
-                            <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Produtos Favoritados</div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef4444' }}>{totalFavorites}</div>
-                        </div>
-                        <div className={styles.statCard}>
-                            <div style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Interações Nutricionais</div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>{totalInteractions}</div>
-                        </div>
-                    </div>
 
-                    {/* Detailed Product Table */}
-                    <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                                <tr>
-                                    <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.85rem', color: '#64748b' }}>Produto</th>
-                                    <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Visualizações</th>
-                                    <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Favoritos</th>
-                                    <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Interações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {[...products].sort((a, b) => (b.views || 0) - (a.views || 0)).map(product => (
-                                    <tr
-                                        key={product.id}
-                                        style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer' }}
-                                        onClick={() => setSelectedProductForLogs(product)}
-                                        className={styles.reportRow}
-                                    >
-                                        <td style={{ padding: '1rem', fontWeight: '500', color: '#334155' }}>
-                                            {product.name}
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal' }}>Clique para ver detalhes</div>
-                                        </td>
-                                        <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.views || 0}</td>
-                                        <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.favoritesCount || 0}</td>
-                                        <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.nutritionInteractions || 0}</td>
+                        {/* Detailed Product Table */}
+                        <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                    <tr>
+                                        <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.85rem', color: '#64748b' }}>Produto</th>
+                                        <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Visualizações</th>
+                                        <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Favoritos</th>
+                                        <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>Interações</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            )}
+                                </thead>
+                                <tbody>
+                                    {[...products].sort((a, b) => (b.views || 0) - (a.views || 0)).map(product => (
+                                        <tr
+                                            key={product.id}
+                                            style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer' }}
+                                            onClick={() => setSelectedProductForLogs(product)}
+                                            className={styles.reportRow}
+                                        >
+                                            <td style={{ padding: '1rem', fontWeight: '500', color: '#334155' }}>
+                                                {product.name}
+                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal' }}>Clique para ver detalhes</div>
+                                            </td>
+                                            <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.views || 0}</td>
+                                            <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.favoritesCount || 0}</td>
+                                            <td style={{ padding: '1rem', textAlign: 'center', color: '#334155' }}>{product.nutritionInteractions || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                )
+            }
 
             {/* TAB: FILES */}
-            {activeTab === 'files' && (
-                <section className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <h2>Arquivos da Loja</h2>
-                        <div>
-                            <input
-                                type="file"
-                                onChange={handleFileUpload}
-                                ref={fileInputRef}
-                                style={{ display: 'none' }}
-                                id="file-upload"
-                            />
-                            <label htmlFor="file-upload" className={styles.button} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem', background: '#2563eb', color: 'white', borderRadius: '8px', fontSize: '0.9rem' }}>
-                                <Upload size={16} /> {uploading ? "Enviando..." : "Enviar Arquivo"}
-                            </label>
+            {
+                activeTab === 'files' && (
+                    <section className={styles.section}>
+                        <div className={styles.sectionHeader}>
+                            <h2>Arquivos da Loja</h2>
+                            <div>
+                                <input
+                                    type="file"
+                                    onChange={handleFileUpload}
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    id="file-upload"
+                                />
+                                <label htmlFor="file-upload" className={styles.button} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem', background: '#2563eb', color: 'white', borderRadius: '8px', fontSize: '0.9rem' }}>
+                                    <Upload size={16} /> {uploading ? "Enviando..." : "Enviar Arquivo"}
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    {files.length === 0 ? (
-                        <div className={styles.emptyState}>
-                            <Paperclip size={48} color="#cbd5e1" style={{ marginBottom: '1rem' }} />
-                            <p>Nenhum arquivo encontrado.</p>
-                            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Envie PDFs, QR Codes ou imagens para armazenar aqui.</p>
-                        </div>
-                    ) : (
-                        <div className={styles.fileGrid}>
-                            {files.map(file => (
-                                <div key={file.id} className={styles.fileCard} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '0.5rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '8px' }}>
-                                            <FileText size={20} color="#64748b" />
+                        {files.length === 0 ? (
+                            <div className={styles.emptyState}>
+                                <Paperclip size={48} color="#cbd5e1" style={{ marginBottom: '1rem' }} />
+                                <p>Nenhum arquivo encontrado.</p>
+                                <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Envie PDFs, QR Codes ou imagens para armazenar aqui.</p>
+                            </div>
+                        ) : (
+                            <div className={styles.fileGrid}>
+                                {files.map(file => (
+                                    <div key={file.id} className={styles.fileCard} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '0.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '8px' }}>
+                                                <FileText size={20} color="#64748b" />
+                                            </div>
+                                            <div>
+                                                <div style={{ fontWeight: '500', color: '#334155' }}>{file.name}</div>
+                                                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{(file.size / 1024).toFixed(1)} KB • {new Date(file.createdAt).toLocaleDateString()}</div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div style={{ fontWeight: '500', color: '#334155' }}>{file.name}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{(file.size / 1024).toFixed(1)} KB • {new Date(file.createdAt).toLocaleDateString()}</div>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <a href={file.url} target="_blank" rel="noopener noreferrer" className={styles.iconButton} title="Visualizar">
+                                                <Eye size={18} color="#2563eb" />
+                                            </a>
+                                            <button className={styles.iconButton} onClick={() => handleDeleteFile(file.id)} title="Excluir">
+                                                <Trash2 size={18} color="#ef4444" />
+                                            </button>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                        <a href={file.url} target="_blank" rel="noopener noreferrer" className={styles.iconButton} title="Visualizar">
-                                            <Eye size={18} color="#2563eb" />
-                                        </a>
-                                        <button className={styles.iconButton} onClick={() => handleDeleteFile(file.id)} title="Excluir">
-                                            <Trash2 size={18} color="#ef4444" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-            )}
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                )
+            }
 
             {/* TAB: SETTINGS */}
-            {activeTab === 'settings' && (
-                <section className={styles.section}>
-                    <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', border: '1px solid #e2e8f0', maxWidth: '800px' }}>
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' }}>Descrição da Loja</label>
-                            <textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+            {
+                activeTab === 'settings' && (
+                    <section className={styles.section}>
+                        <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', border: '1px solid #e2e8f0', maxWidth: '800px' }}>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' }}>Descrição da Loja</label>
+                                <textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+                            </div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' }}>Logo (URL)</label>
+                                <input type="text" value={storeLogo} onChange={(e) => setStoreLogo(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+                            </div>
+                            <Button onClick={handleSaveSettings} disabled={saving} icon={Save}>{saving ? "Salvando..." : "Salvar"}</Button>
                         </div>
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#1e293b' }}>Logo (URL)</label>
-                            <input type="text" value={storeLogo} onChange={(e) => setStoreLogo(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
-                        </div>
-                        <Button onClick={handleSaveSettings} disabled={saving} icon={Save}>{saving ? "Salvando..." : "Salvar"}</Button>
-                    </div>
-                </section>
-            )}
+                    </section>
+                )
+            }
 
             {/* Modals for Import/New Product (Reusable from before, kept mostly same logic) */}
-            {newProductOptionModalOpen && (
-                <div className={styles.modalOverlay} onClick={() => setNewProductOptionModalOpen(false)}>
-                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', textAlign: 'center' }}>
-                        <h2>Adicionar Produto</h2>
-                        <div style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
-                            <button onClick={() => router.push(`/admin/clients/${params.clientSlug}/products/new`)} className={styles.optionButton}>Criar do Zero</button>
-                            {client.slug !== 'global-catalog' && (
-                                <button onClick={() => { setNewProductOptionModalOpen(false); setGlobalCatalogOpen(true); }} className={styles.optionButton}>Selecionar da Base Global</button>
+            {
+                newProductOptionModalOpen && (
+                    <div className={styles.modalOverlay} onClick={() => setNewProductOptionModalOpen(false)}>
+                        <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', textAlign: 'center' }}>
+                            <h2>Adicionar Produto</h2>
+                            <div style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
+                                <button onClick={() => router.push(`/admin/clients/${params.clientSlug}/products/new`)} className={styles.optionButton}>Criar do Zero</button>
+                                {client.slug !== 'global-catalog' && (
+                                    <button onClick={() => { setNewProductOptionModalOpen(false); setGlobalCatalogOpen(true); }} className={styles.optionButton}>Selecionar da Base Global</button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Keeping the Import Modal logic... */}
+            {
+                importModalOpen && (
+                    <div className={styles.modalOverlay} onClick={() => setImportModalOpen(false)}>
+                        <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '650px' }}>
+                            <div className={styles.modalHeader}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Importação em Massa</h2>
+                                <button className={styles.closeBtn} onClick={() => setImportModalOpen(false)}><X size={20} /></button>
+                            </div>
+
+                            <div className={styles.importSteps}>
+                                <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
+                                <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
+                            </div>
+
+                            {importStep === 1 ? (
+                                <div className={styles.promptStep}>
+                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem' }}>
+                                        <button
+                                            disabled
+                                            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#cbd5e1', cursor: 'not-allowed', fontSize: '0.85rem' }}
+                                        >
+                                            Lojas + Prod.
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedPromptType('products')}
+                                            style={{
+                                                flex: 1, padding: '10px', borderRadius: '8px',
+                                                border: selectedPromptType === 'products' ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                                                background: 'white', fontWeight: 600,
+                                                color: selectedPromptType === 'products' ? '#2563eb' : '#64748b',
+                                                fontSize: '0.85rem'
+                                            }}
+                                        >
+                                            Importar Prod.
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedPromptType('correction')}
+                                            style={{
+                                                flex: 1, padding: '10px', borderRadius: '8px',
+                                                border: selectedPromptType === 'correction' ? '2px solid #e11d48' : '1px solid #e2e8f0',
+                                                background: 'white', fontWeight: 600,
+                                                color: selectedPromptType === 'correction' ? '#e11d48' : '#64748b',
+                                                fontSize: '0.85rem'
+                                            }}
+                                        >
+                                            Correção Lista
+                                        </button>
+                                    </div>
+                                    <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                                        {selectedPromptType === 'correction'
+                                            ? "Use este prompt para filtrar e limpar sua lista de produtos antes da importação."
+                                            : "Use este prompt para gerar o JSON de importação para esta loja."}
+                                    </p>
+                                    <div className={styles.promptBoxAlt}>
+                                        <pre>{selectedPromptType === 'correction' ? RETAIL_EXPERT_PROMPT : FULL_PROMPT_TEXT}</pre>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                                        <button
+                                            className={styles.copyBtnAlt}
+                                            onClick={handleCopyPrompt}
+                                            style={{ background: '#22c55e', color: 'white' }}
+                                        >
+                                            {copySuccess ? <><Check size={18} /> Copiado!</> : "Copiar Prompt"}
+                                        </button>
+                                        <Button onClick={() => setImportStep(2)} icon={ArrowRight}>
+                                            Ir para Importação
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className={styles.jsonStep}>
+                                    <textarea
+                                        className={styles.jsonTextarea}
+                                        placeholder='[{ "name": "...", "category": "...", "price": 0.00, ... }]'
+                                        value={importJson}
+                                        onChange={(e) => setImportJson(e.target.value)}
+                                        autoFocus
+                                    />
+                                    <div className={styles.modalActions}>
+                                        <Button variant="secondary" onClick={() => setImportStep(1)}>Voltar</Button>
+                                        <Button
+                                            onClick={handleImport}
+                                            isLoading={importing}
+                                            disabled={!importJson.trim()}
+                                            icon={Upload}
+                                        >
+                                            {importing ? "Processando..." : "Importar Agora"}
+                                        </Button>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
-            {/* Keeping the Import Modal logic... */}
-            {importModalOpen && (
-                <div className={styles.modalOverlay} onClick={() => setImportModalOpen(false)}>
-                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '650px' }}>
-                        <div className={styles.modalHeader}>
-                            <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Importação em Massa</h2>
-                            <button className={styles.closeBtn} onClick={() => setImportModalOpen(false)}><X size={20} /></button>
-                        </div>
-
-                        <div className={styles.importSteps}>
-                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
-                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
-                        </div>
-
-                        {importStep === 1 ? (
-                            <div className={styles.promptStep}>
-                                <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
-                                    <button
-                                        disabled
-                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white', color: '#cbd5e1', cursor: 'not-allowed', fontWeight: 600 }}
-                                    >
-                                        Lojas + Produtos
-                                    </button>
-                                    <button
-                                        style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '2px solid #2563eb', background: 'white', fontWeight: 600, color: '#2563eb', cursor: 'pointer' }}
-                                    >
-                                        Apenas Produtos
-                                    </button>
-                                </div>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                                    Use este prompt para gerar produtos avulsos para esta loja específica.
-                                </p>
-                                <div className={styles.promptBoxAlt}>
-                                    <pre>{FULL_PROMPT_TEXT}</pre>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
-                                    <button
-                                        className={styles.copyBtnAlt}
-                                        onClick={handleCopyPrompt}
-                                        style={{ background: '#22c55e', color: 'white' }}
-                                    >
-                                        {copySuccess ? <><Check size={18} /> Copiado!</> : "Copiar Prompt"}
-                                    </button>
-                                    <Button onClick={() => setImportStep(2)} icon={ArrowRight}>
-                                        Ir para Importação
-                                    </Button>
-                                </div>
+            {
+                globalCatalogOpen && (
+                    <div className={styles.modalOverlay} onClick={() => setGlobalCatalogOpen(false)}>
+                        <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', height: '80vh' }}>
+                            <h2>Catálogo Global</h2>
+                            <input value={globalSearchQuery} onChange={e => setGlobalSearchQuery(e.target.value)} placeholder="Buscar..." style={{ width: '100%', padding: '10px', marginBottom: '1rem' }} />
+                            <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                                {globalProducts.map(p => (
+                                    <div key={p.id} onClick={() => setSelectedGlobalProducts(prev => [...prev, p])} style={{ padding: '10px', borderBottom: '1px solid #ddd', cursor: 'pointer' }}>
+                                        {p.name}
+                                    </div>
+                                ))}
                             </div>
-                        ) : (
-                            <div className={styles.jsonStep}>
-                                <textarea
-                                    className={styles.jsonTextarea}
-                                    placeholder='[{ "name": "...", "category": "...", "price": 0.00, ... }]'
-                                    value={importJson}
-                                    onChange={(e) => setImportJson(e.target.value)}
-                                    autoFocus
-                                />
-                                <div className={styles.modalActions}>
-                                    <Button variant="secondary" onClick={() => setImportStep(1)}>Voltar</Button>
-                                    <Button
-                                        onClick={handleImport}
-                                        isLoading={importing}
-                                        disabled={!importJson.trim()}
-                                        icon={Upload}
-                                    >
-                                        {importing ? "Processando..." : "Importar Agora"}
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
-            {globalCatalogOpen && (
-                <div className={styles.modalOverlay} onClick={() => setGlobalCatalogOpen(false)}>
-                    <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', height: '80vh' }}>
-                        <h2>Catálogo Global</h2>
-                        <input value={globalSearchQuery} onChange={e => setGlobalSearchQuery(e.target.value)} placeholder="Buscar..." style={{ width: '100%', padding: '10px', marginBottom: '1rem' }} />
-                        <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                            {globalProducts.map(p => (
-                                <div key={p.id} onClick={() => setSelectedGlobalProducts(prev => [...prev, p])} style={{ padding: '10px', borderBottom: '1px solid #ddd', cursor: 'pointer' }}>
-                                    {p.name}
-                                </div>
-                            ))}
+                            <Button onClick={handleBulkClone}>Clonar Selecionados</Button>
                         </div>
-                        <Button onClick={handleBulkClone}>Clonar Selecionados</Button>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Logs Modal */}
-            {selectedProductForLogs && (
-                <InteractionLogModal
-                    productId={selectedProductForLogs.id}
-                    productName={selectedProductForLogs.name}
-                    onClose={() => setSelectedProductForLogs(null)}
-                />
-            )}
+            {
+                selectedProductForLogs && (
+                    <InteractionLogModal
+                        productId={selectedProductForLogs.id}
+                        productName={selectedProductForLogs.name}
+                        onClose={() => setSelectedProductForLogs(null)}
+                    />
+                )
+            }
 
-        </div>
+        </div >
     );
 }
