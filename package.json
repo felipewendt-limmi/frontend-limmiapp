@@ -26,8 +26,5 @@
   "devDependencies": {
     "eslint": "^9",
     "eslint-config-next": "16.1.4"
-  },
-  "optionalDependencies": {
-    "@next/swc-darwin-arm64": "^16.1.6"
   }
 }
