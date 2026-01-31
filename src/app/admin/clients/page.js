@@ -28,14 +28,14 @@ export default function AdminClients() {
 
 INSTRUÇÕES:
 
-1. PRODUTO EXISTENTE (SLUG/NOME):
+PRODUTO EXISTENTE (SLUG/NOME):
    - Se o produto já existe na Base Master, utilize o "id" correspondente.
 
-2. PREÇOS SEPARADOS:
+PREÇOS SEPARADOS:
    - "clientPrice": Preço exato informado na lista da loja (preço final ao cliente).
    - "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
 
-3. REGRAS RÍGIDAS:
+REGRAS RÍGIDAS:
    - PROIBIDO "N/A": Nunca utilize "N/A", null sem contexto ou placeholders vazios.
      Caso falte informação nutricional, utilize médias técnicas reais e coerentes.
    - ENRIQUECIMENTO OBRIGATÓRIO:
@@ -46,14 +46,14 @@ INSTRUÇÕES:
      - Utilize apenas alimentos reais que combinem com o produto (ex: arroz, frango, aveia).
      - Nunca utilize conceitos abstratos ou benefícios como tags.
 
-4. REGRA DE ESTILO PARA "description":
+REGRA DE ESTILO PARA "description":
    - A descrição DEVE ter caráter comercial e sensorial.
    - Deve focar em sabor, textura, aroma, aparência e formas comuns de consumo.
    - NÃO deve conter linguagem técnica, nutricional ou funcional.
    - NÃO deve mencionar nutrientes, propriedades fisiológicas, saúde ou benefícios.
    - A descrição deve parecer texto de prateleira de empório, não texto técnico.
 
-5. REGRA ESPECÍFICA PARA "helpsWith":
+REGRA ESPECÍFICA PARA "helpsWith":
    - O campo "helpsWith" DEVE listar exatamente 5 sintomas, condições ou necessidades físicas
      que o produto pode auxiliar, aliviar ou contribuir para melhorar.
    - Os itens devem ser realistas, alimentares e baseados nas propriedades do produto.
@@ -86,44 +86,7 @@ ESTRUTURA JSON:
 
     const PROMPT_CLIENTS = MASTER_DATA_ENGINEER_PROMPT;
     const PROMPT_PRODUCTS = MASTER_DATA_ENGINEER_PROMPT;
-
-    const RETAIL_EXPERT_PROMPT = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
-
-Receberá uma lista de produtos.
-Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
-
-Critérios OBRIGATÓRIOS para MANTER o produto:
-- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
-- Produto estável em temperatura ambiente.
-- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
-- Produto que o cliente espera escolher quantidade (granel).
-
-Critérios OBRIGATÓRIOS para EXCLUIR:
-- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
-- Produtos frescos (frutas, verduras, legumes in natura).
-- Produtos refrigerados ou congelados.
-- Produtos prontos, assados, recheados ou de padaria.
-- Carnes, frios, laticínios, embutidos.
-- Bebidas líquidas.
-- Utensílios, embalagens, decoração, brindes, brinquedos.
-- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
-- Serviços ou taxas.
-- Produtos infantis industrializados com marca fechada.
-- Massas frescas, pizzas, salgados, pratos prontos.
-
-Regras de saída:
-- Retorne APENAS a lista final dos produtos válidos.
-- Um produto por linha.
-- Não categorizar.
-- Não explicar.
-- Não justificar.
-- Não corrigir nomes.
-- Não adicionar produtos novos.
-- Não remover palavras do nome.
-- Apenas copiar exatamente o nome do produto aprovado.
-
-Lista de produtos:
-[COLAR A LISTA COMPLETA AQUI]`;
+    const RETAIL_EXPERT_PROMPT = MASTER_DATA_ENGINEER_PROMPT;
 
     const handleCopyPrompt = () => {
         let text = PROMPT_CLIENTS;
