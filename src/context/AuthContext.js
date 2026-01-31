@@ -23,8 +23,10 @@ export const AuthProvider = ({ children }) => {
         const userData = Cookies.get('user');
 
         if (token && userData) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setUser(JSON.parse(userData));
         }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(false);
     }, []);
 

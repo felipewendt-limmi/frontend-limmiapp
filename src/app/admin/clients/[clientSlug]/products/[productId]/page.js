@@ -48,6 +48,7 @@ export default function EditProductPage() {
     useEffect(() => {
         if (isLoaded && params?.clientSlug && params?.productId) {
             const foundClient = getClientBySlug(params.clientSlug);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setClient(foundClient);
 
             if (foundClient) {

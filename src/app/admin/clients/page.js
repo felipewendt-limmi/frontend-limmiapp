@@ -8,7 +8,7 @@ import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 
 export default function AdminClients() {
-    const { clients, addClient, toggleClientStatus, bulkImportClients } = useData();
+    const { clients, addClient, toggleClientStatus, bulkImportClients, importProducts } = useData();
     const { addToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -149,11 +149,7 @@ Lista de produtos:
             if (isProductOnly) {
                 const globalClient = clients.find(c => c.slug === 'global-catalog');
                 if (globalClient) {
-                    const { importProducts } = useData.getState ? useData.getState() : { importProducts: null };
-                    // fallback to context if getState is not available (which it isn't in standard DataContext)
-                    // Let's use the provided importProducts via hook if possible, or just bulkImportClients if it handles it.
-                    // Actually, let's just use bulkImportClients and update DataContext to handle both.
-                    await bulkImportClients(parsed);
+                    await importProducts(globalClient.id, parsed);
                 } else {
                     addToast("Catálogo Global não encontrado.", "error");
                     setImporting(false);
