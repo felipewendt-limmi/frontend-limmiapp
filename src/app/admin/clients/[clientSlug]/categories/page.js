@@ -177,7 +177,7 @@ export default function CategoryManagement() {
                                                 </div>
                                                 <div>
                                                     <div className={styles.productName}>{product.name}</div>
-                                                    <div className={styles.productPrice}>R$ {product.price?.toFixed(2) || '0.00'}</div>
+                                                    <div className={styles.productPrice}>R$ {(Number(product.price) || 0).toFixed(2)}</div>
                                                 </div>
                                             </div>
                                             <ExternalLink size={16} color="#94a3b8" />
