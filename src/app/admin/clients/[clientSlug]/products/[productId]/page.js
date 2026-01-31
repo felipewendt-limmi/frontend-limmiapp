@@ -70,15 +70,19 @@ export default function EditProductPage() {
                     setHelpsWith(product.helpsWith || []);
                     setImages(product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []));
 
-                    // Logic to find Global Price
-                    const globalClient = getClientBySlug('global-catalog');
-                    if (globalClient) {
-                        const globalProduct = globalClient.products?.find(p =>
-                            (product.parentProductId && p.id === product.parentProductId) ||
-                            p.slug === product.slug
-                        );
-                        if (globalProduct) {
-                            setMarketPrice(globalProduct.price || "");
+                    setMarketPrice(product.marketPrice || "");
+
+                    // Optional: Sync with Global Catalog if local marketPrice is missing
+                    if (!product.marketPrice) {
+                        const globalClient = getClientBySlug('global-catalog');
+                        if (globalClient) {
+                            const globalProduct = globalClient.products?.find(p =>
+                                (product.parentProductId && p.id === product.parentProductId) ||
+                                p.slug === product.slug
+                            );
+                            if (globalProduct) {
+                                setMarketPrice(globalProduct.price || "");
+                            }
                         }
                     }
                 } else {
