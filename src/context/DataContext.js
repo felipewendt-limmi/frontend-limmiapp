@@ -233,8 +233,22 @@ export const DataProvider = ({ children }) => {
         }
     };
 
-    const toggleProductStatus = (productId) => {
-        setProducts(prev => prev.map(p => p.id === productId ? { ...p, isActive: !p.isActive } : p));
+    const toggleProductStatus = async (productId) => {
+        try {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const res = await api.put(`/products/${productId}`, { isActive: !product.isActive });
+
+            setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...res.data } : p));
+            setClients(prev => prev.map(client => ({
+                ...client,
+                products: client.products?.map(p => p.id === productId ? { ...p, ...res.data } : p)
+            })));
+        } catch (error) {
+            console.error("Error toggling product status:", error);
+            throw error;
+        }
     };
 
     const bulkImportClients = async (clientsData) => {
