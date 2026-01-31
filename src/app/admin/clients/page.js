@@ -66,26 +66,26 @@ Receberá uma lista de produtos.
 Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
 
 Critérios OBRIGATÓRIOS para MANTER o produto:
-    - Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
 - Produto estável em temperatura ambiente.
-- Produto normalmente vendido por peso(100g, 200g, 500g, etc).
-- Produto que o cliente espera escolher quantidade(granel).
+- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade (granel).
 
 Critérios OBRIGATÓRIOS para EXCLUIR:
-    - Produtos vendidos por unidade(UND, bandeja, maço, espiga, metade).
-- Produtos frescos(frutas, verduras, legumes in natura).
+- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
+- Produtos frescos (frutas, verduras, legumes in natura).
 - Produtos refrigerados ou congelados.
 - Produtos prontos, assados, recheados ou de padaria.
 - Carnes, frios, laticínios, embutidos.
 - Bebidas líquidas.
 - Utensílios, embalagens, decoração, brindes, brinquedos.
-- Produtos não alimentícios(máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
 - Serviços ou taxas.
 - Produtos infantis industrializados com marca fechada.
 - Massas frescas, pizzas, salgados, pratos prontos.
 
 Regras de saída:
-    - Retorne APENAS a lista final dos produtos válidos.
+- Retorne APENAS a lista final dos produtos válidos.
 - Um produto por linha.
 - Não categorizar.
 - Não explicar.
@@ -96,7 +96,7 @@ Regras de saída:
 - Apenas copiar exatamente o nome do produto aprovado.
 
 Lista de produtos:
-    [COLAR A LISTA COMPLETA AQUI]`;
+[COLAR A LISTA COMPLETA AQUI]`;
 
     const handleCopyPrompt = () => {
         let text = PROMPT_CLIENTS;
