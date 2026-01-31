@@ -439,7 +439,7 @@ Lista de produtos:
                                             <div>
                                                 <div className={styles.productName}>{product.name}</div>
                                                 <div className={styles.productAlerts}>
-                                                    <span className={styles.productSlug}>/{product.slug} • R$ {product.price?.toFixed(2) || "0.00"}</span>
+                                                    <span className={styles.productSlug}>/{product.slug} • R$ {(Number(product.price) || 0).toFixed(2)}</span>
                                                 </div>
                                             </div>
                                         </div>

@@ -24,6 +24,7 @@ export default function EditProductPage() {
     const [name, setName] = useState("");
     const [slug, setSlug] = useState("");
     const [price, setPrice] = useState("");
+    const [marketPrice, setMarketPrice] = useState(""); // Global Price State
     const [unit, setUnit] = useState("un");
     const [category, setCategory] = useState("");
     const [emoji, setEmoji] = useState("");
@@ -66,7 +67,20 @@ export default function EditProductPage() {
                     setTags(product.tags || []);
                     setTips(product.tips || []);
                     setHelpsWith(product.helpsWith || []);
+                    setHelpsWith(product.helpsWith || []);
                     setImages(product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []));
+
+                    // Logic to find Global Price
+                    const globalClient = getClientBySlug('global-catalog');
+                    if (globalClient) {
+                        const globalProduct = globalClient.products?.find(p =>
+                            (product.parentProductId && p.id === product.parentProductId) ||
+                            p.slug === product.slug
+                        );
+                        if (globalProduct) {
+                            setMarketPrice(globalProduct.price || "");
+                        }
+                    }
                 } else {
                     addToast("Produto não encontrado.", "error");
                     router.push(`/admin/clients/${params.clientSlug}`);
@@ -94,6 +108,7 @@ export default function EditProductPage() {
             name,
             slug,
             price,
+            marketPrice, // Send marketPrice to backend
             unit,
             category,
             emoji,
@@ -147,8 +162,19 @@ export default function EditProductPage() {
 
                         <div className={styles.row}>
                             <div className={styles.formGroup}>
-                                <label>Preço (Interno) *</label>
+                                <label>Preço Loja (Interno) *</label>
                                 <input type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" required />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Preço Global (Mercado)</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    value={marketPrice}
+                                    onChange={(e) => setMarketPrice(e.target.value)}
+                                    placeholder="0.00"
+                                    style={{ borderColor: '#f59e0b' }} // Orange border to distinguish
+                                />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>Unidade</label>
