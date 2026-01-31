@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { ArrowLeft, Save, Smartphone } from 'lucide-react';
+import { ArrowLeft, Save, RefreshCw, Smartphone, X, Package, ExternalLink } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 import styles from './page.module.css';
 
@@ -17,6 +17,7 @@ export default function CategoryManagement() {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
@@ -40,6 +41,20 @@ export default function CategoryManagement() {
             addToast("Erro ao carregar categorias.", "error");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSync = async () => {
+        if (!client) return;
+        setSyncing(true);
+        try {
+            await syncCategories(client.id);
+            addToast("Categorias sincronizadas com sucesso!", "success");
+            fetchCategories(client.id); // Refresh list
+        } catch (error) {
+            addToast("Erro ao sincronizar categorias.", "error");
+        } finally {
+            setSyncing(false);
         }
     };
 
@@ -80,6 +95,14 @@ export default function CategoryManagement() {
                     <h1 className={styles.title}>Categorias: {client.name}</h1>
                     <p className={styles.subtitle}>Gerencie os emojis e a ordem das categorias.</p>
                 </div>
+                <Button
+                    variant="secondary"
+                    icon={RefreshCw}
+                    onClick={handleSync}
+                    loading={syncing}
+                >
+                    {syncing ? "Sincronizando..." : "Sincronizar"}
+                </Button>
             </header>
 
             <div className={styles.grid}>
@@ -174,9 +197,6 @@ export default function CategoryManagement() {
     );
 }
 
-import { X, Package, ExternalLink } from 'lucide-react';
-
-// Helper Link component since next/link is constrained in imports sometimes
 function Link({ href, children, className }) {
     const router = useRouter();
     return (

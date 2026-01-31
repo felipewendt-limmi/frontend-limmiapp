@@ -204,13 +204,13 @@ Lista de produtos:
                             {(client.products || []).length} Produtos • {(client.orders || []).length} Pedidos
                         </p>
                         <div style={{ marginTop: '0.5rem' }}>
-                            <a href={`/ ${client.slug} `} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
+                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
                                 <ExternalLink size={14} /> Ver Loja
                             </a>
                         </div>
 
                         <div className={styles.cardActions}>
-                            <Link href={`/ admin / clients / ${client.slug} `} style={{ width: '100%' }}>
+                            <Link href={`/admin/clients/${client.slug}`} style={{ width: '100%' }}>
                                 <Button variant="ghost" style={{ width: '100%', border: '1px solid #e2e8f0' }}>
                                     Gerenciar Loja
                                 </Button>
