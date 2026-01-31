@@ -24,15 +24,18 @@ export default function AdminClients() {
     const [copySuccess, setCopySuccess] = useState(false);
     const [importType, setImportType] = useState("clients"); // "clients", "products", or "correction"
 
-    const PROMPT_CLIENTS = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
+    const MASTER_DATA_ENGINEER_PROMPT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
 
 INSTRUÇÕES:
-1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
+
+1. PRODUTO EXISTENTE (SLUG/NOME):
+   - Se o produto já existe na Base Master, utilize o "id" correspondente.
+
 2. PREÇOS SEPARADOS:
-   - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
+   - "clientPrice": Preço exato informado na lista da loja (preço final ao cliente).
+   - "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
+
 3. REGRAS RÍGIDAS:
-   - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
    - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
    - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
 
@@ -176,6 +179,12 @@ Lista de produtos:
                     <p style={{ color: '#64748b' }}>Gerencie as lojas cadastradas na plataforma.</p>
                 </div>
                 <div className={styles.headerActions}>
+                    <Button variant="ghost" icon={Copy} onClick={() => {
+                        navigator.clipboard.writeText(MASTER_DATA_ENGINEER_PROMPT);
+                        addToast("Prompt Master copiado!", "success");
+                    }}>
+                        Prompt IA
+                    </Button>
                     <Button variant="secondary" onClick={() => setIsBulkModalOpen(true)}>
                         Importar (JSON)
                     </Button>
