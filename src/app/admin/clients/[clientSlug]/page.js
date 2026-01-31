@@ -362,7 +362,7 @@ Lista de produtos:
                     <div className={styles.subtitle}>
                         <span className={styles.badge}>/{client.slug}</span>
                         {client.slug !== 'global-catalog' && (
-                            <a href={`/ ${client.slug} `} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
+                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} title="Ver Loja Pública">
                                 <ExternalLink size={16} />
                             </a>
                         )}

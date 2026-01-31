@@ -59,24 +59,35 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const PROMPT_PRODUCTS = `Atue como um Engenheiro Mestre de Dados Nutricionais. Sua tarefa é transformar a lista de produtos fornecida em um JSON para o Catálogo Global.
+    const PROMPT_PRODUCTS = `Atue como um Engenheiro Mestre de Dados e Especialista em Varejo. Sua tarefa é transformar a lista de produtos fornecida em um JSON de altíssima qualidade para o Catálogo Global.
 
-REGRAS:
-1. PROIBIDO "N/A": Se o dado não existir, use a média técnica (TBCA/TACO).
-2. PREÇO GLOBAL: O campo "marketPrice" deve ser o preço médio do mercado brasileiro (por 100g).
-3. ENRIQUECIMENTO: 5 benefícios e 5 dicas de "helpsWith" por produto.
-4. CATEGORIAS: Use apenas categorias padrão (Grãos, Leguminosas, etc).
+INSTRUÇÕES DE FILTRAGEM (RETAIL EXPERT):
+1. MANTER: Apenas produtos secos, desidratados, em pó, grãos, sementes, oleaginosas, farinhas e temperos que façam sentido serem vendidos a granel (por peso).
+2. EXCLUIR: Produtos frescos (in natura), refrigerados, congelados, bebidas líquidas, itens por unidade (UND), padaria pronta ou produtos não alimentícios.
+
+REGRAS DE DADOS:
+1. PREÇO GLOBAL: O campo "marketPrice" é OBRIGATÓRIO e deve ser o preço médio do mercado brasileiro (por 100g). Use valores reais.
+2. QUALIDADE: Proibido "N/A". Se o dado não existir, use a média técnica (TBCA/TACO).
+3. ENRIQUECIMENTO: Gere Descrição Rica, exatamente 5 benefícios e 5 dicas por produto.
+4. CATEGORIAS: Use apenas categorias padrão (Grãos, Leguminosas, Frutas Secas, Oleaginosas, Farinhas, Temperos, Chás, Suplementos).
 
 ESTRUTURA JSON:
 [
   {
     "name": "Nome do Produto",
     "category": "Categoria padrão",
-    "marketPrice": 0.00,
-    "description": "...",
+    "marketPrice": 12.00,
+    "description": "Texto rico e informativo...",
     "benefits": ["...", "...", "...", "...", "..."],
     "helpsWith": ["...", "...", "...", "...", "..."],
-    "nutrition": [...]
+    "tags": ["Alimento 1", "Alimento 2"],
+    "nutrition": [
+      { "label": "Calorias", "value": "X kcal" },
+      { "label": "Proteína", "value": "X g" },
+      { "label": "Carboidratos", "value": "X g" },
+      { "label": "Gordura", "value": "X g" },
+      { "label": "Fibra", "value": "X g" }
+    ]
   }
 ]`;
 
@@ -213,7 +224,7 @@ Lista de produtos:
                                 <Store size={24} color="#1e40af" />
                             </div>
                             <div className={styles.menu}>
-                                <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive} `}>
+                                <span className={`${styles.statusBadge} ${client.isActive ? styles.active : styles.inactive}`}>
                                     {client.isActive ? "Ativo" : "Inativo"}
                                 </span>
                             </div>
@@ -224,13 +235,13 @@ Lista de produtos:
                             {(client.products || []).length} Produtos • {(client.orders || []).length} Pedidos
                         </p>
                         <div style={{ marginTop: '0.5rem' }}>
-                            <a href={`/ ${client.slug} `} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
+                            <a href={`/${client.slug}`} target="_blank" className={styles.externalLink} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: '#64748b', textDecoration: 'none' }}>
                                 <ExternalLink size={14} /> Ver Loja
                             </a>
                         </div>
 
                         <div className={styles.cardActions}>
-                            <Link href={`/ admin / clients / ${client.slug} `} style={{ width: '100%' }}>
+                            <Link href={`/admin/clients/${client.slug}`} style={{ width: '100%' }}>
                                 <Button variant="ghost" style={{ width: '100%', border: '1px solid #e2e8f0' }}>
                                     Gerenciar Loja
                                 </Button>
@@ -288,8 +299,8 @@ Lista de produtos:
                         </div>
 
                         <div className={styles.importSteps}>
-                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''} `} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
-                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''} `} onClick={() => setImportStep(2)}>2. Colar JSON</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 1 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(1)}>1. Instruções (Prompt)</div>
+                            <div className={`${styles.importStepAlt} ${importStep === 2 ? styles.importStepActiveAlt : ''}`} onClick={() => setImportStep(2)}>2. Colar JSON</div>
                         </div>
 
                         {importStep === 1 ? (

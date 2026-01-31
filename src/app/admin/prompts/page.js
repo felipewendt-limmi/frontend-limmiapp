@@ -202,11 +202,63 @@ Lista de produtos:
         setTimeout(() => setCopySuccess(null), 2000);
     };
 
+    const handleResetAll = () => {
+        if (!confirm("Isso apagará TODOS os seus prompts customizados e restaurará os padrões de fábrica (v5). Tem certeza?")) return;
+        localStorage.removeItem('limmi_prompt_master');
+        localStorage.removeItem('limmi_prompt_client');
+        localStorage.removeItem('limmi_prompt_extra');
+        setPromptMaster(DEFAULT_MASTER);
+        setPromptClient(DEFAULT_CLIENT);
+        setPromptExtra(`Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
+
+Receberá uma lista de produtos.
+Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
+
+Critérios OBRIGATÓRIOS para MANTER o produto:
+- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto estável em temperatura ambiente.
+- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade (granel).
+
+Critérios OBRIGATÓRIOS para EXCLUIR:
+- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
+- Produtos frescos (frutas, verduras, legumes in natura).
+- Produtos refrigerados ou congelados.
+- Produtos prontos, assados, recheados ou de padaria.
+- Carnes, frios, laticínios, embutidos.
+- Bebidas líquidas.
+- Utensílios, embalagens, decoração, brindes, brinquedos.
+- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Serviços ou taxas.
+- Produtos infantis industrializados com marca fechada.
+- Massas frescas, pizzas, salgados, pratos prontos.
+
+Regras de saída:
+- Retorne APENAS a lista final dos produtos válidos.
+- Um produto por linha.
+- Não categorizar.
+- Não explicar.
+- Não justificar.
+- Não corrigir nomes.
+- Não adicionar produtos novos.
+- Não remover palavras do nome.
+- Apenas copiar exatamente o nome do produto aprovado.
+
+Lista de produtos:
+[COLAR A LISTA COMPLETA AQUI]`);
+        addToast("Sistema de Prompts resetado com sucesso!", "success");
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
-                <h1 className={styles.title}>Gerenciador de Prompts</h1>
-                <p className={styles.subtitle}>Configure e salve os prompts que você usa com as IAs.</p>
+                <div>
+                    <h1 className={styles.title}>Gerenciador de Prompts</h1>
+                    <p className={styles.subtitle}>Configure e salve os prompts que você usa com as IAs.</p>
+                </div>
+                <Button variant="secondary" onClick={handleResetAll} style={{ color: '#dc2626', borderColor: '#fee2e2' }}>
+                    Resetar Todos (Fábrica)
+                </Button>
             </header>
 
             <div className={styles.grid}>
