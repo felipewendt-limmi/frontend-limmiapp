@@ -213,8 +213,24 @@ export const DataProvider = ({ children }) => {
         }
     };
 
-    const updateProduct = (productId, updatedData) => {
-        setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...updatedData } : p));
+    const updateProduct = async (productId, updatedData) => {
+        try {
+            const res = await api.put(`/products/${productId}`, updatedData);
+
+            // Update local products state
+            setProducts(prev => prev.map(p => p.id === productId ? { ...p, ...res.data } : p));
+
+            // Also update clients state to keep nested products in sync
+            setClients(prev => prev.map(client => ({
+                ...client,
+                products: client.products?.map(p => p.id === productId ? { ...p, ...res.data } : p)
+            })));
+
+            return res.data;
+        } catch (error) {
+            console.error("Error updating product:", error);
+            throw error;
+        }
     };
 
     const toggleProductStatus = (productId) => {
