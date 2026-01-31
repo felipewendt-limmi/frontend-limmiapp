@@ -183,14 +183,40 @@ export default function AdminClientDetail() {
     const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
 
 INSTRUÇÕES:
-1. PRODUTO EXISTENTE (SLUG/NOME): Se o produto já existe na Base Master, use o "id" correspondente.
-2. PREÇOS SEPARADOS:
-   - "clientPrice": O preço exato informado na lista da loja (preço final do cliente).
-   - "marketPrice": Preço base de mercado (referência global). Utilize valores médios reais por 100g.
-3. REGRAS RÍGIDAS:
-   - PROIBIDO "N/A": Nunca use "N/A" ou placeholders vazios. Se faltar info nutricional, use médias técnicas reais.
-   - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
-   - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
+
+PRODUTO EXISTENTE (SLUG/NOME):
+   - Se o produto já existe na Base Master, utilize o "id" correspondente.
+
+PREÇOS SEPARADOS:
+   - "clientPrice": Preço exato informado na lista da loja (preço final ao cliente).
+   - "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
+
+REGRAS RÍGIDAS:
+   - PROIBIDO "N/A": Nunca utilize "N/A", null sem contexto ou placeholders vazios.
+     Caso falte informação nutricional, utilize médias técnicas reais e coerentes.
+   - ENRIQUECIMENTO OBRIGATÓRIO:
+     - Gere sempre uma descrição.
+     - Gere exatamente 5 benefícios.
+     - Gere exatamente 5 itens em "helpsWith".
+   - TAGS:
+     - Utilize apenas alimentos reais que combinem com o produto (ex: arroz, frango, aveia).
+     - Nunca utilize conceitos abstratos ou benefícios como tags.
+
+REGRA DE ESTILO PARA "description":
+   - A descrição DEVE ter caráter comercial e sensorial.
+   - Deve focar em sabor, textura, aroma, aparência e formas comuns de consumo.
+   - NÃO deve conter linguagem técnica, nutricional ou funcional.
+   - NÃO deve mencionar nutrientes, propriedades fisiológicas, saúde ou benefícios.
+   - A descrição deve parecer texto de prateleira de empório, não texto técnico.
+
+REGRA ESPECÍFICA PARA "helpsWith":
+   - O campo "helpsWith" DEVE listar exatamente 5 sintomas, condições ou necessidades físicas
+     que o produto pode auxiliar, aliviar ou contribuir para melhorar.
+   - Os itens devem ser realistas, alimentares e baseados nas propriedades do produto.
+   - PROIBIDO:
+     - Usar atividades (ex: "lanches", "pré-treino").
+     - Usar receitas ou formas de consumo.
+     - Usar promessas médicas ou curas absolutas.
 
 ESTRUTURA JSON:
 [
@@ -200,9 +226,9 @@ ESTRUTURA JSON:
     "clientPrice": 10.50,
     "marketPrice": 12.00,
     "category": "Categoria válida",
-    "description": "Descrição rica...",
+    "description": "Texto comercial e sensorial do produto.",
     "benefits": ["...", "...", "...", "...", "..."],
-    "helpsWith": ["...", "...", "...", "...", "..."],
+    "helpsWith": ["Sintoma 1", "Sintoma 2", "Sintoma 3", "Sintoma 4", "Sintoma 5"],
     "tags": ["Alimento 1", "Alimento 2"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
@@ -214,43 +240,7 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const RETAIL_EXPERT_PROMPT = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
-
-Receberá uma lista de produtos.
-Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
-
-Critérios OBRIGATÓRIOS para MANTER o produto:
-- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
-- Produto estável em temperatura ambiente.
-- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
-- Produto que o cliente espera escolher quantidade (granel).
-
-Critérios OBRIGATÓRIOS para EXCLUIR:
-- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
-- Produtos frescos (frutas, verduras, legumes in natura).
-- Produtos refrigerados ou congelados.
-- Produtos prontos, assados, recheados ou de padaria.
-- Carnes, frios, laticínios, embutidos.
-- Bebidas líquidas.
-- Utensílios, embalagens, decoração, brindes, brinquedos.
-- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
-- Serviços ou taxas.
-- Produtos infantis industrializados com marca fechada.
-- Massas frescas, pizzas, salgados, pratos prontos.
-
-Regras de saída:
-- Retorne APENAS a lista final dos produtos válidos.
-- Um produto por linha.
-- Não categorizar.
-- Não explicar.
-- Não justificar.
-- Não corrigir nomes.
-- Não adicionar produtos novos.
-- Não remover palavras do nome.
-- Apenas copiar exatamente o nome do produto aprovado.
-
-Lista de produtos:
-[COLAR A LISTA COMPLETA AQUI]`;
+    const RETAIL_EXPERT_PROMPT = FULL_PROMPT_TEXT;
 
     const handleCopyPrompt = () => {
         const text = selectedPromptType === 'correction' ? RETAIL_EXPERT_PROMPT : FULL_PROMPT_TEXT;
