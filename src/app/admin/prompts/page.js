@@ -187,9 +187,6 @@ Lista de produtos:
                     <h1 className={styles.title}>Gerenciador de Prompts</h1>
                     <p className={styles.subtitle}>Configure e salve os prompts que você usa com as IAs.</p>
                 </div>
-                <Button variant="secondary" onClick={handleResetAll} style={{ color: '#dc2626', borderColor: '#fee2e2' }}>
-                    Resetar Todos (Fábrica)
-                </Button>
             </header>
 
             <div className={styles.grid}>
@@ -217,7 +214,6 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveMaster}>Salvar Master</Button>
-                        <Button variant="ghost" onClick={handleResetMaster} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
 
@@ -245,7 +241,6 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveClient}>Salvar Cliente</Button>
-                        <Button variant="ghost" onClick={handleResetClient} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
 
@@ -273,7 +268,6 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveExtra}>Salvar Extra</Button>
-                        <Button variant="ghost" onClick={handleResetExtra} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
             </div>
