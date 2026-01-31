@@ -111,8 +111,8 @@ export default function EditProductPage() {
         const updatedData = {
             name,
             slug,
-            price,
-            marketPrice, // Send marketPrice to backend
+            price: Number(price),
+            marketPrice: marketPrice ? Number(marketPrice) : null, // Send marketPrice as number
             unit,
             category,
             emoji,

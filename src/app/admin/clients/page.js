@@ -36,8 +36,31 @@ INSTRUÇÕES:
    - "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
 
 3. REGRAS RÍGIDAS:
-   - ENRIQUECIMENTO: Mesmo que o produto já exista, gere Descrição Rica, 5 Benefícios e 5 Dicas.
-   - TAGS: Apenas alimentos reais que combinam (arroz, frango, etc).
+   - PROIBIDO "N/A": Nunca utilize "N/A", null sem contexto ou placeholders vazios.
+     Caso falte informação nutricional, utilize médias técnicas reais e coerentes.
+   - ENRIQUECIMENTO OBRIGATÓRIO:
+     - Gere sempre uma descrição.
+     - Gere exatamente 5 benefícios.
+     - Gere exatamente 5 itens em "helpsWith".
+   - TAGS:
+     - Utilize apenas alimentos reais que combinem com o produto (ex: arroz, frango, aveia).
+     - Nunca utilize conceitos abstratos ou benefícios como tags.
+
+4. REGRA DE ESTILO PARA "description":
+   - A descrição DEVE ter caráter comercial e sensorial.
+   - Deve focar em sabor, textura, aroma, aparência e formas comuns de consumo.
+   - NÃO deve conter linguagem técnica, nutricional ou funcional.
+   - NÃO deve mencionar nutrientes, propriedades fisiológicas, saúde ou benefícios.
+   - A descrição deve parecer texto de prateleira de empório, não texto técnico.
+
+5. REGRA ESPECÍFICA PARA "helpsWith":
+   - O campo "helpsWith" DEVE listar exatamente 5 sintomas, condições ou necessidades físicas
+     que o produto pode auxiliar, aliviar ou contribuir para melhorar.
+   - Os itens devem ser realistas, alimentares e baseados nas propriedades do produto.
+   - PROIBIDO:
+     - Usar atividades (ex: "lanches", "pré-treino").
+     - Usar receitas ou formas de consumo.
+     - Usar promessas médicas ou curas absolutas.
 
 ESTRUTURA JSON:
 [
@@ -47,9 +70,9 @@ ESTRUTURA JSON:
     "clientPrice": 10.50,
     "marketPrice": 12.00,
     "category": "Categoria válida",
-    "description": "Descrição rica...",
+    "description": "Texto comercial e sensorial do produto.",
     "benefits": ["...", "...", "...", "...", "..."],
-    "helpsWith": ["...", "...", "...", "...", "..."],
+    "helpsWith": ["Sintoma 1", "Sintoma 2", "Sintoma 3", "Sintoma 4", "Sintoma 5"],
     "tags": ["Alimento 1", "Alimento 2"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
@@ -61,7 +84,8 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const PROMPT_PRODUCTS = PROMPT_CLIENTS;
+    const PROMPT_CLIENTS = MASTER_DATA_ENGINEER_PROMPT;
+    const PROMPT_PRODUCTS = MASTER_DATA_ENGINEER_PROMPT;
 
     const RETAIL_EXPERT_PROMPT = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
 
