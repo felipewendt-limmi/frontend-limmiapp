@@ -399,10 +399,9 @@ Lista de produtos:
                     <Package size={18} /> Produtos
                 </button>
                 {client.slug === 'global-catalog' ? (
-                    <button onClick={() => router.push(`/ admin / clients / ${client.slug}/categories`)
-                    } className={styles.tab} >
+                    <button onClick={() => router.push(`/admin/clients/${client.slug}/categories`)} className={styles.tab}>
                         🏷️ Categorias
-                    </button >
+                    </button>
                 ) : (
                     <>
                         <button onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? styles.tabActive : styles.tab}>

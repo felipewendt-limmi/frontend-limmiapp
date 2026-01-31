@@ -138,6 +138,64 @@ Lista de produtos:
         addToast("Prompt Extra salvo com sucesso!", "success");
     };
 
+    const handleResetMaster = () => {
+        if (!confirm("Deseja restaurar o padrão original para este prompt? Isso apagará suas mudanças atuais.")) return;
+        setPromptMaster(DEFAULT_MASTER);
+        localStorage.setItem('limmi_prompt_master', DEFAULT_MASTER);
+        addToast("Prompt Master restaurado para o padrão v5.", "info");
+    };
+
+    const handleResetClient = () => {
+        if (!confirm("Deseja restaurar o padrão original para este prompt? Isso apagará suas mudanças atuais.")) return;
+        setPromptClient(DEFAULT_CLIENT);
+        localStorage.setItem('limmi_prompt_client', DEFAULT_CLIENT);
+        addToast("Prompt de Clientes restaurado para o padrão v5.", "info");
+    };
+
+    const handleResetExtra = () => {
+        const DEFAULT_EXTRA = `Atue como um especialista em varejo de produtos a granel, com foco em operação, legislação sanitária e experiência do cliente.
+
+Receberá uma lista de produtos.
+Sua tarefa é FILTRAR e RETORNAR APENAS os produtos que fazem sentido serem vendidos a granel, com pesagem variável a cada 100g.
+
+Critérios OBRIGATÓRIOS para MANTER o produto:
+- Produto seco, desidratado, em pó, grão, floco, semente, castanha, farinha, açúcar, sal, tempero, erva seca, chá, cereal, leguminosa, fruta seca ou snack seco.
+- Produto estável em temperatura ambiente.
+- Produto normalmente vendido por peso (100g, 200g, 500g, etc).
+- Produto que o cliente espera escolher quantidade (granel).
+
+Critérios OBRIGATÓRIOS para EXCLUIR:
+- Produtos vendidos por unidade (UND, bandeja, maço, espiga, metade).
+- Produtos frescos (frutas, verduras, legumes in natura).
+- Produtos refrigerados ou congelados.
+- Produtos prontos, assados, recheados ou de padaria.
+- Carnes, frios, laticínios, embutidos.
+- Bebidas líquidas.
+- Utensílios, embalagens, decoração, brindes, brinquedos.
+- Produtos não alimentícios (máscaras, marcadores, moringas, cestas, lenha, taxas, regulamentos).
+- Serviços ou taxas.
+- Produtos infantis industrializados com marca fechada.
+- Massas frescas, pizzas, salgados, pratos prontos.
+
+Regras de saída:
+- Retorne APENAS a lista final dos produtos válidos.
+- Um produto por linha.
+- Não categorizar.
+- Não explicar.
+- Não justificar.
+- Não corrigir nomes.
+- Não adicionar produtos novos.
+- Não remover palavras do nome.
+- Apenas copiar exatamente o nome do produto aprovado.
+
+Lista de produtos:
+[COLAR A LISTA COMPLETA AQUI]`;
+        if (!confirm("Deseja restaurar o padrão original para este prompt? Isso apagará suas mudanças atuais.")) return;
+        setPromptExtra(DEFAULT_EXTRA);
+        localStorage.setItem('limmi_prompt_extra', DEFAULT_EXTRA);
+        addToast("Prompt Extra restaurado para o padrão v5.", "info");
+    };
+
     const handleCopy = (text, type) => {
         navigator.clipboard.writeText(text);
         setCopySuccess(type);
@@ -176,6 +234,7 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveMaster}>Salvar Master</Button>
+                        <Button variant="ghost" onClick={handleResetMaster} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
 
@@ -203,6 +262,7 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveClient}>Salvar Cliente</Button>
+                        <Button variant="ghost" onClick={handleResetClient} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
 
@@ -230,6 +290,7 @@ Lista de produtos:
                     />
                     <div className={styles.footer}>
                         <Button icon={Save} onClick={handleSaveExtra}>Salvar Extra</Button>
+                        <Button variant="ghost" onClick={handleResetExtra} style={{ color: '#64748b', border: '1px solid #e2e8f0' }}>Restaurar Padrão v5</Button>
                     </div>
                 </section>
             </div>
