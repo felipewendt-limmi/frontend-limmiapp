@@ -53,6 +53,18 @@
     background: rgba(30, 64, 175, 0.05);
 }
 
+.danger {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+}
+
+.danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+}
+
 .iconButton {
     padding: 0.5rem;
     border-radius: 50%;

@@ -1,27 +1,56 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, Package, ShoppingBag, Users, Settings, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, Settings, TrendingUp, RefreshCcw, AlertOctagon } from 'lucide-react';
 import styles from './page.module.css';
 import { useData } from '@/context/DataContext';
+import { useToast } from '@/components/ui/Toast/ToastProvider';
+import Button from '@/components/ui/Button/Button';
 
 export default function AdminDashboard() {
-    const { getDashboardStats } = useData();
+    const { getDashboardStats, resetDatabase } = useData();
+    const { addToast } = useToast();
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isResetting, setIsResetting] = useState(false);
+
+    const loadStats = async () => {
+        try {
+            const data = await getDashboardStats();
+            setStats(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const loadStats = async () => {
-            try {
-                const data = await getDashboardStats();
-                setStats(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
         loadStats();
     }, [getDashboardStats]);
+
+    const handleResetDatabase = async () => {
+        const confirm1 = window.confirm("ATENÇÃO: Isso apagará TODOS os dados do sistema (lojas, produtos, relatórios) e restaurará o estado de fábrica. Deseja continuar?");
+        if (!confirm1) return;
+
+        const confirm2 = window.prompt("Para confirmar o reset total, digite 'RESETAR' abaixo:");
+        if (confirm2 !== 'RESETAR') {
+            addToast("Confirmação inválida. Reset cancelado.", "info");
+            return;
+        }
+
+        setIsResetting(true);
+        try {
+            await resetDatabase();
+            addToast("Banco de dados resetado com sucesso!", "success");
+            // Reload page to reflect changes
+            window.location.reload();
+        } catch (error) {
+            addToast("Erro ao resetar banco de dados.", "error");
+            console.error(error);
+        } finally {
+            setIsResetting(false);
+        }
+    };
 
     if (loading) return <div style={{ padding: '2rem' }}>Carregando estatísticas...</div>;
     if (!stats) return <div style={{ padding: '2rem' }}>Erro ao carregar dados.</div>;
@@ -111,6 +140,40 @@ export default function AdminDashboard() {
                 ) : (
                     <p>Nenhuma loja encontrada.</p>
                 )}
+            </section>
+
+            <section className={styles.section} style={{ marginTop: '3rem', borderTop: '1px solid #e2e8f0', paddingTop: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                    <AlertOctagon size={24} color="#ef4444" />
+                    <h2 className={styles.sectionTitle} style={{ margin: 0 }}>Zona de Perigo</h2>
+                </div>
+                <div style={{
+                    background: '#fff1f2',
+                    border: '1px solid #fecdd3',
+                    borderRadius: '8px',
+                    padding: '1.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
+                }}>
+                    <div>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#991b1b', marginBottom: '0.25rem' }}>Resetar Banco de Dados</h3>
+                        <p style={{ color: '#be123c', fontSize: '0.9rem', maxWidth: '500px' }}>
+                            Esta ação apagará permanentemente todos os clientes, produtos, arquivos e logs de interação.
+                            O sistema voltará ao estado original com apenas o Catálogo Global e seu usuário Admin.
+                        </p>
+                    </div>
+                    <Button
+                        variant="danger"
+                        icon={isResetting ? null : RefreshCcw}
+                        onClick={handleResetDatabase}
+                        disabled={isResetting}
+                    >
+                        {isResetting ? "Resetando..." : "Resetar Sistema Agora"}
+                    </Button>
+                </div>
             </section>
         </>
     );

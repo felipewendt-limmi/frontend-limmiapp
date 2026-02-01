@@ -383,6 +383,16 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const resetDatabase = async () => {
+        try {
+            const response = await api.post('/system/reset-db');
+            return response.data;
+        } catch (error) {
+            console.error("Reset Database error:", error);
+            throw error;
+        }
+    };
+
     return (
         <DataContext.Provider value={{
             clients,
@@ -412,7 +422,8 @@ export const DataProvider = ({ children }) => {
             getClientFiles,
             deleteFile,
             getProductInteractions,
-            exportGlobalCatalog
+            exportGlobalCatalog,
+            resetDatabase
         }}>
             {children}
         </DataContext.Provider>

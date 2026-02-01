@@ -185,38 +185,49 @@ export default function AdminClientDetail() {
 INSTRUÇÕES:
 
 PRODUTO EXISTENTE (SLUG/NOME):
-   - Se o produto já existe na Base Master, utilize o "id" correspondente.
+- Se o produto já existe na Base Master, utilize o "id" correspondente.
 
 PREÇOS SEPARADOS:
-   - "clientPrice": Preço exato informado na lista da loja (preço final ao cliente).
-   - "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
+- "clientPrice": Preço exato informado na lista da loja (preço final ao cliente).
+- "marketPrice": Preço base de mercado (referência global), utilizando valores médios reais por 100g.
 
 REGRAS RÍGIDAS:
-   - PROIBIDO "N/A": Nunca utilize "N/A", null sem contexto ou placeholders vazios.
-     Caso falte informação nutricional, utilize médias técnicas reais e coerentes.
-   - ENRIQUECIMENTO OBRIGATÓRIO:
-     - Gere sempre uma descrição.
-     - Gere exatamente 5 benefícios.
-     - Gere exatamente 5 itens em "helpsWith".
-   - TAGS:
-     - Utilize apenas alimentos reais que combinem com o produto (ex: arroz, frango, aveia).
-     - Nunca utilize conceitos abstratos ou benefícios como tags.
+- PROIBIDO "N/A": Nunca utilize "N/A", null sem contexto ou placeholders vazios.
+  Caso falte informação nutricional, utilize médias técnicas reais e coerentes.
+- ENRIQUECIMENTO OBRIGATÓRIO:
+  - Gere sempre uma descrição.
+  - Gere exatamente 5 benefícios.
+  - Gere exatamente 5 itens em "helpsWith".
 
-REGRA DE ESTILO PARA "description":
-   - A descrição DEVE ter caráter comercial e sensorial.
-   - Deve focar em sabor, textura, aroma, aparência e formas comuns de consumo.
-   - NÃO deve conter linguagem técnica, nutricional ou funcional.
-   - NÃO deve mencionar nutrientes, propriedades fisiológicas, saúde ou benefícios.
-   - A descrição deve parecer texto de prateleira de empório, não texto técnico.
+TAGS:
+- O campo "tags" DEVE conter entre 3 e 5 itens.
+- Utilize apenas alimentos reais que combinem com o produto (ex: arroz, frango, aveia).
+- As tags devem representar alimentos normalmente consumidos junto ou que combinem naturalmente.
+- PROIBIDO:
+  - Conceitos abstratos.
+  - Benefícios, sintomas ou propriedades.
+  - Preparações, receitas ou momentos de consumo.
+
+REGRA DE ESTILO E PADRÃO PARA "description":
+- A descrição DEVE ter caráter comercial e sensorial.
+- DEVE ser escrita em formato de frase completa e explicativa.
+- DEVE conter:
+  • a natureza ou origem do produto (ex: fruta, raiz, grão, semente)
+  • uma menção simples ao tipo de processamento (ex: cristalizado, desidratado, moído), sem linguagem técnica
+  • um fechamento indicando formas comuns de consumo ou uso
+- NÃO deve ser curta, telegráfica ou em formato de lista implícita.
+- NÃO deve conter linguagem técnica, nutricional ou funcional.
+- NÃO deve mencionar nutrientes, propriedades fisiológicas, saúde ou benefícios.
+- A descrição deve parecer explicação de empório/artesanal, não slogan nem texto técnico.
 
 REGRA ESPECÍFICA PARA "helpsWith":
-   - O campo "helpsWith" DEVE listar exatamente 5 sintomas, condições ou necessidades físicas
-     que o produto pode auxiliar, aliviar ou contribuir para melhorar.
-   - Os itens devem ser realistas, alimentares e baseados nas propriedades do produto.
-   - PROIBIDO:
-     - Usar atividades (ex: "lanches", "pré-treino").
-     - Usar receitas ou formas de consumo.
-     - Usar promessas médicas ou curas absolutas.
+- O campo "helpsWith" DEVE listar exatamente 5 sintomas, condições ou necessidades físicas
+  que o produto pode auxiliar, aliviar ou contribuir para melhorar.
+- Os itens devem ser realistas, alimentares e baseados nas propriedades do produto.
+- PROIBIDO:
+  - Usar atividades (ex: "lanches", "pré-treino").
+  - Usar receitas ou formas de consumo.
+  - Usar promessas médicas ou curas absolutas.
 
 ESTRUTURA JSON:
 [
@@ -226,10 +237,10 @@ ESTRUTURA JSON:
     "clientPrice": 10.50,
     "marketPrice": 12.00,
     "category": "Categoria válida",
-    "description": "Texto comercial e sensorial do produto.",
+    "description": "Texto comercial, sensorial e explicativo do produto.",
     "benefits": ["...", "...", "...", "...", "..."],
     "helpsWith": ["Sintoma 1", "Sintoma 2", "Sintoma 3", "Sintoma 4", "Sintoma 5"],
-    "tags": ["Alimento 1", "Alimento 2"],
+    "tags": ["Alimento 1", "Alimento 2", "Alimento 3"],
     "nutrition": [
       { "label": "Calorias", "value": "X kcal" },
       { "label": "Proteína", "value": "X g" },
