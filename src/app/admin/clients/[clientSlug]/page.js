@@ -394,7 +394,7 @@ ESTRUTURA JSON:
                                 {client.isActive ? "Desativar Loja" : "Ativar Loja"}
                             </Button>
                             <Button
-                                variant="danger" // uses new .danger class
+                                variant="danger"
                                 icon={Trash2}
                                 onClick={async () => {
                                     if (confirm(`ATENÇÃO: Deseja EXCLUIR permanentemente a loja "${client.name}"? Todos os produtos e arquivos serão apagados.`)) {
