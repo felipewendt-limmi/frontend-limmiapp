@@ -385,30 +385,32 @@ ESTRUTURA JSON:
 
                 <div className={styles.headerActions}>
                     {client.slug !== 'global-catalog' ? (
-                        <Button
-                            variant={client.isActive ? "secondary" : "primary"}
-                            icon={Power}
-                            onClick={handleToggleStatus}
-                        >
-                            {client.isActive ? "Desativar Loja" : "Ativar Loja"}
-                        </Button>
-                        <Button 
-                            variant="danger" // uses new .danger class
-                            icon={Trash2} 
-                            onClick={async () => {
-                                if (confirm(`ATENÇÃO: Deseja EXCLUIR permanentemente a loja "${client.name}"? Todos os produtos e arquivos serão apagados.`)) {
-                                    try {
-                                        await deleteClient(client.id);
-                                        addToast("Loja excluída com sucesso!", "success");
-                                        router.push('/admin/clients');
-                                    } catch (err) {
-                                        addToast("Erro ao excluir. Tente novamente.", "error");
+                        <>
+                            <Button
+                                variant={client.isActive ? "secondary" : "primary"}
+                                icon={Power}
+                                onClick={handleToggleStatus}
+                            >
+                                {client.isActive ? "Desativar Loja" : "Ativar Loja"}
+                            </Button>
+                            <Button
+                                variant="danger" // uses new .danger class
+                                icon={Trash2}
+                                onClick={async () => {
+                                    if (confirm(`ATENÇÃO: Deseja EXCLUIR permanentemente a loja "${client.name}"? Todos os produtos e arquivos serão apagados.`)) {
+                                        try {
+                                            await deleteClient(client.id);
+                                            addToast("Loja excluída com sucesso!", "success");
+                                            router.push('/admin/clients');
+                                        } catch (err) {
+                                            addToast("Erro ao excluir. Tente novamente.", "error");
+                                        }
                                     }
-                                }
-                            }}
-                        >
-                            Excluir
-                        </Button>
+                                }}
+                            >
+                                Excluir
+                            </Button>
+                        </>
                     ) : (
                         <Button
                             variant="primary"
