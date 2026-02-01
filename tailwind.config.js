@@ -9,8 +9,12 @@ module.exports = {
             colors: {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
-                primary: "#2563eb", // Blue
-                secondary: "#84cc16", // Lime as requested
+                primary: "#1E85C7", // Updated Blue
+                secondary: "#84cc16", // Lime
+            },
+            fontFamily: {
+                sans: ['"SF Pro"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+                title: ['var(--font-outfit)', 'sans-serif'],
             },
         },
     },
