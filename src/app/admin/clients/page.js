@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useData } from '@/context/DataContext';
 import Button from '@/components/ui/Button/Button';
-import { Plus, Store, MoreVertical, ExternalLink, X, ArrowRight, Check, Upload, Copy } from 'lucide-react';
+import { Plus, Store, MoreVertical, ExternalLink, X, ArrowRight, Check, Upload, Copy, Trash2 } from 'lucide-react';
 import styles from './page.module.css';
 import { useToast } from '@/components/ui/Toast/ToastProvider';
 
 export default function AdminClients() {
-    const { clients, addClient, toggleClientStatus, bulkImportClients, importProducts } = useData();
+    const { clients, addClient, deleteClient, toggleClientStatus, bulkImportClients, importProducts } = useData();
     const { addToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -24,7 +24,7 @@ export default function AdminClients() {
     const [copySuccess, setCopySuccess] = useState(false);
     const [importType, setImportType] = useState("clients"); // "clients", "products", or "correction"
 
-    const MASTER_DATA_ENGINEER_PROMPT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
+    const V5_PROMPT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
 
 INSTRUÇÕES:
 
@@ -95,9 +95,21 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const PROMPT_CLIENTS = MASTER_DATA_ENGINEER_PROMPT;
-    const PROMPT_PRODUCTS = MASTER_DATA_ENGINEER_PROMPT;
-    const RETAIL_EXPERT_PROMPT = MASTER_DATA_ENGINEER_PROMPT;
+    // Initialize state with default V5, but try to sync with localStorage
+    const [PROMPT_CLIENTS, setPROMPT_CLIENTS] = useState(V5_PROMPT);
+    const [PROMPT_PRODUCTS, setPROMPT_PRODUCTS] = useState(V5_PROMPT); // Usually same or Master
+    const [RETAIL_EXPERT_PROMPT, setRETAIL_EXPERT_PROMPT] = useState(V5_PROMPT); // Usually Extra/Correction
+
+    // Load from localStorage on mount (Sync Feature)
+    React.useEffect(() => {
+        const savedClient = localStorage.getItem('limmi_prompt_client');
+        const savedMaster = localStorage.getItem('limmi_prompt_master');
+        const savedExtra = localStorage.getItem('limmi_prompt_extra');
+
+        if (savedClient) setPROMPT_CLIENTS(savedClient);
+        if (savedMaster) setPROMPT_PRODUCTS(savedMaster);
+        if (savedExtra) setRETAIL_EXPERT_PROMPT(savedExtra);
+    }, []);
 
     const handleCopyPrompt = () => {
         let text = PROMPT_CLIENTS;
@@ -218,6 +230,24 @@ ESTRUTURA JSON:
                                     Gerenciar Loja
                                 </Button>
                             </Link>
+                            <button
+                                className={styles.iconButton}
+                                style={{ color: '#ef4444', marginLeft: '0.5rem', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                onClick={async (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (confirm(`Tem certeza que deseja EXCLUIR permanentemente a loja "${client.name}"? Isso não pode ser desfeito.`)) {
+                                        try {
+                                            await deleteClient(client.id);
+                                            addToast("Loja excluída com sucesso.", "success");
+                                        } catch (err) {
+                                            addToast("Erro ao excluir loja.", "error");
+                                        }
+                                    }
+                                }}
+                            >
+                                <Trash2 size={18} />
+                            </button>
                         </div>
                     </div>
                 ))}

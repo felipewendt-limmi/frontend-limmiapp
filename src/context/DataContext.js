@@ -393,12 +393,23 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    const deleteClient = async (clientId) => {
+        try {
+            await api.delete(`/clients/${clientId}`);
+            setClients(prev => prev.filter(c => c.id !== clientId));
+        } catch (error) {
+            console.error("Delete Client error:", error);
+            throw error;
+        }
+    };
+
     return (
         <DataContext.Provider value={{
             clients,
             products,
             addClient,
             updateClient,
+            deleteClient,
             toggleClientStatus,
             getClientBySlug,
             getProductsByClientId,

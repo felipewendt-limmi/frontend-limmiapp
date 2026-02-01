@@ -17,7 +17,7 @@ export default function AdminClientDetail() {
     const params = useParams();
     const router = useRouter();
     const {
-        getClientBySlug, updateClient, toggleClientStatus,
+        getClientBySlug, updateClient, toggleClientStatus, deleteClient,
         getProductsByClientId, toggleProductStatus, isLoaded,
         importProducts, searchGlobalProducts,
         uploadFile, getClientFiles, deleteFile, exportGlobalCatalog
@@ -180,7 +180,7 @@ export default function AdminClientDetail() {
         addToast(`Loja ${client.isActive ? 'desativada' : 'ativada'} com sucesso.`, "info");
     };
 
-    const FULL_PROMPT_TEXT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
+    const V5_PROMPT = `Atue como um Engenheiro de Dados. Sua tarefa é cruzar a Base Master e a Lista da Loja para gerar o JSON de importação.
 
 INSTRUÇÕES:
 
@@ -251,7 +251,18 @@ ESTRUTURA JSON:
   }
 ]`;
 
-    const RETAIL_EXPERT_PROMPT = FULL_PROMPT_TEXT;
+    // Sync State
+    const [FULL_PROMPT_TEXT, setFULL_PROMPT_TEXT] = useState(V5_PROMPT);
+    const [RETAIL_EXPERT_PROMPT, setRETAIL_EXPERT_PROMPT] = useState(V5_PROMPT);
+
+    // Sync Effect
+    useEffect(() => {
+        const savedClient = localStorage.getItem('limmi_prompt_client');
+        const savedExtra = localStorage.getItem('limmi_prompt_extra');
+
+        if (savedClient) setFULL_PROMPT_TEXT(savedClient);
+        if (savedExtra) setRETAIL_EXPERT_PROMPT(savedExtra);
+    }, []);
 
     const handleCopyPrompt = () => {
         const text = selectedPromptType === 'correction' ? RETAIL_EXPERT_PROMPT : FULL_PROMPT_TEXT;
@@ -380,6 +391,23 @@ ESTRUTURA JSON:
                             onClick={handleToggleStatus}
                         >
                             {client.isActive ? "Desativar Loja" : "Ativar Loja"}
+                        </Button>
+                        <Button 
+                            variant="danger" // uses new .danger class
+                            icon={Trash2} 
+                            onClick={async () => {
+                                if (confirm(`ATENÇÃO: Deseja EXCLUIR permanentemente a loja "${client.name}"? Todos os produtos e arquivos serão apagados.`)) {
+                                    try {
+                                        await deleteClient(client.id);
+                                        addToast("Loja excluída com sucesso!", "success");
+                                        router.push('/admin/clients');
+                                    } catch (err) {
+                                        addToast("Erro ao excluir. Tente novamente.", "error");
+                                    }
+                                }
+                            }}
+                        >
+                            Excluir
                         </Button>
                     ) : (
                         <Button
