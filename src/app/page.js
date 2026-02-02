@@ -13,7 +13,12 @@ import {
   Facebook,
   Smartphone,
   Info,
-  Database
+  Database,
+  HelpCircle,
+  FileText,
+  Users,
+  Zap,
+  Sparkles
 } from 'lucide-react';
 
 const faqData = [
@@ -44,7 +49,7 @@ const faqData = [
 ];
 
 export default function LandingPage() {
-  const [activeTab, setActiveTab] = useState('granel');
+
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
@@ -137,366 +142,184 @@ export default function LandingPage() {
       */}
       <section className="py-12 md:py-24 bg-[url('/background_pattern.png')] bg-cover bg-center text-center relative">
         <div className="container mx-auto px-4">
-          <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Limmi</span>
-          <h2 className="text-[48px] font-bold text-slate-900 mt-2 mb-12 font-title">
-            O que podemos <span className="text-[#1E85C7]">oferecer?</span>
+          <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Tecnologia aplicada ao ponto de venda.</span>
+          <h2 className="text-[53px] font-bold text-slate-900 mt-2 mb-12 font-title">
+            O que a LIMMI pode oferecer <span className="text-[#1E85C7]">ao seu varejo?</span>
           </h2>
-
-          {/* Tabs / Toggle */}
-          <div className="flex justify-center mb-16">
-            <div className="bg-slate-100 p-1 rounded-full inline-flex relative">
-              <button
-                onClick={() => setActiveTab('granel')}
-                className={`px-8 py-3 rounded-full font-bold transition-all ${activeTab === 'granel' ? 'bg-blue-600 text-white shadow-lg z-10' : 'text-slate-500 hover:text-blue-600'}`}
-              >
-                Limmi Granel
-              </button>
-              <button
-                onClick={() => setActiveTab('assist')}
-                className={`px-8 py-3 rounded-full font-bold transition-all ${activeTab === 'assist' ? 'bg-blue-600 text-white shadow-lg z-10' : 'text-slate-500 hover:text-blue-600'}`}
-              >
-                Limmi Assist
-              </button>
-            </div>
-          </div>
 
           {/* 
              =============================================
              4. FEATURES SECTION (Dynamic Content)
              =============================================
            */}
-          <div className="text-left max-w-6xl mx-auto">
+          <div className="text-left max-w-6xl mx-auto space-y-32">
 
             {/* CONTENT FOR LIMMI GRANEL */}
-            {activeTab === 'granel' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="grid md:grid-cols-2 gap-12 items-start">
-                  {/* Left Column: Content */}
-                  <div>
-                    <h3 className="text-[38px] md:text-[48px] font-bold text-slate-900 mb-2 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h3>
-                    <p className="text-slate-500 text-[20px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">Informação correta e acessível para a decisão de compra.</p>
-                    <ul className="space-y-4">
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 flex-shrink-0">
-                          <Image
-                            src="/icone_da_lista.png"
-                            width={20}
-                            height={20}
-                            alt="Check"
-                            style={{ width: '20px', height: '20px' }}
-                          />
-                        </div>
-                        <span className="text-slate-700 font-medium">Redução de duvidas operacionais no balcão</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 flex-shrink-0">
-                          <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                        </div>
-                        <span className="text-slate-700 font-medium">Informação padronizada no ponto de venda</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 flex-shrink-0">
-                          <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                        </div>
-                        <span className="text-slate-700 font-medium">Apoio ao atendimento e à jornada do cliente</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 flex-shrink-0">
-                          <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                        </div>
-                        <span className="text-slate-700 font-medium">Mais fluidez operacional</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 flex-shrink-0">
-                          <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                        </div>
-                        <span className="text-slate-700 font-medium">Diferenciação da experiência no granel</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 flex-shrink-0">
-                          <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                        </div>
-                        <span className="text-slate-700 font-medium">Dados gerados no ponto de venda para apoiar decisões do negócio</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Right Column: Phone Mockup with Blue Strip Overlay */}
-                  <div className="relative flex justify-center mt-12 md:mt-0">
-                    <div className="relative z-10 w-full max-w-[300px]">
-                      {/* Phone Image - Adjusted to prevent top cutoff */}
-                      <div className="-mt-12 mb-20">
-                        <Image
-                          src="/iPhone.png"
-                          width={300}
-                          height={600}
-                          alt="App Feature"
-                          className="w-full h-auto drop-shadow-2xl"
-                          priority
-                        />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Left Column: Content */}
+                <div>
+                  <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Granel</h3>
+                  <h4 className="text-[24px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h4>
+                  <p className="text-slate-500 text-[20px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">Informação correta e acessível para a decisão de compra.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Card 1 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <HelpCircle className="w-10 h-10 text-white" />
                       </div>
-
-
+                      <p className="font-bold text-sm leading-tight">Redução de duvidas operacionais no balcão</p>
                     </div>
 
-                    {/* Decorative Elements behind phone */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
+                    {/* Card 2 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <FileText className="w-10 h-10 text-white" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Informação padronizada no ponto de venda</p>
+                    </div>
+
+                    {/* Card 3 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Users className="w-10 h-10 text-white" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Apoio ao atendimento e à jornada do cliente</p>
+                    </div>
+
+                    {/* Card 4 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Zap className="w-10 h-10 text-white" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Mais fluidez operacional</p>
+                    </div>
+
+                    {/* Card 5 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Sparkles className="w-10 h-10 text-white" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Diferenciação da experiência no granel</p>
+                    </div>
+
+                    {/* Card 6 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Database className="w-10 h-10 text-white" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Dados gerados no ponto de venda para apoiar decisões do negócio</p>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
 
-            {/* CONTENT FOR LIMMI ASSIST */}
-            {activeTab === 'assist' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="grid md:grid-cols-2 gap-12 items-start">
-                  {/* Left Column: Content */}
-                  <div>
-                    <h3 className="text-[38px] md:text-[48px] font-bold text-slate-900 mb-2 font-title text-center md:text-left">Eficiência <span className="text-[#1E85C7]">&</span> inteligência</h3>
-                    <p className="text-slate-500 text-[20px] md:text-[24px] max-w-2xl mb-4 text-center md:text-left mx-auto md:mx-0">
-                      O LIMMI Assist permite que o cliente acompanhe o valor da compra ao longo do percurso, trazendo previsibilidade e mais segurança antes de chegar ao caixa.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Assist Card 1 - Big (spanning 2 cols on small screens if possible, or usually 2x2 logic) */}
-                      <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center col-span-1 sm:col-span-2">
-                        {/* Icon placeholder - Chart/Graph */}
-                        <div className="mb-4">
-                          <Image src="/assist1.png" width={40} height={40} alt="Assist 1" className="w-[40px] h-[40px]" />
-                        </div>
-                        <p className="font-bold text-sm leading-tight">Entendimento dos benefícios, dados nutricionais e usos do produto</p>
-                      </div>
-
-                      {/* Assist Card 2 */}
-                      <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                        <div className="mb-4">
-                          <Image src="/assist2.png" width={40} height={40} alt="Assist 2" className="w-[40px] h-[40px]" />
-                        </div>
-                        <p className="font-bold text-sm leading-tight">Sintomas que ajuda e alimentos que combinam</p>
-                      </div>
-
-                      {/* Assist Card 3 */}
-                      <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                        <div className="mb-4">
-                          <Image src="/assist3.png" width={40} height={40} alt="Assist 3" className="w-[40px] h-[40px]" />
-                        </div>
-                        <p className="font-bold text-sm leading-tight">Mais controle sobre as porções para a sua dieta</p>
-                      </div>
-
-                      {/* Assist Card 4 */}
-                      <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                        <div className="mb-4">
-                          <Image src="/assist4.png" width={40} height={40} alt="Assist 4" className="w-[40px] h-[40px]" />
-                        </div>
-                        <p className="font-bold text-sm leading-tight">Mais segurança na escolha</p>
-                      </div>
-
-                      {/* Assist Card 5 */}
-                      <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                        <div className="mb-4">
-                          <Image src="/assist5.png" width={40} height={40} alt="Assist 5" className="w-[40px] h-[40px]" />
-                        </div>
-                        <p className="font-bold text-sm leading-tight">Compra com mais confiança</p>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Right Column: Man Shopping Image */}
-                  <div className="relative flex justify-center">
-                    <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-[2rem] overflow-hidden shadow-2xl">
+                {/* Right Column: Phone Mockup with Blue Strip Overlay */}
+                <div className="relative flex justify-center mt-0 md:mt-0">
+                  <div className="relative z-10 w-full max-w-[300px]">
+                    {/* Phone Image */}
+                    <div>
                       <Image
-                        src="/MODELO.png"
-                        fill
-                        alt="Cliente usando Limmi Assist"
-                        className="object-cover"
+                        src="/iPhone.png"
+                        width={300}
+                        height={600}
+                        alt="App Feature"
+                        className="w-full h-auto drop-shadow-2xl"
+                        priority
                       />
                     </div>
+
+
                   </div>
+
+                  {/* Decorative Elements behind phone */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
                 </div>
-              </motion.div>
-            )}
+              </div>
+            </motion.div>
 
-          </div>
-        </div>
-      </section>
-      <section className="py-12 md:py-24 bg-white overflow-hidden">
-        <div className="container mx-auto px-4">
-
-          {/* 
-             =============================================
-             5. CONSUMER BENEFITS ("Benefícios ao Consumidor")
-             =============================================
-           */}
-          <div className="grid md:grid-cols-2 gap-16 items-center mb-16 md:mb-32">
-            {/* Left: Illustration */}
-            <div className="relative flex justify-center order-last md:order-first">
-              <Image
-                src="/Group 1597882473.png"
-                width={500}
-                height={500}
-                alt="Consumer Benefits"
-                className="w-full max-w-md h-auto"
-              />
-            </div>
-
-            {/* Right: Content */}
-            <div>
-              <h3 className="text-[38px] md:text-[48px] font-bold text-slate-900 mb-8 font-title text-center md:text-left">
-                Benefícios ao <span className="text-[#1E85C7]">Consumidor</span>
-              </h3>
-              <p className="text-slate-500 mb-8 text-[20px] md:text-[24px] text-center md:text-left mx-auto md:mx-0">
-                Confiança no momento da compra e informações claras sobre o que está levando para casa.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-                {/* Item 1 */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0">
-                    <Image src="/icon1.png" width={48} height={48} alt="Entendimento" className="w-full h-auto" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-700 text-base leading-snug">Entendimento dos benefícios, dados nutricionais e usos do produto</h4>
+            {/* CONTENT FOR LIMMI ASSIST */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Left Column (Was Right): Man Shopping Image */}
+                <div className="relative flex justify-center order-last md:order-first">
+                  <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-[2rem] overflow-hidden shadow-2xl">
+                    <Image
+                      src="/MODELO.png"
+                      fill
+                      alt="Cliente usando Limmi Assist"
+                      className="object-cover"
+                    />
                   </div>
                 </div>
 
-                {/* Item 2 */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0">
-                    <Image src="/icon2.png" width={48} height={48} alt="Sintomas" className="w-full h-auto" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-700 text-base leading-snug">Sintomas que ajuda e alimentos que combinam</h4>
-                  </div>
-                </div>
+                {/* Right Column (Was Left): Content */}
+                <div>
+                  <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Assist</h3>
+                  <h4 className="text-[24px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Eficiência <span className="text-[#1E85C7]">&</span> inteligência</h4>
+                  <p className="text-slate-500 text-[20px] md:text-[24px] max-w-2xl mb-4 text-center md:text-left mx-auto md:mx-0">
+                    O LIMMI Assist permite que o cliente acompanhe o valor da compra ao longo do percurso, trazendo previsibilidade e mais segurança antes de chegar ao caixa.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Assist Card 1 - Big (spanning 2 cols on small screens if possible, or usually 2x2 logic) */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center col-span-1 sm:col-span-2">
+                      {/* Icon placeholder - Chart/Graph */}
+                      <div className="mb-4">
+                        <Image src="/assist1.png" width={40} height={40} alt="Assist 1" className="w-[40px] h-[40px]" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Entendimento dos benefícios, dados nutricionais e usos do produto</p>
+                    </div>
 
-                {/* Item 3 */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0">
-                    <Image src="/icon3.png" width={48} height={48} alt="Controle" className="w-full h-auto" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-700 text-base leading-snug">Mais controle sobre as porções para a sua dieta</h4>
-                  </div>
-                </div>
+                    {/* Assist Card 2 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Image src="/assist2.png" width={40} height={40} alt="Assist 2" className="w-[40px] h-[40px]" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Sintomas que ajuda e alimentos que combinam</p>
+                    </div>
 
-                {/* Item 4 */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0">
-                    <Image src="/icon4.png" width={48} height={48} alt="Segurança" className="w-full h-auto" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-700 text-base leading-snug">Mais segurança na escolha</h4>
-                  </div>
-                </div>
+                    {/* Assist Card 3 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Image src="/assist3.png" width={40} height={40} alt="Assist 3" className="w-[40px] h-[40px]" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Mais controle sobre as porções para a sua dieta</p>
+                    </div>
 
-                {/* Item 5 */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0">
-                    <Image src="/icon5.png" width={48} height={48} alt="Confiança" className="w-full h-auto" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-700 text-base leading-snug">Compra com mais confiança</h4>
+                    {/* Assist Card 4 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Image src="/assist4.png" width={40} height={40} alt="Assist 4" className="w-[40px] h-[40px]" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Mais segurança na escolha</p>
+                    </div>
+
+                    {/* Assist Card 5 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                      <div className="mb-4">
+                        <Image src="/assist5.png" width={40} height={40} alt="Assist 5" className="w-[40px] h-[40px]" />
+                      </div>
+                      <p className="font-bold text-sm leading-tight">Compra com mais confiança</p>
+                    </div>
+
                   </div>
                 </div>
               </div>
+            </motion.div>
 
-              <button className="mt-10 px-8 py-4 bg-blue-600 text-white rounded-full font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
-                Saiba mais
-              </button>
-            </div>
           </div>
-
         </div>
       </section>
 
-      {/* 
-         =============================================
-         6. RETAILER BENEFITS ("Processo simples e rápido")
-         =============================================
-       */}
-      <section className="w-full py-12 md:py-24 bg-white overflow-hidden">
 
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Left: Content */}
-            <div>
-              <h3 className="text-[38px] md:text-[48px] font-bold text-slate-900 mb-8 font-title text-center md:text-left">
-                Processo simples <span className="text-[#1E85C7]">e rápido</span>
-              </h3>
-              <p className="text-slate-500 mb-8 text-[20px] md:text-[24px] text-center md:text-left mx-auto md:mx-0">
-                Soluções ágeis para potencializar o seu negócio com tecnologia de ponta.
-              </p>
 
-              <ul className="space-y-4">
-                <li className="flex items-center gap-3">
-                  <div className="w-6 flex-shrink-0">
-                    <Image
-                      src="/icone_da_lista.png"
-                      width={20}
-                      height={20}
-                      alt="Check"
-                      style={{ width: '20px', height: '20px' }}
-                    />
-                  </div>
-                  <span className="text-slate-700 font-medium">Instalação rápida e descomplicada</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex-shrink-0">
-                    <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                  </div>
-                  <span className="text-slate-700 font-medium">Interface intuitiva e fácil de usar</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex-shrink-0">
-                    <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                  </div>
-                  <span className="text-slate-700 font-medium">Integração total com seus sistemas</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex-shrink-0">
-                    <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                  </div>
-                  <span className="text-slate-700 font-medium">Treinamento simplificado para a equipe</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex-shrink-0">
-                    <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                  </div>
-                  <span className="text-slate-700 font-medium">Suporte técnico especializado</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex-shrink-0">
-                    <Image src="/icone_da_lista.png" width={20} height={20} alt="Check" style={{ width: '20px', height: '20px' }} />
-                  </div>
-                  <span className="text-slate-700 font-medium">Resultados visíveis em pouco tempo</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Right: Illustration Image */}
-            <div className="relative w-full">
-              <Image
-                src="/Whisk_a365af735633881b07e46f1bbfde95a0dr 1.png"
-                width={1200}
-                height={1200}
-                alt="Processo simples e rápido"
-                className="w-full h-auto object-cover rounded-2xl"
-                priority
-              />
-            </div>
-
-          </div>
-
-        </div>
-      </section>
 
       {/* 
         =============================================
