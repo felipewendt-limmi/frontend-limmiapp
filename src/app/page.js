@@ -223,7 +223,7 @@ export default function LandingPage() {
                     {/* Phone Image */}
                     <div>
                       <Image
-                        src="/iPhone.png"
+                        src="/GIFLIMMI.gif"
                         width={300}
                         height={600}
                         alt="App Feature"
