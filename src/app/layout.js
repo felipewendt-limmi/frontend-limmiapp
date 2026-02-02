@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata = {
-  title: "LIMMI Granel",
+  title: "LIMMI",
   description: "Tecnologia Viva em Alimentos a Granel",
 };
 

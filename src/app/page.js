@@ -101,7 +101,7 @@ export default function LandingPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-[57px] font-extrabold max-w-4xl leading-tight mb-6 text-slate-900 font-title"
+            className="text-[2rem] md:text-[57px] font-extrabold max-w-4xl leading-tight mb-6 text-slate-900 font-title"
           >
             A Limmi <span className="text-[#1E85C7]">é uma Retailtech</span> que veio para trazer <span className="text-[#1E85C7]">clareza</span> no momento da compra.
           </motion.h1>
@@ -142,8 +142,8 @@ export default function LandingPage() {
       */}
       <section className="py-12 md:py-24 bg-[url('/background_pattern.png')] bg-cover bg-center text-center relative">
         <div className="container mx-auto px-4">
-          <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Tecnologia aplicada ao ponto de venda.</span>
-          <h2 className="text-[53px] font-bold text-slate-900 mt-2 mb-12 font-title">
+          <span className="text-[0.75rem] md:text-sm font-semibold text-slate-400 uppercase tracking-widest">Tecnologia aplicada ao ponto de venda.</span>
+          <h2 className="text-[32px] md:text-[53px] font-bold text-slate-900 mt-2 mb-12 font-title">
             O que a LIMMI pode oferecer <span className="text-[#1E85C7]">ao seu varejo?</span>
           </h2>
 
@@ -164,8 +164,8 @@ export default function LandingPage() {
                 {/* Left Column: Content */}
                 <div>
                   <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Granel</h3>
-                  <h4 className="text-[24px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h4>
-                  <p className="text-slate-500 text-[20px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">Informação correta e acessível para a decisão de compra.</p>
+                  <h4 className="text-[20px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h4>
+                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">Informação correta e acessível para a decisão de compra.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Card 1 */}
                     <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
@@ -263,18 +263,17 @@ export default function LandingPage() {
                 {/* Right Column (Was Left): Content */}
                 <div>
                   <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Assist</h3>
-                  <h4 className="text-[24px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Eficiência <span className="text-[#1E85C7]">&</span> inteligência</h4>
-                  <p className="text-slate-500 text-[20px] md:text-[24px] max-w-2xl mb-4 text-center md:text-left mx-auto md:mx-0">
+                  <h4 className="text-[20px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Eficiência <span className="text-[#1E85C7]">&</span> inteligência</h4>
+                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-2xl mb-4 text-center md:text-left mx-auto md:mx-0">
                     O LIMMI Assist permite que o cliente acompanhe o valor da compra ao longo do percurso, trazendo previsibilidade e mais segurança antes de chegar ao caixa.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Assist Card 1 - Big (spanning 2 cols on small screens if possible, or usually 2x2 logic) */}
-                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center col-span-1 sm:col-span-2">
-                      {/* Icon placeholder - Chart/Graph */}
+                    {/* Assist Card 1 */}
+                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
                       <div className="mb-4">
                         <Image src="/assist1.png" width={40} height={40} alt="Assist 1" className="w-[40px] h-[40px]" />
                       </div>
-                      <p className="font-bold text-sm leading-tight">Entendimento dos benefícios, dados nutricionais e usos do produto</p>
+                      <p className="font-bold text-sm leading-tight">Experiência de compra diferenciada</p>
                     </div>
 
                     {/* Assist Card 2 */}
@@ -282,7 +281,7 @@ export default function LandingPage() {
                       <div className="mb-4">
                         <Image src="/assist2.png" width={40} height={40} alt="Assist 2" className="w-[40px] h-[40px]" />
                       </div>
-                      <p className="font-bold text-sm leading-tight">Sintomas que ajuda e alimentos que combinam</p>
+                      <p className="font-bold text-sm leading-tight">Cliente mais tranquilo no caixa</p>
                     </div>
 
                     {/* Assist Card 3 */}
@@ -290,7 +289,7 @@ export default function LandingPage() {
                       <div className="mb-4">
                         <Image src="/assist3.png" width={40} height={40} alt="Assist 3" className="w-[40px] h-[40px]" />
                       </div>
-                      <p className="font-bold text-sm leading-tight">Mais controle sobre as porções para a sua dieta</p>
+                      <p className="font-bold text-sm leading-tight">Dados de comportamento de compra</p>
                     </div>
 
                     {/* Assist Card 4 */}
@@ -298,17 +297,8 @@ export default function LandingPage() {
                       <div className="mb-4">
                         <Image src="/assist4.png" width={40} height={40} alt="Assist 4" className="w-[40px] h-[40px]" />
                       </div>
-                      <p className="font-bold text-sm leading-tight">Mais segurança na escolha</p>
+                      <p className="font-bold text-sm leading-tight">Apoio à reposição e análise de giro</p>
                     </div>
-
-                    {/* Assist Card 5 */}
-                    <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                      <div className="mb-4">
-                        <Image src="/assist5.png" width={40} height={40} alt="Assist 5" className="w-[40px] h-[40px]" />
-                      </div>
-                      <p className="font-bold text-sm leading-tight">Compra com mais confiança</p>
-                    </div>
-
                   </div>
                 </div>
               </div>
@@ -328,13 +318,13 @@ export default function LandingPage() {
       */}
       <div className="w-full relative h-auto md:h-[500px] flex flex-col md:block">
         <Image
-          src="/banner6.png"
+          src="/meio.png"
           fill
           alt="Banner Promocional"
           className="object-cover object-center hidden md:block"
         />
         <Image
-          src="/banner6_mob.png"
+          src="/meio-mob.png"
           width={768}
           height={600}
           alt="Banner Promocional Mobile"
@@ -346,7 +336,7 @@ export default function LandingPage() {
 
           {/* Item 1 */}
           <div className="flex items-center gap-3 flex-1 md:border-r border-white/30 md:pr-8 justify-center py-2 md:py-0 max-w-xs">
-            <div className="text-center md:text-left text-xs md:text-sm leading-tight">
+            <div className="text-center text-xs md:text-sm leading-tight">
               <p className="font-bold">Clareza gera confiança.</p>
               <p className="opacity-90">Confiança gera venda.</p>
             </div>
@@ -354,7 +344,7 @@ export default function LandingPage() {
 
           {/* Item 2 */}
           <div className="flex items-center gap-3 flex-1 md:border-r border-white/30 md:px-8 justify-center py-2 md:py-0 max-w-xs">
-            <div className="text-center md:text-left text-xs md:text-sm leading-tight">
+            <div className="text-center text-xs md:text-sm leading-tight">
               <p className="font-bold">O cliente entende melhor.</p>
               <p className="opacity-90">A loja vende mais.</p>
             </div>
@@ -362,7 +352,7 @@ export default function LandingPage() {
 
           {/* Item 3 */}
           <div className="flex items-center gap-3 flex-1 md:pl-8 justify-center py-2 md:py-0 max-w-xs">
-            <div className="text-center md:text-right text-xs md:text-sm leading-tight">
+            <div className="text-center text-xs md:text-sm leading-tight">
               <p className="font-bold">A tecnologia organiza a experiência.</p>
               <p className="opacity-90">A experiência valoriza a loja.</p>
             </div>
@@ -379,7 +369,7 @@ export default function LandingPage() {
       <section className="bg-white py-12 md:py-24">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest text-center block md:inline">F.A.Q</span>
-          <h2 className="text-[38px] md:text-[48px] font-bold text-slate-900 mt-2 mb-12 font-title text-center">
+          <h2 className="text-[32px] md:text-[48px] font-bold text-slate-900 mt-2 mb-12 font-title text-center">
             Perguntas <span className="text-[#1E85C7]">frequentes</span>
           </h2>
 
