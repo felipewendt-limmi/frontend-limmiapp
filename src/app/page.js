@@ -165,7 +165,7 @@ export default function LandingPage() {
                 <div>
                   <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Granel</h3>
                   <h4 className="text-[20px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h4>
-                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">O LIMMI Granel leva a informação completa do produto diretamente ao ponto de venda via QR Code. Ao lado, um exemplo da tela final apresentada ao usuário após o escaneamento.</p>
+                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">O LIMMI Granel leva a informação completa do produto diretamente ao ponto de venda via QR Code. A seguir, um exemplo da tela final apresentada ao usuário após o escaneamento.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Card 1 */}
                     <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
