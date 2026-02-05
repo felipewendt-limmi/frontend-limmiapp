@@ -27,20 +27,20 @@ const faqData = [
     answer: "Não.\nO QR Code é fixo e não expira. Ele direciona para uma página dinâmica, permitindo atualizar informações do produto sem a necessidade de trocar etiquetas físicas na loja."
   },
   {
-    question: "Os dados gerados pelo LIMMI utilizam informações da minha loja?",
-    answer: "Sim.\nAs informações geradas pelo LIMMI partem das interações feitas no ponto de venda, como leituras de QR Code e uso das funcionalidades disponíveis, sempre respeitando o contexto da própria operação."
-  },
-  {
-    question: "Que tipo de dados o LIMMI utiliza?",
-    answer: "O LIMMI utiliza informações públicas e dados gerados pela interação dos clientes com a solução, com o objetivo de apoiar o varejo na organização da experiência e na tomada de decisões."
-  },
-  {
-    question: "O LIMMI substitui o vendedor ou o atendimento no balcão?",
-    answer: "Não.\nA LIMMI atua como ferramenta de apoio ao atendimento, ajudando a organizar informações e reduzir dúvidas recorrentes, enquanto o vendedor segue sendo central na experiência do cliente."
+    question: "Que tipo de dados a LIMMI utiliza?",
+    answer: "A LIMMI utiliza informações públicas e dados gerados pela interação dos clientes com a solução, com o objetivo de apoiar o varejo na organização da experiência e na tomada de decisões."
   },
   {
     question: "Que tipo de informação o cliente acessa ao escanear o QR Code?",
     answer: "O cliente acessa informações educativas e públicas sobre o produto, como descrição, usos e orientações gerais, pensadas para ajudar na decisão de compra com mais segurança."
+  },
+  {
+    question: "A LIMMI substitui o vendedor ou o atendimento no balcão?",
+    answer: "Não.\nA LIMMI atua como ferramenta de apoio ao atendimento, ajudando a organizar informações e reduzir dúvidas recorrentes, enquanto o vendedor segue sendo central na experiência do cliente."
+  },
+  {
+    question: "Os dados gerados pela LIMMI podem apoiar decisões do negócio?",
+    answer: "Sim.\nAs interações no ponto de venda ajudam a entender o interesse dos clientes pelos produtos e apoiam decisões relacionadas a exposição, mix e organização do granel, sempre com base na realidade da própria loja."
   },
   {
     question: "A LIMMI pode evoluir para atender novas dores do varejo?",
@@ -165,7 +165,7 @@ export default function LandingPage() {
                 <div>
                   <h3 className="w-fit bg-[#1E85C7] text-white px-6 py-2 rounded-full text-[18px] font-bold mb-4 font-title mx-auto md:mx-0">Limmi Granel</h3>
                   <h4 className="text-[20px] md:text-[30px] font-bold text-slate-700 mb-6 font-title text-center md:text-left">Praticidade <span className="text-[#1E85C7]">&</span> padronização</h4>
-                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">Informação correta e acessível para a decisão de compra.</p>
+                  <p className="text-slate-500 text-[16px] md:text-[24px] max-w-md mb-4 text-center md:text-left mx-auto md:mx-0">O LIMMI Granel leva a informação completa do produto diretamente ao ponto de venda via QR Code. Ao lado, um exemplo da tela final apresentada ao usuário após o escaneamento.</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Card 1 */}
                     <div className="bg-blue-600 text-white p-6 rounded-2xl shadow-lg flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
